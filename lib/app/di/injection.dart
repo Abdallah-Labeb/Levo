@@ -10,6 +10,7 @@ import 'package:levo/features/spirit_level/bloc/spirit_level_cubit.dart';
 import 'package:levo/features/compass/bloc/compass_cubit.dart';
 import 'package:levo/features/ruler/bloc/ruler_cubit.dart';
 import 'package:levo/features/protractor/bloc/protractor_cubit.dart';
+import 'package:levo/features/sound_meter/bloc/sound_meter_cubit.dart';
 
 /// Global service locator instance.
 final getIt = GetIt.instance;
@@ -55,5 +56,9 @@ Future<void> setupDependencies() async {
 
   getIt.registerFactory<ProtractorCubit>(
     () => ProtractorCubit(prefs: getIt<PreferencesService>()),
+  );
+
+  getIt.registerFactory<SoundMeterCubit>(
+    () => SoundMeterCubit(),
   );
 }
