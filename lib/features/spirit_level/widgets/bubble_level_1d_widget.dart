@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:levo/app/theme/app_colors.dart';
@@ -141,15 +140,15 @@ class BubbleLevel1dPainter extends CustomPainter {
 
     // Draw background fluid tint
     final bgPaint = Paint()
-      ..shader = LinearGradient(
+      ..shader = const LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: [
-          const Color(0xFF0F1A12),
-          const Color(0xFF060B08),
-          const Color(0xFF0C160E),
+          Color(0xFF0F1A12),
+          Color(0xFF060B08),
+          Color(0xFF0C160E),
         ],
-        stops: const [0.0, 0.5, 1.0],
+        stops: [0.0, 0.5, 1.0],
       ).createShader(rect);
     canvas.drawRect(rect, bgPaint);
 

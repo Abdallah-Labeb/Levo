@@ -101,7 +101,6 @@ class VibrationMeterView extends StatelessWidget {
                               color: Color(0x7F000000),
                               offset: Offset(0, 4),
                               blurRadius: 10,
-                              inset: true,
                             ),
                           ],
                         ),
@@ -193,7 +192,7 @@ class VibrationMeterView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space20),
+                    const SizedBox(height: AppDimensions.space24),
 
                     // 4. Physical Calibrate & Reset Buttons
                     Row(

@@ -10,19 +10,21 @@ void main() {
 
   setUp(() {
     // Mock PermissionHandler platform channel
-    const MethodChannel(
-      'flutter.baseflow.com/permissions/methods',
-    ).setMockMethodCallHandler((MethodCall methodCall) async {
-      if (methodCall.method == 'checkPermissionStatus') {
-        return isCameraPermissionGranted ? 1 : 0; // Granted or Denied
-      }
-      if (methodCall.method == 'requestPermissions') {
-        return {
-          1: isCameraPermissionGranted ? 1 : 0, // Camera (1)
-        };
-      }
-      return null;
-    });
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('flutter.baseflow.com/permissions/methods'),
+      (MethodCall methodCall) async {
+        if (methodCall.method == 'checkPermissionStatus') {
+          return isCameraPermissionGranted ? 1 : 0; // Granted or Denied
+        }
+        if (methodCall.method == 'requestPermissions') {
+          return {
+            1: isCameraPermissionGranted ? 1 : 0, // Camera (1)
+          };
+        }
+        return null;
+      },
+    );
 
     cubit = LightMeterCubit();
   });

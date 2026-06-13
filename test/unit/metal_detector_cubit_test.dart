@@ -1,41 +1,39 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/features/metal_detector/bloc/metal_detector_cubit.dart';
 import 'package:levo/features/metal_detector/bloc/metal_detector_state.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  late PreferencesService prefs;
   late MetalDetectorCubit cubit;
 
   setUp(() async {
     // Mock Audioplayers player MethodChannels
-    const MethodChannel(
-      'xyz.luan/audioplayers.global',
-    ).setMockMethodCallHandler((MethodCall methodCall) async => null);
-    const MethodChannel(
-      'xyz.luan/audioplayers',
-    ).setMockMethodCallHandler((MethodCall methodCall) async => null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('xyz.luan/audioplayers.global'),
+      (MethodCall methodCall) async => null,
+    );
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('xyz.luan/audioplayers'),
+      (MethodCall methodCall) async => null,
+    );
 
     // Mock Vibration MethodChannel
-    const MethodChannel('vibration').setMockMethodCallHandler((
-      MethodCall methodCall,
-    ) async {
-      if (methodCall.method == 'hasVibrator') {
-        return true;
-      }
-      return null;
-    });
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('vibration'),
+      (MethodCall methodCall) async {
+        if (methodCall.method == 'hasVibrator') {
+          return true;
+        }
+        return null;
+      },
+    );
 
-    SharedPreferences.setMockInitialValues({
-      'metal_first_launch_warned': false,
-    });
-    final sharedPrefs = await SharedPreferences.getInstance();
-    prefs = PreferencesService(sharedPrefs);
-    cubit = MetalDetectorCubit(prefs: prefs);
+    cubit = MetalDetectorCubit();
   });
 
   tearDown(() async {

@@ -11,6 +11,8 @@
   "rulerDesc": "قس الأجسام باستخدام مقياس الشاشة",
   "protractorTitle": "منقلة قياس الزوايا",
   "protractorDesc": "قس الزوايا المرسومة على الشاشة",
+  "protractorLabelAngle": "الزاوية المقاسة",
+  "protractorLabelSlopeGrade": "درجة الميل",
   "soundMeterTitle": "مقياس مستوى الصوت",
   "soundMeterDesc": "قس الضوضاء المحيطة بالديسيبل",
   "vibrationMeterTitle": "مقياس الاهتزاز",

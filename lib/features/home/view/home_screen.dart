@@ -126,7 +126,6 @@ class HomeScreen extends StatelessWidget {
       create: (_) => getIt<SensorAvailabilityCubit>()..checkSensors(),
       child: BlocBuilder<SensorAvailabilityCubit, SensorAvailabilityState>(
         builder: (context, state) {
-          final isAr = Directionality.of(context) == TextDirection.rtl;
 
           // Build our list of 10 tools mapping to localized properties
           final toolsList = [

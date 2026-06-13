@@ -123,8 +123,9 @@ class LightMeterCubit extends Cubit<LightMeterState> {
       );
 
       await cameraController!.initialize();
-      if (cameraController == null)
+      if (cameraController == null) {
         return; // Prevent async race issues if disposed early
+      }
 
       emit(state.copyWith(isCameraInitialized: true, errorMessage: null));
 

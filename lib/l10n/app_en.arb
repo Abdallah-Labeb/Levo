@@ -11,6 +11,8 @@
   "rulerDesc": "Measure objects using your screen scale",
   "protractorTitle": "Protractor",
   "protractorDesc": "Measure angles drawn on screen",
+  "protractorLabelAngle": "Angle",
+  "protractorLabelSlopeGrade": "Slope Grade",
   "soundMeterTitle": "Sound Level Meter",
   "soundMeterDesc": "Measure ambient noise in decibels",
   "vibrationMeterTitle": "Vibration Meter",

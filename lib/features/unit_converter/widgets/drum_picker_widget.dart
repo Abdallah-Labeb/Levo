@@ -76,7 +76,6 @@ class _DrumPickerWidgetState extends State<DrumPickerWidget> {
             color: Color(0x99000000),
             offset: Offset(0, 2),
             blurRadius: 6,
-            inset: true,
           ),
         ],
       ),

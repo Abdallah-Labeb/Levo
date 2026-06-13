@@ -156,19 +156,19 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                               horizontal: 4.0,
                             ),
                             child: TactileButton(
-                              size: const Size(100.0, 40.0),
                               onPressed: () => cubit.setCategory(cat),
                               text: _getCategoryName(context, cat),
-                              backgroundColor: isSelected
-                                  ? AppColors.kYellow.withAlpha(20)
-                                  : null,
-                              textColor: isSelected ? AppColors.kYellow : null,
+                              isActive: isSelected,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppDimensions.paddingM,
+                                vertical: AppDimensions.paddingS,
+                              ),
                             ),
                           );
                         },
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space20),
+                    const SizedBox(height: AppDimensions.space24),
 
                     // 2. Numeric Input Section
                     MetalPanel(
@@ -234,8 +234,11 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                     // 3. Swap Units middle controller
                     Center(
                       child: TactileButton(
-                        size: const Size(60, 44),
                         onPressed: () => cubit.swapUnits(),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDimensions.paddingM,
+                          vertical: AppDimensions.paddingS,
+                        ),
                         icon: const Icon(
                           Icons.swap_vert,
                           color: AppColors.kYellow,
@@ -274,11 +277,14 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                                 ),
                                 const SizedBox(width: AppDimensions.space12),
                                 TactileButton(
-                                  size: const Size(60, 44),
                                   onPressed: () => _copyToClipboard(
                                     context,
                                     state.resultValue,
                                     state.toUnit,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppDimensions.paddingM,
+                                    vertical: AppDimensions.paddingS,
                                   ),
                                   icon: const Icon(
                                     Icons.copy_outlined,
@@ -291,7 +297,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space20),
+                    const SizedBox(height: AppDimensions.space24),
 
                     // 5. Dual Drum Picker selection system
                     Expanded(

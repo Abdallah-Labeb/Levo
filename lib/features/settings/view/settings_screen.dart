@@ -358,9 +358,12 @@ class SettingsScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: AppDimensions.space8),
                               TactileButton(
-                                size: const Size(60, 44),
                                 onPressed: () =>
                                     settingsCubit.restorePurchases(),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppDimensions.paddingM,
+                                  vertical: AppDimensions.paddingS,
+                                ),
                                 icon: const Icon(Icons.restore_outlined),
                               ),
                             ],

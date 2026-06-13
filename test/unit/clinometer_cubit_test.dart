@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/features/clinometer/bloc/clinometer_cubit.dart';
-import 'package:levo/features/clinometer/bloc/clinometer_state.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

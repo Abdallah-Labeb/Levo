@@ -13,24 +13,30 @@ void main() {
 
   setUp(() async {
     // Mock Audioplayers global MethodChannel
-    const MethodChannel(
-      'xyz.luan/audioplayers.global',
-    ).setMockMethodCallHandler((MethodCall methodCall) async => null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('xyz.luan/audioplayers.global'),
+      (MethodCall methodCall) async => null,
+    );
 
     // Mock Audioplayers player MethodChannel
-    const MethodChannel(
-      'xyz.luan/audioplayers',
-    ).setMockMethodCallHandler((MethodCall methodCall) async => null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('xyz.luan/audioplayers'),
+      (MethodCall methodCall) async => null,
+    );
 
     // Mock Vibration MethodChannel
-    const MethodChannel('vibration').setMockMethodCallHandler((
-      MethodCall methodCall,
-    ) async {
-      if (methodCall.method == 'hasVibrator') {
-        return true;
-      }
-      return null;
-    });
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('vibration'),
+      (MethodCall methodCall) async {
+        if (methodCall.method == 'hasVibrator') {
+          return true;
+        }
+        return null;
+      },
+    );
 
     SharedPreferences.setMockInitialValues({
       'level_mode_index': 0,

@@ -164,6 +164,18 @@ abstract class AppLocalizations {
   /// **'Measure angles drawn on screen'**
   String get protractorDesc;
 
+  /// No description provided for @protractorLabelAngle.
+  ///
+  /// In en, this message translates to:
+  /// **'Angle'**
+  String get protractorLabelAngle;
+
+  /// No description provided for @protractorLabelSlopeGrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Slope Grade'**
+  String get protractorLabelSlopeGrade;
+
   /// No description provided for @soundMeterTitle.
   ///
   /// In en, this message translates to:
@@ -200,6 +212,36 @@ abstract class AppLocalizations {
   /// **'Measure illuminance in Lux'**
   String get lightMeterDesc;
 
+  /// No description provided for @lightMeterSceneDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Pitch Black / Night'**
+  String get lightMeterSceneDark;
+
+  /// No description provided for @lightMeterSceneDim.
+  ///
+  /// In en, this message translates to:
+  /// **'Dim Indoors / Living Room'**
+  String get lightMeterSceneDim;
+
+  /// No description provided for @lightMeterSceneNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal Indoors / Office'**
+  String get lightMeterSceneNormal;
+
+  /// No description provided for @lightMeterSceneBright.
+  ///
+  /// In en, this message translates to:
+  /// **'Bright Indoors / Overcast Day'**
+  String get lightMeterSceneBright;
+
+  /// No description provided for @lightMeterSceneSunlight.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct Sunlight'**
+  String get lightMeterSceneSunlight;
+
   /// No description provided for @metalDetectorTitle.
   ///
   /// In en, this message translates to:
@@ -223,6 +265,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Convert construction-related units'**
   String get unitConverterDesc;
+
+  /// No description provided for @unitCategoryLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Length'**
+  String get unitCategoryLength;
+
+  /// No description provided for @unitCategoryArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Area'**
+  String get unitCategoryArea;
+
+  /// No description provided for @unitCategoryVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get unitCategoryVolume;
+
+  /// No description provided for @unitCategoryMass.
+  ///
+  /// In en, this message translates to:
+  /// **'Mass'**
+  String get unitCategoryMass;
+
+  /// No description provided for @unitCategorySpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed'**
+  String get unitCategorySpeed;
+
+  /// No description provided for @unitCategoryPressure.
+  ///
+  /// In en, this message translates to:
+  /// **'Pressure'**
+  String get unitCategoryPressure;
+
+  /// No description provided for @unitCategoryAngle.
+  ///
+  /// In en, this message translates to:
+  /// **'Angle'**
+  String get unitCategoryAngle;
 
   /// No description provided for @clinometerTitle.
   ///
@@ -427,6 +511,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Settings'**
   String get commonButtonOpenSettings;
+
+  /// No description provided for @commonButtonOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get commonButtonOpen;
 
   /// No description provided for @sensorErrorTitle.
   ///
@@ -901,6 +991,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Very steep road'**
   String get clinometerGradeSteepRoad;
+
+  /// No description provided for @vibrationMeterPeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak Acceleration'**
+  String get vibrationMeterPeak;
+
+  /// No description provided for @vibrationMeterBaseline.
+  ///
+  /// In en, this message translates to:
+  /// **'Baseline'**
+  String get vibrationMeterBaseline;
+
+  /// No description provided for @vibrationMeterButtonCalibrate.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibrate Zero'**
+  String get vibrationMeterButtonCalibrate;
+
+  /// No description provided for @homeScreenInitializingSensors.
+  ///
+  /// In en, this message translates to:
+  /// **'Initializing sensors...'**
+  String get homeScreenInitializingSensors;
+
+  /// No description provided for @sensorNameAccelerometer.
+  ///
+  /// In en, this message translates to:
+  /// **'Accelerometer Sensor'**
+  String get sensorNameAccelerometer;
+
+  /// No description provided for @sensorNameMagnetometerGps.
+  ///
+  /// In en, this message translates to:
+  /// **'Magnetometer & GPS'**
+  String get sensorNameMagnetometerGps;
+
+  /// No description provided for @sensorNameCalibratedDisplay.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibrated Display'**
+  String get sensorNameCalibratedDisplay;
+
+  /// No description provided for @sensorNameTouchInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Touch Input Scale'**
+  String get sensorNameTouchInput;
+
+  /// No description provided for @sensorNameMicrophone.
+  ///
+  /// In en, this message translates to:
+  /// **'Hardware Microphone'**
+  String get sensorNameMicrophone;
+
+  /// No description provided for @sensorNameLightCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Sensor or Camera'**
+  String get sensorNameLightCamera;
+
+  /// No description provided for @sensorNameMagnetometer.
+  ///
+  /// In en, this message translates to:
+  /// **'Magnetometer Sensor'**
+  String get sensorNameMagnetometer;
+
+  /// No description provided for @sensorNameConversionSolver.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversion Solver'**
+  String get sensorNameConversionSolver;
 }
 
 class _AppLocalizationsDelegate

@@ -42,6 +42,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get protractorDesc => 'قس الزوايا المرسومة على الشاشة';
 
   @override
+  String get protractorLabelAngle => 'الزاوية المقاسة';
+
+  @override
+  String get protractorLabelSlopeGrade => 'درجة الميل';
+
+  @override
   String get soundMeterTitle => 'مقياس مستوى الصوت';
 
   @override
@@ -60,6 +66,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get lightMeterDesc => 'قس شدة الإضاءة المحيطة باللوكس';
 
   @override
+  String get lightMeterSceneDark => 'ظلام دامس / ليل';
+
+  @override
+  String get lightMeterSceneDim => 'إضاءة خافتة / غرفة معيشة';
+
+  @override
+  String get lightMeterSceneNormal => 'إضاءة داخلية عادية / مكتب';
+
+  @override
+  String get lightMeterSceneBright => 'إضاءة ساطعة / يوم غائم';
+
+  @override
+  String get lightMeterSceneSunlight => 'ضوء الشمس المباشر';
+
+  @override
   String get metalDetectorTitle => 'كاشف المعادن';
 
   @override
@@ -70,6 +91,27 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get unitConverterDesc => 'تحويل وحدات القياس الهندسية';
+
+  @override
+  String get unitCategoryLength => 'الطول';
+
+  @override
+  String get unitCategoryArea => 'المساحة';
+
+  @override
+  String get unitCategoryVolume => 'الحجم';
+
+  @override
+  String get unitCategoryMass => 'الكتلة';
+
+  @override
+  String get unitCategorySpeed => 'السرعة';
+
+  @override
+  String get unitCategoryPressure => 'الضغط';
+
+  @override
+  String get unitCategoryAngle => 'الزوايا';
 
   @override
   String get clinometerTitle => 'مقياس الانحدار';
@@ -177,6 +219,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get commonButtonOpenSettings => 'فتح الإعدادات';
+
+  @override
+  String get commonButtonOpen => 'افتح';
 
   @override
   String get sensorErrorTitle => 'المستشعر غير متوفر';
@@ -424,4 +469,42 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get clinometerGradeSteepRoad => 'طريق منحدر جداً';
+
+  @override
+  String get vibrationMeterPeak => 'تسارع الذروة';
+
+  @override
+  String get vibrationMeterBaseline => 'خط الأساس';
+
+  @override
+  String get vibrationMeterButtonCalibrate => 'معايرة الصفر';
+
+  @override
+  String get homeScreenInitializingSensors => 'جاري تهيئة الحساسات...';
+
+  @override
+  String get sensorNameAccelerometer => 'مستشعر التسارع (Accelerometer)';
+
+  @override
+  String get sensorNameMagnetometerGps =>
+      'المغناطيسية والموقع (GPS/Magnetometer)';
+
+  @override
+  String get sensorNameCalibratedDisplay =>
+      'الشاشة المعايرة (Calibrated Display)';
+
+  @override
+  String get sensorNameTouchInput => 'شاشة اللمس (Touch Screen)';
+
+  @override
+  String get sensorNameMicrophone => 'الميكروفون (Microphone)';
+
+  @override
+  String get sensorNameLightCamera => 'مستشعر الضوء أو الكاميرا (Light/Camera)';
+
+  @override
+  String get sensorNameMagnetometer => 'المستشعر المغناطيسي (Magnetometer)';
+
+  @override
+  String get sensorNameConversionSolver => 'محرك الحسابات (Mathematics Engine)';
 }

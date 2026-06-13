@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/features/compass/bloc/compass_cubit.dart';
-import 'package:levo/features/compass/bloc/compass_state.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -12,43 +11,46 @@ void main() {
   late CompassCubit cubit;
 
   setUp(() async {
-    // Mock Geolocator platform channel
-    const MethodChannel(
-      'flutter.baseflow.com/geolocator',
-    ).setMockMethodCallHandler((MethodCall methodCall) async {
-      if (methodCall.method == 'checkPermission') {
-        return 3; // LocationPermission.whileInUse (3 is index/value on platform side)
-      }
-      if (methodCall.method == 'getCurrentPosition' ||
-          methodCall.method == 'getLastKnownPosition') {
-        return {
-          'latitude': 52.5200,
-          'longitude': 13.4050,
-          'timestamp': 1000,
-          'accuracy': 10.0,
-          'altitude': 30.0,
-          'speed': 0.0,
-          'speed_accuracy': 0.0,
-          'heading': 0.0,
-        };
-      }
-      return null;
-    });
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('flutter.baseflow.com/geolocator'),
+      (MethodCall methodCall) async {
+        if (methodCall.method == 'checkPermission') {
+          return 3; // LocationPermission.whileInUse (3 is index/value on platform side)
+        }
+        if (methodCall.method == 'getCurrentPosition' ||
+            methodCall.method == 'getLastKnownPosition') {
+          return {
+            'latitude': 52.5200,
+            'longitude': 13.4050,
+            'timestamp': 1000,
+            'accuracy': 10.0,
+            'altitude': 30.0,
+            'speed': 0.0,
+            'speed_accuracy': 0.0,
+            'heading': 0.0,
+          };
+        }
+        return null;
+      },
+    );
 
     // Mock PermissionHandler platform channel
-    const MethodChannel(
-      'flutter.baseflow.com/permissions/methods',
-    ).setMockMethodCallHandler((MethodCall methodCall) async {
-      if (methodCall.method == 'checkPermissionStatus') {
-        return 1; // PermissionStatus.granted
-      }
-      if (methodCall.method == 'requestPermissions') {
-        return {
-          1: 1, // LocationStatus: Granted
-        };
-      }
-      return null;
-    });
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('flutter.baseflow.com/permissions/methods'),
+      (MethodCall methodCall) async {
+        if (methodCall.method == 'checkPermissionStatus') {
+          return 1; // PermissionStatus.granted
+        }
+        if (methodCall.method == 'requestPermissions') {
+          return {
+            1: 1, // LocationStatus: Granted
+          };
+        }
+        return null;
+      },
+    );
 
     SharedPreferences.setMockInitialValues({'true_north_enabled': false});
     final sharedPrefs = await SharedPreferences.getInstance();

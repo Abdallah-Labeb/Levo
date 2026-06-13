@@ -21,7 +21,6 @@ class RulerCubit extends Cubit<RulerState> {
   }
 
   final PreferencesService _prefs;
-  double _devicePixelRatio = 1.0;
 
   // Standard logical pixels per inch approximation in Flutter (approx 160 dp/inch)
   static const double kBaseDpi = 160.0;
@@ -37,8 +36,6 @@ class RulerCubit extends Cubit<RulerState> {
     required double devicePixelRatio,
     required double screenHeight,
   }) {
-    _devicePixelRatio = devicePixelRatio;
-
     // Set default marker positions in the middle third of the screen if not set yet
     final double defaultA = screenHeight * 0.25;
     final double defaultB = screenHeight * 0.65;
@@ -85,7 +82,7 @@ class RulerCubit extends Cubit<RulerState> {
 
     // We want: pixelDistance * (kMmPerInch / kBaseDpi) * scaleFactor = referenceMm
     // Thus: scaleFactor = referenceMm / (pixelDistance * (kMmPerInch / kBaseDpi))
-    final double baseMmPerPixel = kMmPerInch / kBaseDpi;
+    const double baseMmPerPixel = kMmPerInch / kBaseDpi;
     final double calculatedScale =
         referenceMm / (pixelDistance * baseMmPerPixel);
 

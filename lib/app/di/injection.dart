@@ -68,9 +68,7 @@ Future<void> setupDependencies() async {
 
   getIt.registerFactory<LightMeterCubit>(() => LightMeterCubit());
 
-  getIt.registerFactory<MetalDetectorCubit>(
-    () => MetalDetectorCubit(prefs: getIt<PreferencesService>()),
-  );
+  getIt.registerFactory<MetalDetectorCubit>(() => MetalDetectorCubit());
 
   getIt.registerFactory<ClinometerCubit>(
     () => ClinometerCubit(prefs: getIt<PreferencesService>()),

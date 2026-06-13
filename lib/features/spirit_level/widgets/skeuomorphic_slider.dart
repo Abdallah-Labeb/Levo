@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
@@ -180,7 +180,7 @@ class SliderTrackTicksPainter extends CustomPainter {
       ..strokeWidth = 1.0;
 
     // Draw little tick indices in the background groove channel
-    final int tickCount = 10;
+    const int tickCount = 10;
     final double step = size.width / tickCount;
     for (int i = 1; i < tickCount; i++) {
       final double dx = i * step;

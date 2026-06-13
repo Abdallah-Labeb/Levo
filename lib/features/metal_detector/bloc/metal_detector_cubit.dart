@@ -4,17 +4,13 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:vibration/vibration.dart';
-import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/features/metal_detector/bloc/metal_detector_state.dart';
 
 /// Cubit managing the Metal Detector sensor pipeline, baseline calibrations,
 /// sensitivity factors, and alert levels with pulsing sound and vibration triggers.
 class MetalDetectorCubit extends Cubit<MetalDetectorState> {
-  MetalDetectorCubit({required PreferencesService prefs})
-    : _prefs = prefs,
-      super(const MetalDetectorState());
+  MetalDetectorCubit() : super(const MetalDetectorState());
 
-  final PreferencesService _prefs;
   StreamSubscription<MagnetometerEvent>? _sensorSub;
   late final AudioPlayer _audioPlayer = AudioPlayer();
 

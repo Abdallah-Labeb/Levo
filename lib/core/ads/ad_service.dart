@@ -44,8 +44,9 @@ class AdService {
 
   /// Loads the interstitial ad.
   void _loadInterstitialAd() {
-    if (_prefs.isPro || _isInterstitialLoading || _interstitialAd != null)
+    if (_prefs.isPro || _isInterstitialLoading || _interstitialAd != null) {
       return;
+    }
 
     _isInterstitialLoading = true;
     InterstitialAd.load(

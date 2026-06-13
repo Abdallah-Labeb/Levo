@@ -70,6 +70,9 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
 
     Duration targetDuration;
     switch (level) {
+      case MetalAlertLevel.none:
+        targetDuration = const Duration(milliseconds: 1500);
+        break;
       case MetalAlertLevel.weak:
         targetDuration = const Duration(milliseconds: 1200);
         break;
@@ -206,7 +209,6 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                                 Align(
                                   alignment: AlignmentDirectional.centerEnd,
                                   child: TactileButton(
-                                    size: const Size(80, 36),
                                     onPressed: () {
                                       setState(() {
                                         _showWarningBanner = false;
@@ -214,6 +216,10 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                                       _prefs.setMetalFirstLaunchWarned(true);
                                     },
                                     text: l10n.commonButtonClose,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppDimensions.paddingM,
+                                      vertical: AppDimensions.paddingS,
+                                    ),
                                   ),
                                 ),
                               ],

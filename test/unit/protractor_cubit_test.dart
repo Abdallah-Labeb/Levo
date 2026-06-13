@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/features/protractor/bloc/protractor_cubit.dart';
-import 'package:levo/features/protractor/bloc/protractor_state.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

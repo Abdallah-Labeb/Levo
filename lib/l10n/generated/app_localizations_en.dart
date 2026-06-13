@@ -42,6 +42,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get protractorDesc => 'Measure angles drawn on screen';
 
   @override
+  String get protractorLabelAngle => 'Angle';
+
+  @override
+  String get protractorLabelSlopeGrade => 'Slope Grade';
+
+  @override
   String get soundMeterTitle => 'Sound Level Meter';
 
   @override
@@ -60,6 +66,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lightMeterDesc => 'Measure illuminance in Lux';
 
   @override
+  String get lightMeterSceneDark => 'Pitch Black / Night';
+
+  @override
+  String get lightMeterSceneDim => 'Dim Indoors / Living Room';
+
+  @override
+  String get lightMeterSceneNormal => 'Normal Indoors / Office';
+
+  @override
+  String get lightMeterSceneBright => 'Bright Indoors / Overcast Day';
+
+  @override
+  String get lightMeterSceneSunlight => 'Direct Sunlight';
+
+  @override
   String get metalDetectorTitle => 'Metal Detector';
 
   @override
@@ -70,6 +91,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unitConverterDesc => 'Convert construction-related units';
+
+  @override
+  String get unitCategoryLength => 'Length';
+
+  @override
+  String get unitCategoryArea => 'Area';
+
+  @override
+  String get unitCategoryVolume => 'Volume';
+
+  @override
+  String get unitCategoryMass => 'Mass';
+
+  @override
+  String get unitCategorySpeed => 'Speed';
+
+  @override
+  String get unitCategoryPressure => 'Pressure';
+
+  @override
+  String get unitCategoryAngle => 'Angle';
 
   @override
   String get clinometerTitle => 'Clinometer';
@@ -176,6 +218,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonButtonOpenSettings => 'Open Settings';
+
+  @override
+  String get commonButtonOpen => 'Open';
 
   @override
   String get sensorErrorTitle => 'Sensor Unavailable';
@@ -421,4 +466,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clinometerGradeSteepRoad => 'Very steep road';
+
+  @override
+  String get vibrationMeterPeak => 'Peak Acceleration';
+
+  @override
+  String get vibrationMeterBaseline => 'Baseline';
+
+  @override
+  String get vibrationMeterButtonCalibrate => 'Calibrate Zero';
+
+  @override
+  String get homeScreenInitializingSensors => 'Initializing sensors...';
+
+  @override
+  String get sensorNameAccelerometer => 'Accelerometer Sensor';
+
+  @override
+  String get sensorNameMagnetometerGps => 'Magnetometer & GPS';
+
+  @override
+  String get sensorNameCalibratedDisplay => 'Calibrated Display';
+
+  @override
+  String get sensorNameTouchInput => 'Touch Input Scale';
+
+  @override
+  String get sensorNameMicrophone => 'Hardware Microphone';
+
+  @override
+  String get sensorNameLightCamera => 'Light Sensor or Camera';
+
+  @override
+  String get sensorNameMagnetometer => 'Magnetometer Sensor';
+
+  @override
+  String get sensorNameConversionSolver => 'Conversion Solver';
 }

@@ -6,7 +6,6 @@ import 'package:levo/app/di/injection.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
-import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_texture_helper.dart';
@@ -142,12 +141,12 @@ class ProtractorView extends StatelessWidget {
                               Column(
                                 children: [
                                   Text(
-                                    isAr ? "الزاوية المقاسة" : "Angle",
+                                    l10n.protractorLabelAngle,
                                     style: AppTypography.kCaption.copyWith(
                                       color: AppColors.kTextSecondary,
                                     ),
                                   ),
-                                  const SizedBox(height: AppDimensions.space6),
+                                  const SizedBox(height: AppDimensions.space8),
                                   LedDisplay(
                                     value: _formatAngle(
                                       context,
@@ -159,12 +158,12 @@ class ProtractorView extends StatelessWidget {
                               Column(
                                 children: [
                                   Text(
-                                    isAr ? "درجة الميل" : "Slope Grade",
+                                    l10n.protractorLabelSlopeGrade,
                                     style: AppTypography.kCaption.copyWith(
                                       color: AppColors.kTextSecondary,
                                     ),
                                   ),
-                                  const SizedBox(height: AppDimensions.space6),
+                                  const SizedBox(height: AppDimensions.space8),
                                   LedDisplay(
                                     value: _formatSlope(
                                       context,

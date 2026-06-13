@@ -6,7 +6,6 @@ import 'package:levo/app/di/injection.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
-import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/levo_banner.dart';
@@ -65,7 +64,7 @@ class _RulerViewState extends State<RulerView> {
       decimals = 3;
     }
 
-    final pattern = "0." + ("0" * decimals);
+    final pattern = "0.${'0' * decimals}";
     final formatter = NumberFormat(pattern, locale);
     return "${formatter.format(value)} $unitStr";
   }

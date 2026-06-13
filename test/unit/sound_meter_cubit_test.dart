@@ -10,30 +10,34 @@ void main() {
 
   setUp(() {
     // Mock Vibration MethodChannel
-    const MethodChannel('vibration').setMockMethodCallHandler((
-      MethodCall methodCall,
-    ) async {
-      if (methodCall.method == 'hasVibrator') {
-        return true;
-      }
-      return null;
-    });
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('vibration'),
+      (MethodCall methodCall) async {
+        if (methodCall.method == 'hasVibrator') {
+          return true;
+        }
+        return null;
+      },
+    );
 
     // Mock PermissionHandler platform channel
-    const MethodChannel(
-      'flutter.baseflow.com/permissions/methods',
-    ).setMockMethodCallHandler((MethodCall methodCall) async {
-      if (methodCall.method == 'checkPermissionStatus') {
-        // Return granted (1) or denied (0) based on state variable
-        return isPermissionGranted ? 1 : 0;
-      }
-      if (methodCall.method == 'requestPermissions') {
-        return {
-          7: isPermissionGranted ? 1 : 0, // Microphone (7)
-        };
-      }
-      return null;
-    });
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('flutter.baseflow.com/permissions/methods'),
+      (MethodCall methodCall) async {
+        if (methodCall.method == 'checkPermissionStatus') {
+          // Return granted (1) or denied (0) based on state variable
+          return isPermissionGranted ? 1 : 0;
+        }
+        if (methodCall.method == 'requestPermissions') {
+          return {
+            7: isPermissionGranted ? 1 : 0, // Microphone (7)
+          };
+        }
+        return null;
+      },
+    );
 
     cubit = SoundMeterCubit();
   });

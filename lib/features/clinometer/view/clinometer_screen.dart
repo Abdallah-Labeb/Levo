@@ -169,7 +169,6 @@ class ClinometerView extends StatelessWidget {
                               color: Color(0x7F000000),
                               offset: Offset(0, 4),
                               blurRadius: 10,
-                              inset: true,
                             ),
                           ],
                         ),
@@ -263,7 +262,7 @@ class ClinometerView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space20),
+                    const SizedBox(height: AppDimensions.space24),
 
                     // 5. Hold & Reset Action Panel
                     Row(
@@ -274,15 +273,12 @@ class ClinometerView extends StatelessWidget {
                             text: state.isHeld
                                 ? l10n.spiritLevelButtonRelease
                                 : l10n.spiritLevelButtonHold,
+                            isActive: state.isHeld,
                             icon: Icon(
                               state.isHeld
                                   ? Icons.play_arrow_outlined
                                   : Icons.pause_outlined,
                             ),
-                            backgroundColor: state.isHeld
-                                ? AppColors.kYellow.withAlpha(20)
-                                : null,
-                            textColor: state.isHeld ? AppColors.kYellow : null,
                           ),
                         ),
                         const SizedBox(width: AppDimensions.space12),

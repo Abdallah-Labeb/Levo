@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/features/unit_converter/domain/conversion_engine.dart';
 import 'package:levo/features/unit_converter/bloc/unit_converter_cubit.dart';
-import 'package:levo/features/unit_converter/bloc/unit_converter_state.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
