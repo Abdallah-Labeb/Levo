@@ -11,6 +11,10 @@ import 'package:levo/features/compass/bloc/compass_cubit.dart';
 import 'package:levo/features/ruler/bloc/ruler_cubit.dart';
 import 'package:levo/features/protractor/bloc/protractor_cubit.dart';
 import 'package:levo/features/sound_meter/bloc/sound_meter_cubit.dart';
+import 'package:levo/features/vibration_meter/bloc/vibration_meter_cubit.dart';
+import 'package:levo/features/light_meter/bloc/light_meter_cubit.dart';
+import 'package:levo/features/metal_detector/bloc/metal_detector_cubit.dart';
+import 'package:levo/features/clinometer/bloc/clinometer_cubit.dart';
 
 /// Global service locator instance.
 final getIt = GetIt.instance;
@@ -60,5 +64,21 @@ Future<void> setupDependencies() async {
 
   getIt.registerFactory<SoundMeterCubit>(
     () => SoundMeterCubit(),
+  );
+
+  getIt.registerFactory<VibrationMeterCubit>(
+    () => VibrationMeterCubit(),
+  );
+
+  getIt.registerFactory<LightMeterCubit>(
+    () => LightMeterCubit(),
+  );
+
+  getIt.registerFactory<MetalDetectorCubit>(
+    () => MetalDetectorCubit(prefs: getIt<PreferencesService>()),
+  );
+
+  getIt.registerFactory<ClinometerCubit>(
+    () => ClinometerCubit(prefs: getIt<PreferencesService>()),
   );
 }
