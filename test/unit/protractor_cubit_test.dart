@@ -11,9 +11,7 @@ void main() {
   late ProtractorCubit cubit;
 
   setUp(() async {
-    SharedPreferences.setMockInitialValues({
-      'protractor_snap_enabled': true,
-    });
+    SharedPreferences.setMockInitialValues({'protractor_snap_enabled': true});
     final sharedPrefs = await SharedPreferences.getInstance();
     prefs = PreferencesService(sharedPrefs);
     cubit = ProtractorCubit(prefs: prefs);
@@ -73,7 +71,7 @@ void main() {
 
     test('measuredAngle calculations bound to interior angle range', () {
       cubit.toggleSnap(); // disable snap for raw entry
-      
+
       cubit.updateAngleA(10.0);
       cubit.updateAngleB(170.0);
       expect(cubit.state.measuredAngle, 160.0);

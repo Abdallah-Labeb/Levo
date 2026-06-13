@@ -13,22 +13,22 @@ void main() {
 
   setUp(() async {
     // Mock Audioplayers player MethodChannels
-    const MethodChannel('xyz.luan/audioplayers.global').setMockMethodCallHandler(
-      (MethodCall methodCall) async => null,
-    );
-    const MethodChannel('xyz.luan/audioplayers').setMockMethodCallHandler(
-      (MethodCall methodCall) async => null,
-    );
+    const MethodChannel(
+      'xyz.luan/audioplayers.global',
+    ).setMockMethodCallHandler((MethodCall methodCall) async => null);
+    const MethodChannel(
+      'xyz.luan/audioplayers',
+    ).setMockMethodCallHandler((MethodCall methodCall) async => null);
 
     // Mock Vibration MethodChannel
-    const MethodChannel('vibration').setMockMethodCallHandler(
-      (MethodCall methodCall) async {
-        if (methodCall.method == 'hasVibrator') {
-          return true;
-        }
-        return null;
-      },
-    );
+    const MethodChannel('vibration').setMockMethodCallHandler((
+      MethodCall methodCall,
+    ) async {
+      if (methodCall.method == 'hasVibrator') {
+        return true;
+      }
+      return null;
+    });
 
     SharedPreferences.setMockInitialValues({
       'metal_first_launch_warned': false,

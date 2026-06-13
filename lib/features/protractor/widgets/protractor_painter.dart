@@ -65,7 +65,7 @@ class ProtractorPainter extends CustomPainter {
     final sectorPaint = Paint()
       ..color = AppColors.kOrange.withAlpha(50)
       ..style = PaintingStyle.fill;
-    
+
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: dialRadius),
       radA,
@@ -91,9 +91,7 @@ class ProtractorPainter extends CustomPainter {
       ..color = const Color(0xFF4A443B)
       ..strokeWidth = 1.5;
 
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
 
     for (int i = 0; i < 360; i += 1) {
       final double angleRad = i * math.pi / 180.0;
@@ -146,7 +144,7 @@ class ProtractorPainter extends CustomPainter {
 
     // Extend lines beyond dial radius to reach outer handles
     final double armLength = dialRadius + 50.0;
-    
+
     // Arm A
     canvas.drawLine(
       center,
@@ -176,11 +174,7 @@ class ProtractorPainter extends CustomPainter {
     final pivotPaint = Paint()
       ..shader = const RadialGradient(
         center: Alignment(-0.25, -0.25),
-        colors: [
-          Color(0xFFFFEA9F),
-          Color(0xFFCCA214),
-          Color(0xFF6B5102),
-        ],
+        colors: [Color(0xFFFFEA9F), Color(0xFFCCA214), Color(0xFF6B5102)],
         stops: [0.0, 0.55, 1.0],
       ).createShader(Rect.fromCircle(center: center, radius: 8.0));
     canvas.drawCircle(center, 8.0, pivotPaint);

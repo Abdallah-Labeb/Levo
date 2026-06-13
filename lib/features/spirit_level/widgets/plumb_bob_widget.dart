@@ -58,7 +58,8 @@ class _PlumbBobWidgetState extends State<PlumbBobWidget>
       return;
     }
 
-    double dt = (elapsed.inMicroseconds - _lastElapsed.inMicroseconds) / 1000000.0;
+    double dt =
+        (elapsed.inMicroseconds - _lastElapsed.inMicroseconds) / 1000000.0;
     _lastElapsed = elapsed;
 
     if (dt > 0.03) dt = 0.03;
@@ -71,7 +72,8 @@ class _PlumbBobWidgetState extends State<PlumbBobWidget>
     // Target angle (in radians) is determined by the negative roll
     final double targetTheta = -widget.roll * math.pi / 180.0;
 
-    final double torque = stiffnessAngle * (targetTheta - _theta) - dampingAngle * _omega;
+    final double torque =
+        stiffnessAngle * (targetTheta - _theta) - dampingAngle * _omega;
     _omega += torque * dt;
     _theta += _omega * dt;
 
@@ -94,14 +96,14 @@ class _PlumbBobWidgetState extends State<PlumbBobWidget>
     final glowColor = widget.status == LevelStatus.level
         ? AppColors.kLevelGreen.withAlpha(45)
         : (widget.status == LevelStatus.close
-            ? AppColors.kWarningYellow.withAlpha(20)
-            : Colors.transparent);
+              ? AppColors.kWarningYellow.withAlpha(20)
+              : Colors.transparent);
 
     final targetBorderColor = widget.status == LevelStatus.level
         ? AppColors.kLevelGreen
         : (widget.status == LevelStatus.close
-            ? AppColors.kWarningYellow
-            : AppColors.kChromeDark);
+              ? AppColors.kWarningYellow
+              : AppColors.kChromeDark);
 
     return Expanded(
       child: Padding(
@@ -132,7 +134,10 @@ class _PlumbBobWidgetState extends State<PlumbBobWidget>
                       height: 50,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: targetBorderColor, width: 2.0),
+                        border: Border.all(
+                          color: targetBorderColor,
+                          width: 2.0,
+                        ),
                         boxShadow: [
                           BoxShadow(
                             color: glowColor,
@@ -198,9 +203,12 @@ class PlumbBobPainter extends CustomPainter {
 
     // Draw suspension peg at the top center
     final pegPaint = Paint()
-      ..shader = const RadialGradient(
-        colors: [AppColors.kChromeLight, AppColors.kChromeDark],
-      ).createShader(Rect.fromCircle(center: Offset(startX, startY), radius: 6.0));
+      ..shader =
+          const RadialGradient(
+            colors: [AppColors.kChromeLight, AppColors.kChromeDark],
+          ).createShader(
+            Rect.fromCircle(center: Offset(startX, startY), radius: 6.0),
+          );
     canvas.drawCircle(Offset(startX, startY), 6.0, pegPaint);
 
     // Draw pendulum string line (machined dark thread shadow + thread line)
@@ -217,7 +225,11 @@ class PlumbBobPainter extends CustomPainter {
     final stringPaint = Paint()
       ..color = AppColors.kChromeMid
       ..strokeWidth = 1.2;
-    canvas.drawLine(Offset(startX, startY), Offset(bobCenterX, bobCenterY), stringPaint);
+    canvas.drawLine(
+      Offset(startX, startY),
+      Offset(bobCenterX, bobCenterY),
+      stringPaint,
+    );
 
     // Draw the brass weight (teardrop Bob shape)
     // Height & width of the bob weight
@@ -233,25 +245,28 @@ class PlumbBobPainter extends CustomPainter {
     final bobShadowPaint = Paint()
       ..color = Colors.black.withAlpha(100)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
-    
+
     final Path bobPath = _getTeardropPath(bobWidth, bobHeight);
     canvas.drawPath(bobPath.shift(const Offset(3, 4)), bobShadowPaint);
 
     // Fill brass bob
     final bobFillPaint = Paint()
-      ..shader = const RadialGradient(
-        center: Alignment(-0.25, -0.3),
-        colors: [
-          Color(0xFFFFF0B3), // highlight
-          Color(0xFFDFB831), // brass mid
-          Color(0xFF7A610B), // brass dark shade
-        ],
-        stops: [0.0, 0.55, 1.0],
-      ).createShader(Rect.fromCenter(
-        center: Offset.zero,
-        width: bobWidth,
-        height: bobHeight,
-      ));
+      ..shader =
+          const RadialGradient(
+            center: Alignment(-0.25, -0.3),
+            colors: [
+              Color(0xFFFFF0B3), // highlight
+              Color(0xFFDFB831), // brass mid
+              Color(0xFF7A610B), // brass dark shade
+            ],
+            stops: [0.0, 0.55, 1.0],
+          ).createShader(
+            Rect.fromCenter(
+              center: Offset.zero,
+              width: bobWidth,
+              height: bobHeight,
+            ),
+          );
     canvas.drawPath(bobPath, bobFillPaint);
 
     // Draw brass tip highlight or collar lines
@@ -289,6 +304,8 @@ class PlumbBobPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant PlumbBobPainter oldDelegate) {
-    return oldDelegate.theta != theta || oldDelegate.dy != dy || oldDelegate.status != status;
+    return oldDelegate.theta != theta ||
+        oldDelegate.dy != dy ||
+        oldDelegate.status != status;
   }
 }

@@ -11,8 +11,8 @@ import 'package:levo/features/metal_detector/bloc/metal_detector_state.dart';
 /// sensitivity factors, and alert levels with pulsing sound and vibration triggers.
 class MetalDetectorCubit extends Cubit<MetalDetectorState> {
   MetalDetectorCubit({required PreferencesService prefs})
-      : _prefs = prefs,
-        super(const MetalDetectorState());
+    : _prefs = prefs,
+      super(const MetalDetectorState());
 
   final PreferencesService _prefs;
   StreamSubscription<MagnetometerEvent>? _sensorSub;
@@ -30,22 +30,27 @@ class MetalDetectorCubit extends Cubit<MetalDetectorState> {
   void startListening() {
     _sensorSub?.cancel();
     try {
-      _sensorSub = magnetometerEventStream(
-        samplingPeriod: SensorInterval.uiInterval,
-      ).listen(
-        _onMagnetometerEvent,
-        onError: (_) {
-          emit(state.copyWith(
-            isSensorAvailable: false,
-            errorMessage: "Error reading magnetometer sensor",
-          ));
-        },
-      );
+      _sensorSub =
+          magnetometerEventStream(
+            samplingPeriod: SensorInterval.uiInterval,
+          ).listen(
+            _onMagnetometerEvent,
+            onError: (_) {
+              emit(
+                state.copyWith(
+                  isSensorAvailable: false,
+                  errorMessage: "Error reading magnetometer sensor",
+                ),
+              );
+            },
+          );
     } catch (_) {
-      emit(state.copyWith(
-        isSensorAvailable: false,
-        errorMessage: "Magnetometer sensor is not available on this device",
-      ));
+      emit(
+        state.copyWith(
+          isSensorAvailable: false,
+          errorMessage: "Magnetometer sensor is not available on this device",
+        ),
+      );
     }
   }
 
@@ -68,10 +73,7 @@ class MetalDetectorCubit extends Cubit<MetalDetectorState> {
     final double adjustedDelta = rawDelta * state.sensitivity;
     final MetalAlertLevel alert = _classifyAlertLevel(adjustedDelta);
 
-    emit(state.copyWith(
-      deltaUt: rawDelta,
-      alertLevel: alert,
-    ));
+    emit(state.copyWith(deltaUt: rawDelta, alertLevel: alert));
 
     // Handle audio/haptic pulse scheduling
     _triggerPulsedFeedback(alert);

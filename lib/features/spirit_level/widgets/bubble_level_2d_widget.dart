@@ -52,7 +52,8 @@ class _BubbleLevel2dWidgetState extends State<BubbleLevel2dWidget>
       return;
     }
 
-    double dt = (elapsed.inMicroseconds - _lastElapsed.inMicroseconds) / 1000000.0;
+    double dt =
+        (elapsed.inMicroseconds - _lastElapsed.inMicroseconds) / 1000000.0;
     _lastElapsed = elapsed;
 
     // Cap time steps to prevent numerical explosion during lag spikes
@@ -108,14 +109,14 @@ class _BubbleLevel2dWidgetState extends State<BubbleLevel2dWidget>
     final glowColor = widget.status == LevelStatus.level
         ? AppColors.kLevelGreen.withAlpha(51) // Glow green
         : (widget.status == LevelStatus.close
-            ? AppColors.kWarningYellow.withAlpha(30)
-            : Colors.transparent);
+              ? AppColors.kWarningYellow.withAlpha(30)
+              : Colors.transparent);
 
     final borderColor = widget.status == LevelStatus.level
         ? AppColors.kLevelGreen
         : (widget.status == LevelStatus.close
-            ? AppColors.kWarningYellow
-            : AppColors.kChromeMid);
+              ? AppColors.kWarningYellow
+              : AppColors.kChromeMid);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
@@ -126,11 +127,7 @@ class _BubbleLevel2dWidgetState extends State<BubbleLevel2dWidget>
         color: AppColors.kSurfaceInset,
         border: Border.all(color: borderColor, width: 2.0),
         boxShadow: [
-          BoxShadow(
-            color: glowColor,
-            blurRadius: 20.0,
-            spreadRadius: 2.0,
-          ),
+          BoxShadow(color: glowColor, blurRadius: 20.0, spreadRadius: 2.0),
           const BoxShadow(
             color: Color(0x99000000),
             offset: Offset(2, 6),
@@ -143,11 +140,7 @@ class _BubbleLevel2dWidgetState extends State<BubbleLevel2dWidget>
           width: 220,
           height: 220,
           child: CustomPaint(
-            painter: BubbleLevel2dPainter(
-              x: _x,
-              y: _y,
-              status: widget.status,
-            ),
+            painter: BubbleLevel2dPainter(x: _x, y: _y, status: widget.status),
           ),
         ),
       ),
@@ -174,10 +167,7 @@ class BubbleLevel2dPainter extends CustomPainter {
     // Draw background fluid container (dark-green tint fluid glass)
     final bgPaint = Paint()
       ..shader = const RadialGradient(
-        colors: [
-          Color(0xFF0F1A12),
-          Color(0xFF070B08),
-        ],
+        colors: [Color(0xFF0F1A12), Color(0xFF070B08)],
       ).createShader(Rect.fromCircle(center: center, radius: outerRadius));
     canvas.drawCircle(center, outerRadius, bgPaint);
 
@@ -194,10 +184,10 @@ class BubbleLevel2dPainter extends CustomPainter {
           : AppColors.kChromeMid.withAlpha(80))
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
-    
+
     canvas.drawCircle(center, 20.0, centerTargetPaint); // 1-deg ring
-    canvas.drawCircle(center, 50.0, ringPaint);        // 2.5-deg ring
-    canvas.drawCircle(center, 90.0, ringPaint);        // 5-deg ring
+    canvas.drawCircle(center, 50.0, ringPaint); // 2.5-deg ring
+    canvas.drawCircle(center, 90.0, ringPaint); // 5-deg ring
 
     // Draw crosshair lines
     canvas.drawLine(
@@ -223,23 +213,26 @@ class BubbleLevel2dPainter extends CustomPainter {
     // Determine bubble colors based on level status
     final Color bubbleBaseColor = status == LevelStatus.level
         ? AppColors.kLevelGreen
-        : (status == LevelStatus.close ? AppColors.kWarningYellow : const Color(0xFF5AB676));
+        : (status == LevelStatus.close
+              ? AppColors.kWarningYellow
+              : const Color(0xFF5AB676));
 
     final Color bubbleDarkColor = status == LevelStatus.level
         ? const Color(0xFF1E522F)
-        : (status == LevelStatus.close ? const Color(0xFF524410) : const Color(0xFF234C32));
+        : (status == LevelStatus.close
+              ? const Color(0xFF524410)
+              : const Color(0xFF234C32));
 
     // Draw the bubble 3D gradient
     final bubblePaint = Paint()
-      ..shader = RadialGradient(
-        center: const Alignment(-0.25, -0.25), // light source top-left
-        colors: [
-          const Color(0xFFE6FFED),
-          bubbleBaseColor,
-          bubbleDarkColor,
-        ],
-        stops: const [0.0, 0.65, 1.0],
-      ).createShader(Rect.fromCircle(center: bubbleCenter, radius: bubbleRadius));
+      ..shader =
+          RadialGradient(
+            center: const Alignment(-0.25, -0.25), // light source top-left
+            colors: [const Color(0xFFE6FFED), bubbleBaseColor, bubbleDarkColor],
+            stops: const [0.0, 0.65, 1.0],
+          ).createShader(
+            Rect.fromCircle(center: bubbleCenter, radius: bubbleRadius),
+          );
     canvas.drawCircle(bubbleCenter, bubbleRadius, bubblePaint);
 
     // Draw specular reflection highlight on the bubble
@@ -247,7 +240,10 @@ class BubbleLevel2dPainter extends CustomPainter {
       ..color = Colors.white.withAlpha(220)
       ..style = PaintingStyle.fill;
     canvas.drawCircle(
-      Offset(bubbleCenter.dx - bubbleRadius * 0.3, bubbleCenter.dy - bubbleRadius * 0.3),
+      Offset(
+        bubbleCenter.dx - bubbleRadius * 0.3,
+        bubbleCenter.dy - bubbleRadius * 0.3,
+      ),
       bubbleRadius * 0.2,
       specularPaint,
     );
@@ -257,10 +253,7 @@ class BubbleLevel2dPainter extends CustomPainter {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
-          Colors.white.withAlpha(40),
-          Colors.white.withAlpha(0),
-        ],
+        colors: [Colors.white.withAlpha(40), Colors.white.withAlpha(0)],
       ).createShader(Rect.fromCircle(center: center, radius: outerRadius));
     canvas.drawCircle(center, outerRadius, glassPaint);
 
@@ -273,6 +266,8 @@ class BubbleLevel2dPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant BubbleLevel2dPainter oldDelegate) {
-    return oldDelegate.x != x || oldDelegate.y != y || oldDelegate.status != status;
+    return oldDelegate.x != x ||
+        oldDelegate.y != y ||
+        oldDelegate.status != status;
   }
 }

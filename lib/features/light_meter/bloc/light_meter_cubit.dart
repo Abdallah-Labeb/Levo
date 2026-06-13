@@ -37,13 +37,15 @@ class LightMeterCubit extends Cubit<LightMeterState> {
     final double ev = _calculateExposureValue(lux);
     final String sceneKey = _determineSceneKey(lux);
 
-    emit(state.copyWith(
-      lux: lux,
-      exposureValue: ev,
-      scene: sceneKey,
-      isSensorAvailable: true,
-      isCameraFallback: false,
-    ));
+    emit(
+      state.copyWith(
+        lux: lux,
+        exposureValue: ev,
+        scene: sceneKey,
+        isSensorAvailable: true,
+        isCameraFallback: false,
+      ),
+    );
   }
 
   double _calculateExposureValue(double lux) {
@@ -68,10 +70,7 @@ class LightMeterCubit extends Cubit<LightMeterState> {
 
   /// Activates the camera sensor fallback if the physical sensor is not available.
   Future<void> _activateCameraFallback() async {
-    emit(state.copyWith(
-      isCameraFallback: true,
-      isSensorAvailable: false,
-    ));
+    emit(state.copyWith(isCameraFallback: true, isSensorAvailable: false));
     await checkCameraPermission();
   }
 
@@ -101,10 +100,12 @@ class LightMeterCubit extends Cubit<LightMeterState> {
     try {
       final cameras = await availableCameras();
       if (cameras.isEmpty) {
-        emit(state.copyWith(
-          errorMessage: "No cameras found on device",
-          isCameraInitialized: false,
-        ));
+        emit(
+          state.copyWith(
+            errorMessage: "No cameras found on device",
+            isCameraInitialized: false,
+          ),
+        );
         return;
       }
 
@@ -116,24 +117,25 @@ class LightMeterCubit extends Cubit<LightMeterState> {
 
       cameraController = CameraController(
         backCamera,
-        ResolutionPreset.low, // low resolution is sufficient for luminance estimation and saves CPU/battery
+        ResolutionPreset
+            .low, // low resolution is sufficient for luminance estimation and saves CPU/battery
         enableAudio: false,
       );
 
       await cameraController!.initialize();
-      if (cameraController == null) return; // Prevent async race issues if disposed early
+      if (cameraController == null)
+        return; // Prevent async race issues if disposed early
 
-      emit(state.copyWith(
-        isCameraInitialized: true,
-        errorMessage: null,
-      ));
+      emit(state.copyWith(isCameraInitialized: true, errorMessage: null));
 
       await cameraController!.startImageStream(_processCameraImage);
     } catch (e) {
-      emit(state.copyWith(
-        isCameraInitialized: false,
-        errorMessage: "Failed to initialize camera preview: $e",
-      ));
+      emit(
+        state.copyWith(
+          isCameraInitialized: false,
+          errorMessage: "Failed to initialize camera preview: $e",
+        ),
+      );
     }
   }
 
@@ -168,11 +170,9 @@ class LightMeterCubit extends Cubit<LightMeterState> {
       final double ev = _calculateExposureValue(computedLux);
       final String sceneKey = _determineSceneKey(computedLux);
 
-      emit(state.copyWith(
-        lux: computedLux,
-        exposureValue: ev,
-        scene: sceneKey,
-      ));
+      emit(
+        state.copyWith(lux: computedLux, exposureValue: ev, scene: sceneKey),
+      );
     } catch (_) {
       // Ignore image processing errors
     } finally {

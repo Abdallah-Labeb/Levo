@@ -69,7 +69,8 @@ class LevoBanner extends StatefulWidget {
   State<LevoBanner> createState() => _LevoBannerState();
 }
 
-class _LevoBannerState extends State<LevoBanner> with SingleTickerProviderStateMixin {
+class _LevoBannerState extends State<LevoBanner>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _slideAnimation;
 
@@ -80,9 +81,10 @@ class _LevoBannerState extends State<LevoBanner> with SingleTickerProviderStateM
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _slideAnimation = Tween<double>(begin: -100.0, end: 0.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
+    _slideAnimation = Tween<double>(
+      begin: -100.0,
+      end: 0.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
     _controller.forward();
   }
 

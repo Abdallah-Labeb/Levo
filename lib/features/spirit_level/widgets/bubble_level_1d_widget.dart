@@ -48,7 +48,8 @@ class _BubbleLevel1dWidgetState extends State<BubbleLevel1dWidget>
       return;
     }
 
-    double dt = (elapsed.inMicroseconds - _lastElapsed.inMicroseconds) / 1000000.0;
+    double dt =
+        (elapsed.inMicroseconds - _lastElapsed.inMicroseconds) / 1000000.0;
     _lastElapsed = elapsed;
 
     if (dt > 0.03) dt = 0.03;
@@ -89,14 +90,14 @@ class _BubbleLevel1dWidgetState extends State<BubbleLevel1dWidget>
     final glowColor = widget.status == LevelStatus.level
         ? AppColors.kLevelGreen.withAlpha(40)
         : (widget.status == LevelStatus.close
-            ? AppColors.kWarningYellow.withAlpha(25)
-            : Colors.transparent);
+              ? AppColors.kWarningYellow.withAlpha(25)
+              : Colors.transparent);
 
     final borderColor = widget.status == LevelStatus.level
         ? AppColors.kLevelGreen
         : (widget.status == LevelStatus.close
-            ? AppColors.kWarningYellow
-            : AppColors.kChromeMid);
+              ? AppColors.kWarningYellow
+              : AppColors.kChromeMid);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
@@ -108,11 +109,7 @@ class _BubbleLevel1dWidgetState extends State<BubbleLevel1dWidget>
         border: Border.all(color: borderColor, width: 2.0),
         borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
         boxShadow: [
-          BoxShadow(
-            color: glowColor,
-            blurRadius: 15.0,
-            spreadRadius: 1.0,
-          ),
+          BoxShadow(color: glowColor, blurRadius: 15.0, spreadRadius: 1.0),
           const BoxShadow(
             color: Color(0x77000000),
             offset: Offset(0, 4),
@@ -123,10 +120,7 @@ class _BubbleLevel1dWidgetState extends State<BubbleLevel1dWidget>
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppDimensions.radiusPanel - 2),
         child: CustomPaint(
-          painter: BubbleLevel1dPainter(
-            x: _x,
-            status: widget.status,
-          ),
+          painter: BubbleLevel1dPainter(x: _x, status: widget.status),
         ),
       ),
     );
@@ -134,10 +128,7 @@ class _BubbleLevel1dWidgetState extends State<BubbleLevel1dWidget>
 }
 
 class BubbleLevel1dPainter extends CustomPainter {
-  const BubbleLevel1dPainter({
-    required this.x,
-    required this.status,
-  });
+  const BubbleLevel1dPainter({required this.x, required this.status});
 
   final double x;
   final LevelStatus status;
@@ -168,7 +159,11 @@ class BubbleLevel1dPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
     canvas.drawLine(const Offset(0, 5), Offset(size.width, 5), wallPaint);
-    canvas.drawLine(Offset(0, size.height - 5), Offset(size.width, size.height - 5), wallPaint);
+    canvas.drawLine(
+      Offset(0, size.height - 5),
+      Offset(size.width, size.height - 5),
+      wallPaint,
+    );
 
     // Draw level guidelines (two lines near center for target alignment)
     final linePaint = Paint()
@@ -197,11 +192,7 @@ class BubbleLevel1dPainter extends CustomPainter {
     for (int i = -3; i <= 3; i++) {
       if (i == 0) continue;
       final double dx = centerX + i * 50.0;
-      canvas.drawLine(
-        Offset(dx, 8),
-        Offset(dx, size.height - 8),
-        tickPaint,
-      );
+      canvas.drawLine(Offset(dx, 8), Offset(dx, size.height - 8), tickPaint);
     }
 
     // Calculate bubble position
@@ -218,32 +209,39 @@ class BubbleLevel1dPainter extends CustomPainter {
     // Determine bubble color
     final Color bubbleColor = status == LevelStatus.level
         ? AppColors.kLevelGreen
-        : (status == LevelStatus.close ? AppColors.kWarningYellow : const Color(0xFF5AB676));
+        : (status == LevelStatus.close
+              ? AppColors.kWarningYellow
+              : const Color(0xFF5AB676));
 
     final Color bubbleDarkColor = status == LevelStatus.level
         ? const Color(0xFF1E522F)
-        : (status == LevelStatus.close ? const Color(0xFF524410) : const Color(0xFF234C32));
+        : (status == LevelStatus.close
+              ? const Color(0xFF524410)
+              : const Color(0xFF234C32));
 
     // Draw bubble capsule
-    final RRect bubbleRRect = RRect.fromRectAndRadius(bubbleRect, const Radius.circular(14));
+    final RRect bubbleRRect = RRect.fromRectAndRadius(
+      bubbleRect,
+      const Radius.circular(14),
+    );
     final bubblePaint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
-          const Color(0xFFE6FFED),
-          bubbleColor,
-          bubbleDarkColor,
-        ],
+        colors: [const Color(0xFFE6FFED), bubbleColor, bubbleDarkColor],
         stops: const [0.0, 0.6, 1.0],
       ).createShader(bubbleRect);
     canvas.drawRRect(bubbleRRect, bubblePaint);
 
     // Draw specular glare highlight inside bubble capsule
-    final specularPaint = Paint()
-      ..color = Colors.white.withAlpha(200);
+    final specularPaint = Paint()..color = Colors.white.withAlpha(200);
     final RRect specularRRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(bubbleRect.left + 5, bubbleRect.top + 3, bubbleWidth - 10, 4),
+      Rect.fromLTWH(
+        bubbleRect.left + 5,
+        bubbleRect.top + 3,
+        bubbleWidth - 10,
+        4,
+      ),
       const Radius.circular(2),
     );
     canvas.drawRRect(specularRRect, specularPaint);

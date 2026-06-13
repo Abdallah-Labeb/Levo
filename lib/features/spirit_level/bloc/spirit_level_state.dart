@@ -34,17 +34,17 @@ class SpiritLevelState extends Equatable {
 
   @override
   List<Object?> get props => [
-        pitch,
-        roll,
-        status,
-        mode,
-        isHeld,
-        showPercent,
-        isSensorAvailable,
-        errorMessage,
-        soundOn,
-        hapticOn,
-      ];
+    pitch,
+    roll,
+    status,
+    mode,
+    isHeld,
+    showPercent,
+    isSensorAvailable,
+    errorMessage,
+    soundOn,
+    hapticOn,
+  ];
 
   SpiritLevelState copyWith({
     double? pitch,

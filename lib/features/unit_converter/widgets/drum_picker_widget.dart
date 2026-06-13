@@ -39,9 +39,12 @@ class _DrumPickerWidgetState extends State<DrumPickerWidget> {
   @override
   void didUpdateWidget(covariant DrumPickerWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.selectedItem != widget.selectedItem || oldWidget.items != widget.items) {
+    if (oldWidget.selectedItem != widget.selectedItem ||
+        oldWidget.items != widget.items) {
       final int index = widget.items.indexOf(widget.selectedItem);
-      if (index != -1 && _controller.hasClients && _controller.selectedItem != index) {
+      if (index != -1 &&
+          _controller.hasClients &&
+          _controller.selectedItem != index) {
         _controller.animateToItem(
           index,
           duration: const Duration(milliseconds: 200),
@@ -102,8 +105,12 @@ class _DrumPickerWidgetState extends State<DrumPickerWidget> {
                     widget.items[index],
                     style: AppTypography.kDisplayS.copyWith(
                       fontSize: 16.0,
-                      color: isSelected ? AppColors.kYellow : AppColors.kTextSecondary,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      color: isSelected
+                          ? AppColors.kYellow
+                          : AppColors.kTextSecondary,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                   ),
                 );
@@ -137,10 +144,7 @@ class _DrumPickerWidgetState extends State<DrumPickerWidget> {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [
-                        Color(0xFF000000),
-                        Color(0x00000000),
-                      ],
+                      colors: [Color(0xFF000000), Color(0x00000000)],
                     ),
                   ),
                 ),
@@ -151,10 +155,7 @@ class _DrumPickerWidgetState extends State<DrumPickerWidget> {
                     gradient: LinearGradient(
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
-                      colors: [
-                        Color(0xFF000000),
-                        Color(0x00000000),
-                      ],
+                      colors: [Color(0xFF000000), Color(0x00000000)],
                     ),
                   ),
                 ),

@@ -3,8 +3,8 @@ import 'package:equatable/equatable.dart';
 /// State representation of the Protractor tool.
 class ProtractorState extends Equatable {
   const ProtractorState({
-    this.angleA = 0.0,      // Angle of arm A in degrees (0..360)
-    this.angleB = 45.0,     // Angle of arm B in degrees (0..360)
+    this.angleA = 0.0, // Angle of arm A in degrees (0..360)
+    this.angleB = 45.0, // Angle of arm B in degrees (0..360)
     this.reflexEnabled = false,
     this.snapEnabled = true,
   });
@@ -20,7 +20,7 @@ class ProtractorState extends Equatable {
     if (diff > 180.0) {
       diff = 360.0 - diff;
     }
-    
+
     if (reflexEnabled) {
       return 360.0 - diff;
     }
@@ -28,12 +28,7 @@ class ProtractorState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        angleA,
-        angleB,
-        reflexEnabled,
-        snapEnabled,
-      ];
+  List<Object?> get props => [angleA, angleB, reflexEnabled, snapEnabled];
 
   ProtractorState copyWith({
     double? angleA,

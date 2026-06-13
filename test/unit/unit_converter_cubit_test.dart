@@ -12,9 +12,7 @@ void main() {
   late UnitConverterCubit cubit;
 
   setUp(() async {
-    SharedPreferences.setMockInitialValues({
-      'converter_default_cat': 'length',
-    });
+    SharedPreferences.setMockInitialValues({'converter_default_cat': 'length'});
     final sharedPrefs = await SharedPreferences.getInstance();
     prefs = PreferencesService(sharedPrefs);
     cubit = UnitConverterCubit(prefs: prefs);
@@ -38,7 +36,7 @@ void main() {
     test('setCategory updates category and defaults category units', () {
       cubit.initialize();
       cubit.setCategory(UnitCategory.angle);
-      
+
       expect(cubit.state.category, UnitCategory.angle);
       expect(cubit.state.fromUnit, 'deg');
       expect(cubit.state.toUnit, 'rad');
@@ -49,7 +47,7 @@ void main() {
       cubit.initialize();
       // Length category starts as: mm -> cm
       cubit.swapUnits();
-      
+
       expect(cubit.state.fromUnit, 'cm');
       expect(cubit.state.toUnit, 'mm');
       expect(cubit.state.resultValue, 10.0);
@@ -57,7 +55,7 @@ void main() {
 
     test('updateInput updates inputString and calculates correct values', () {
       cubit.initialize();
-      
+
       // Update with '5.5' (mm -> cm)
       cubit.updateInput('5.5');
       expect(cubit.state.inputValue, 5.5);

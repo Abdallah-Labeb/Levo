@@ -28,14 +28,12 @@ Future<void> setupDependencies() async {
   getIt.registerSingleton<PreferencesService>(
     PreferencesService(sharedPreferences),
   );
-  
+
   getIt.registerSingleton<SensorAvailabilityService>(
     SensorAvailabilityService(),
   );
 
-  getIt.registerSingleton<AdService>(
-    AdService(getIt<PreferencesService>()),
-  );
+  getIt.registerSingleton<AdService>(AdService(getIt<PreferencesService>()));
 
   // Feature Cubits
   getIt.registerFactory<SettingsCubit>(
@@ -43,7 +41,9 @@ Future<void> setupDependencies() async {
   );
 
   getIt.registerFactory<SensorAvailabilityCubit>(
-    () => SensorAvailabilityCubit(sensorService: getIt<SensorAvailabilityService>()),
+    () => SensorAvailabilityCubit(
+      sensorService: getIt<SensorAvailabilityService>(),
+    ),
   );
 
   getIt.registerFactory<SpiritLevelCubit>(
@@ -62,17 +62,11 @@ Future<void> setupDependencies() async {
     () => ProtractorCubit(prefs: getIt<PreferencesService>()),
   );
 
-  getIt.registerFactory<SoundMeterCubit>(
-    () => SoundMeterCubit(),
-  );
+  getIt.registerFactory<SoundMeterCubit>(() => SoundMeterCubit());
 
-  getIt.registerFactory<VibrationMeterCubit>(
-    () => VibrationMeterCubit(),
-  );
+  getIt.registerFactory<VibrationMeterCubit>(() => VibrationMeterCubit());
 
-  getIt.registerFactory<LightMeterCubit>(
-    () => LightMeterCubit(),
-  );
+  getIt.registerFactory<LightMeterCubit>(() => LightMeterCubit());
 
   getIt.registerFactory<MetalDetectorCubit>(
     () => MetalDetectorCubit(prefs: getIt<PreferencesService>()),

@@ -7,6 +7,7 @@ import 'package:levo/app/di/injection.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
+import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_texture_helper.dart';
@@ -41,26 +42,54 @@ class CompassView extends StatelessWidget {
 
   String _getLocalizedCardinal(BuildContext context, double heading) {
     final isAr = Directionality.of(context) == TextDirection.rtl;
-    
+
     // 16 cardinal direction sectors
     const directionsEn = [
-      'N', 'NNE', 'NE', 'ENE',
-      'E', 'ESE', 'SE', 'SSE',
-      'S', 'SSW', 'SW', 'WSW',
-      'W', 'WNW', 'NW', 'NNW'
+      'N',
+      'NNE',
+      'NE',
+      'ENE',
+      'E',
+      'ESE',
+      'SE',
+      'SSE',
+      'S',
+      'SSW',
+      'SW',
+      'WSW',
+      'W',
+      'WNW',
+      'NW',
+      'NNW',
     ];
     const directionsAr = [
-      'شمال (N)', 'شمال-شمال شرقي', 'شمال شرقي (NE)', 'شرق-شمال شرقي',
-      'شرق (E)', 'شرق-جنوب شرقي', 'جنوب شرقي (SE)', 'جنوب-جنوب شرقي',
-      'جنوب (S)', 'جنوب-جنوب غربي', 'جنوب غربي (SW)', 'غرب-جنوب غربي',
-      'غرب (W)', 'غرب-شمال غربي', 'شمال غربي (NW)', 'شمال-شمال غربي'
+      'شمال (N)',
+      'شمال-شمال شرقي',
+      'شمال شرقي (NE)',
+      'شرق-شمال شرقي',
+      'شرق (E)',
+      'شرق-جنوب شرقي',
+      'جنوب شرقي (SE)',
+      'جنوب-جنوب شرقي',
+      'جنوب (S)',
+      'جنوب-جنوب غربي',
+      'جنوب غربي (SW)',
+      'غرب-جنوب غربي',
+      'غرب (W)',
+      'غرب-شمال غربي',
+      'شمال غربي (NW)',
+      'شمال-شمال غربي',
     ];
 
     final index = ((heading + 11.25) % 360.0 / 22.5).floor();
     return isAr ? directionsAr[index] : directionsEn[index];
   }
 
-  void _onTrueNorthToggle(BuildContext context, CompassCubit cubit, bool currentlyEnabled) async {
+  void _onTrueNorthToggle(
+    BuildContext context,
+    CompassCubit cubit,
+    bool currentlyEnabled,
+  ) async {
     if (currentlyEnabled) {
       await cubit.enableTrueNorth(false);
       return;
@@ -196,22 +225,31 @@ class CompassView extends StatelessWidget {
                   // 1. Interference Warning Banners
                   if (state.hasInterference)
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimensions.paddingL,
+                      ),
                       child: Container(
                         padding: const EdgeInsets.all(AppDimensions.paddingM),
                         decoration: BoxDecoration(
                           color: AppColors.kDangerRedDim.withAlpha(200),
                           border: Border.all(color: AppColors.kDangerRed),
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusPanel,
+                          ),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.warning, color: AppColors.kDangerRed),
+                            const Icon(
+                              Icons.warning,
+                              color: AppColors.kDangerRed,
+                            ),
                             const SizedBox(width: AppDimensions.space8),
                             Expanded(
                               child: Text(
                                 l10n.compassInterferenceWarning,
-                                style: AppTypography.kBodySmall.copyWith(color: AppColors.kTextPrimary),
+                                style: AppTypography.kBodySmall.copyWith(
+                                  color: AppColors.kTextPrimary,
+                                ),
                               ),
                             ),
                           ],
@@ -220,24 +258,34 @@ class CompassView extends StatelessWidget {
                     ),
 
                   // 2. Calibration Pattern Helper Banners
-                  if (state.accuracy == CompassAccuracy.low && !state.hasInterference)
+                  if (state.accuracy == CompassAccuracy.low &&
+                      !state.hasInterference)
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimensions.paddingL,
+                      ),
                       child: Container(
                         padding: const EdgeInsets.all(AppDimensions.paddingM),
                         decoration: BoxDecoration(
                           color: AppColors.kWarningYellowDim.withAlpha(200),
                           border: Border.all(color: AppColors.kWarningYellow),
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusPanel,
+                          ),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.sync, color: AppColors.kWarningYellow),
+                            const Icon(
+                              Icons.sync,
+                              color: AppColors.kWarningYellow,
+                            ),
                             const SizedBox(width: AppDimensions.space8),
                             Expanded(
                               child: Text(
                                 l10n.compassCalibrationHint,
-                                style: AppTypography.kBodySmall.copyWith(color: AppColors.kTextPrimary),
+                                style: AppTypography.kBodySmall.copyWith(
+                                  color: AppColors.kTextPrimary,
+                                ),
                               ),
                             ),
                           ],
@@ -273,13 +321,20 @@ class CompassView extends StatelessWidget {
 
                   // 4. LED Digital Readout display
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.paddingL,
+                    ),
                     child: Container(
                       padding: const EdgeInsets.all(AppDimensions.paddingM),
                       decoration: BoxDecoration(
                         gradient: AppColors.kGradientBrushedAluminum,
-                        border: Border.all(color: AppColors.kBorderHighlight, width: 1.0),
-                        borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
+                        border: Border.all(
+                          color: AppColors.kBorderHighlight,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          AppDimensions.radiusPanel,
+                        ),
                         boxShadow: const [
                           BoxShadow(
                             color: Color(0x33000000),
@@ -295,7 +350,9 @@ class CompassView extends StatelessWidget {
                             children: [
                               Text(
                                 isAr ? "الاتجاه" : "Heading",
-                                style: AppTypography.kCaption.copyWith(color: AppColors.kTextSecondary),
+                                style: AppTypography.kCaption.copyWith(
+                                  color: AppColors.kTextSecondary,
+                                ),
                               ),
                               const SizedBox(height: AppDimensions.space8),
                               LedDisplay(
@@ -307,11 +364,16 @@ class CompassView extends StatelessWidget {
                             children: [
                               Text(
                                 isAr ? "الربع" : "Cardinal",
-                                style: AppTypography.kCaption.copyWith(color: AppColors.kTextSecondary),
+                                style: AppTypography.kCaption.copyWith(
+                                  color: AppColors.kTextSecondary,
+                                ),
                               ),
                               const SizedBox(height: AppDimensions.space8),
                               LedDisplay(
-                                value: _getLocalizedCardinal(context, state.heading),
+                                value: _getLocalizedCardinal(
+                                  context,
+                                  state.heading,
+                                ),
                               ),
                             ],
                           ),
@@ -324,7 +386,9 @@ class CompassView extends StatelessWidget {
 
                   // 5. Compass options buttons (Lock and True North toggles)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.paddingL,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -332,14 +396,22 @@ class CompassView extends StatelessWidget {
                           child: TactileButton(
                             onPressed: () => cubit.toggleLock(),
                             isActive: state.isLocked,
-                            text: state.isLocked ? l10n.compassLocked : (isAr ? "قفل" : "Lock"),
-                            icon: Icon(state.isLocked ? Icons.lock : Icons.lock_open),
+                            text: state.isLocked
+                                ? l10n.compassLocked
+                                : (isAr ? "قفل" : "Lock"),
+                            icon: Icon(
+                              state.isLocked ? Icons.lock : Icons.lock_open,
+                            ),
                           ),
                         ),
                         const SizedBox(width: AppDimensions.space12),
                         Expanded(
                           child: TactileButton(
-                            onPressed: () => _onTrueNorthToggle(context, cubit, state.trueNorthEnabled),
+                            onPressed: () => _onTrueNorthToggle(
+                              context,
+                              cubit,
+                              state.trueNorthEnabled,
+                            ),
                             isActive: state.trueNorthEnabled,
                             text: l10n.compassTrueNorthLabel,
                             icon: const Icon(Icons.navigation_outlined),
@@ -361,7 +433,9 @@ class CompassView extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: AppColors.kSurfaceInset,
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusChip,
+                          ),
                           border: Border.all(color: AppColors.kDivider),
                         ),
                         child: Text(
@@ -379,6 +453,7 @@ class CompassView extends StatelessWidget {
               ),
             ),
           ),
+          bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
     );

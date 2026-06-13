@@ -13,6 +13,7 @@ import 'package:levo/core/widgets/noise_texture_helper.dart';
 import 'package:levo/features/home/bloc/sensor_availability_cubit.dart';
 import 'package:levo/features/home/bloc/sensor_availability_state.dart';
 import 'package:levo/l10n/l10n_extension.dart';
+import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 
 /// The main application dashboard displaying a grid of the 10 skeuomorphic tools.
 class HomeScreen extends StatelessWidget {
@@ -62,7 +63,9 @@ class HomeScreen extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.kSurfaceInset,
-                      borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.radiusChip,
+                      ),
                       border: Border.all(color: AppColors.kBorderShadow),
                     ),
                     child: Row(
@@ -79,7 +82,9 @@ class HomeScreen extends StatelessWidget {
                           height: AppDimensions.sensorDotSize,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: isAvailable ? AppColors.kLevelGreen : AppColors.kDangerRed,
+                            color: isAvailable
+                                ? AppColors.kLevelGreen
+                                : AppColors.kDangerRed,
                             boxShadow: [
                               BoxShadow(
                                 color: isAvailable
@@ -99,7 +104,7 @@ class HomeScreen extends StatelessWidget {
                       Navigator.pop(context);
                       onOpen();
                     },
-                    text: context.l10n.appName, // Fallback button text
+                    text: context.l10n.commonButtonOpen,
                     icon: const Icon(Icons.arrow_forward_rounded),
                   ),
                 ],
@@ -130,7 +135,7 @@ class HomeScreen extends StatelessWidget {
               description: context.l10n.spiritLevelDesc,
               iconPath: 'assets/icons/tool_spirit_level.svg',
               isAvailable: state.isAccelerometerAvailable,
-              sensorName: isAr ? 'مقياس التسارع (Accelerometer)' : 'Accelerometer Sensor',
+              sensorName: context.l10n.sensorNameAccelerometer,
               routePath: '/spirit-level',
             ),
             _ToolItem(
@@ -138,7 +143,7 @@ class HomeScreen extends StatelessWidget {
               description: context.l10n.compassDesc,
               iconPath: 'assets/icons/tool_compass.svg',
               isAvailable: state.isMagnetometerAvailable,
-              sensorName: isAr ? 'المغناطيسية والموقع (GPS/Magnetometer)' : 'Magnetometer & GPS',
+              sensorName: context.l10n.sensorNameMagnetometerGps,
               routePath: '/compass',
             ),
             _ToolItem(
@@ -146,7 +151,7 @@ class HomeScreen extends StatelessWidget {
               description: context.l10n.rulerDesc,
               iconPath: 'assets/icons/tool_ruler.svg',
               isAvailable: true,
-              sensorName: isAr ? 'الشاشة الملموسة (Screen Scale)' : 'Calibrated Display',
+              sensorName: context.l10n.sensorNameCalibratedDisplay,
               routePath: '/ruler',
             ),
             _ToolItem(
@@ -154,7 +159,7 @@ class HomeScreen extends StatelessWidget {
               description: context.l10n.protractorDesc,
               iconPath: 'assets/icons/tool_protractor.svg',
               isAvailable: true,
-              sensorName: isAr ? 'شاشة اللمس (Touch Screen)' : 'Touch Input Scale',
+              sensorName: context.l10n.sensorNameTouchInput,
               routePath: '/protractor',
             ),
             _ToolItem(
@@ -162,7 +167,7 @@ class HomeScreen extends StatelessWidget {
               description: context.l10n.soundMeterDesc,
               iconPath: 'assets/icons/tool_sound_meter.svg',
               isAvailable: true,
-              sensorName: isAr ? 'الميكروفون (Microphone)' : 'Hardware Microphone',
+              sensorName: context.l10n.sensorNameMicrophone,
               routePath: '/sound-meter',
             ),
             _ToolItem(
@@ -170,7 +175,7 @@ class HomeScreen extends StatelessWidget {
               description: context.l10n.vibrationMeterDesc,
               iconPath: 'assets/icons/tool_vibration_meter.svg',
               isAvailable: state.isAccelerometerAvailable,
-              sensorName: isAr ? 'مستشعر التسارع (Accelerometer)' : 'Accelerometer Sensor',
+              sensorName: context.l10n.sensorNameAccelerometer,
               routePath: '/vibration-meter',
             ),
             _ToolItem(
@@ -178,7 +183,7 @@ class HomeScreen extends StatelessWidget {
               description: context.l10n.lightMeterDesc,
               iconPath: 'assets/icons/tool_light_meter.svg',
               isAvailable: true,
-              sensorName: isAr ? 'مستشعر الضوء أو الكاميرا (Light/Camera)' : 'Light Sensor or Camera',
+              sensorName: context.l10n.sensorNameLightCamera,
               routePath: '/light-meter',
             ),
             _ToolItem(
@@ -186,7 +191,7 @@ class HomeScreen extends StatelessWidget {
               description: context.l10n.metalDetectorDesc,
               iconPath: 'assets/icons/tool_metal_detector.svg',
               isAvailable: state.isMagnetometerAvailable,
-              sensorName: isAr ? 'المستشعر المغناطيسي (Magnetometer)' : 'Magnetometer Sensor',
+              sensorName: context.l10n.sensorNameMagnetometer,
               routePath: '/metal-detector',
             ),
             _ToolItem(
@@ -194,7 +199,7 @@ class HomeScreen extends StatelessWidget {
               description: context.l10n.unitConverterDesc,
               iconPath: 'assets/icons/tool_unit_converter.svg',
               isAvailable: true,
-              sensorName: isAr ? 'محرك الحسابات (Mathematics Engine)' : 'Conversion Solver',
+              sensorName: context.l10n.sensorNameConversionSolver,
               routePath: '/unit-converter',
             ),
             _ToolItem(
@@ -202,7 +207,7 @@ class HomeScreen extends StatelessWidget {
               description: context.l10n.clinometerDesc,
               iconPath: 'assets/icons/tool_clinometer.svg',
               isAvailable: state.isAccelerometerAvailable,
-              sensorName: isAr ? 'مستشعر التسارع (Accelerometer)' : 'Accelerometer Sensor',
+              sensorName: context.l10n.sensorNameAccelerometer,
               routePath: '/clinometer',
             ),
           ];
@@ -238,16 +243,16 @@ class HomeScreen extends StatelessWidget {
               child: state.isLoading
                   ? Center(
                       child: Text(
-                        isAr ? "جاري تهيئة الحساسات..." : "Initializing sensors...",
+                        context.l10n.homeScreenInitializingSensors,
                         style: AppTypography.kDisplayS.copyWith(
                           color: AppColors.kDisplayGreen,
                         ),
                       ),
                     )
                   : SingleChildScrollView(
-                      padding: const EdgeInsets.only(
-                        left: AppDimensions.gridPaddingH,
-                        right: AppDimensions.gridPaddingH,
+                      padding: const EdgeInsetsDirectional.only(
+                        start: AppDimensions.gridPaddingH,
+                        end: AppDimensions.gridPaddingH,
                         top: AppDimensions.gridPaddingTop,
                         bottom: AppDimensions.space48,
                       ),
@@ -284,6 +289,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
             ),
+            bottomNavigationBar: const AdaptiveBannerAdWidget(),
           );
         },
       ),

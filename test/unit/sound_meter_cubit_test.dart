@@ -10,30 +10,30 @@ void main() {
 
   setUp(() {
     // Mock Vibration MethodChannel
-    const MethodChannel('vibration').setMockMethodCallHandler(
-      (MethodCall methodCall) async {
-        if (methodCall.method == 'hasVibrator') {
-          return true;
-        }
-        return null;
-      },
-    );
+    const MethodChannel('vibration').setMockMethodCallHandler((
+      MethodCall methodCall,
+    ) async {
+      if (methodCall.method == 'hasVibrator') {
+        return true;
+      }
+      return null;
+    });
 
     // Mock PermissionHandler platform channel
-    const MethodChannel('flutter.baseflow.com/permissions/methods').setMockMethodCallHandler(
-      (MethodCall methodCall) async {
-        if (methodCall.method == 'checkPermissionStatus') {
-          // Return granted (1) or denied (0) based on state variable
-          return isPermissionGranted ? 1 : 0;
-        }
-        if (methodCall.method == 'requestPermissions') {
-          return {
-            7: isPermissionGranted ? 1 : 0 // Microphone (7)
-          };
-        }
-        return null;
-      },
-    );
+    const MethodChannel(
+      'flutter.baseflow.com/permissions/methods',
+    ).setMockMethodCallHandler((MethodCall methodCall) async {
+      if (methodCall.method == 'checkPermissionStatus') {
+        // Return granted (1) or denied (0) based on state variable
+        return isPermissionGranted ? 1 : 0;
+      }
+      if (methodCall.method == 'requestPermissions') {
+        return {
+          7: isPermissionGranted ? 1 : 0, // Microphone (7)
+        };
+      }
+      return null;
+    });
 
     cubit = SoundMeterCubit();
   });
@@ -58,11 +58,14 @@ void main() {
       expect(cubit.state.permissionGranted, false);
     });
 
-    test('initialize when permission is granted sets permission status', () async {
-      isPermissionGranted = true;
-      await cubit.initialize();
-      expect(cubit.state.permissionGranted, true);
-    });
+    test(
+      'initialize when permission is granted sets permission status',
+      () async {
+        isPermissionGranted = true;
+        await cubit.initialize();
+        expect(cubit.state.permissionGranted, true);
+      },
+    );
 
     test('setPermissionGranted changes permission state', () {
       cubit.setPermissionGranted(true);

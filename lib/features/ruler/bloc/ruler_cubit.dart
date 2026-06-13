@@ -5,10 +5,9 @@ import 'package:levo/features/ruler/bloc/ruler_state.dart';
 /// Cubit managing logical-pixel to physical-millimeter calibration offsets,
 /// measurement unit toggles, and screen drag markers.
 class RulerCubit extends Cubit<RulerState> {
-  RulerCubit({
-    required PreferencesService prefs,
-  })  : _prefs = prefs,
-        super(const RulerState()) {
+  RulerCubit({required PreferencesService prefs})
+    : _prefs = prefs,
+      super(const RulerState()) {
     // Read stored defaults on setup
     final storedUnitStr = _prefs.rulerDefaultUnit;
     RulerUnit unit = RulerUnit.mm;
@@ -18,10 +17,7 @@ class RulerCubit extends Cubit<RulerState> {
       unit = RulerUnit.inch;
     }
 
-    emit(state.copyWith(
-      scaleFactor: _prefs.rulerScaleFactor,
-      unit: unit,
-    ));
+    emit(state.copyWith(scaleFactor: _prefs.rulerScaleFactor, unit: unit));
   }
 
   final PreferencesService _prefs;
@@ -47,11 +43,13 @@ class RulerCubit extends Cubit<RulerState> {
     final double defaultA = screenHeight * 0.25;
     final double defaultB = screenHeight * 0.65;
 
-    emit(state.copyWith(
-      markerA: state.markerA ?? defaultA,
-      markerB: state.markerB ?? defaultB,
-      scaleFactor: _prefs.rulerScaleFactor,
-    ));
+    emit(
+      state.copyWith(
+        markerA: state.markerA ?? defaultA,
+        markerB: state.markerB ?? defaultB,
+        scaleFactor: _prefs.rulerScaleFactor,
+      ),
+    );
   }
 
   /// Sets the Ruler measurement unit.
@@ -88,21 +86,16 @@ class RulerCubit extends Cubit<RulerState> {
     // We want: pixelDistance * (kMmPerInch / kBaseDpi) * scaleFactor = referenceMm
     // Thus: scaleFactor = referenceMm / (pixelDistance * (kMmPerInch / kBaseDpi))
     final double baseMmPerPixel = kMmPerInch / kBaseDpi;
-    final double calculatedScale = referenceMm / (pixelDistance * baseMmPerPixel);
+    final double calculatedScale =
+        referenceMm / (pixelDistance * baseMmPerPixel);
 
     await _prefs.setRulerScaleFactor(calculatedScale);
-    emit(state.copyWith(
-      scaleFactor: calculatedScale,
-      isCalibrated: true,
-    ));
+    emit(state.copyWith(scaleFactor: calculatedScale, isCalibrated: true));
   }
 
   /// Resets calibration back to standard 1.0 multiplier.
   Future<void> resetCalibration() async {
     await _prefs.setRulerScaleFactor(1.0);
-    emit(state.copyWith(
-      scaleFactor: 1.0,
-      isCalibrated: true,
-    ));
+    emit(state.copyWith(scaleFactor: 1.0, isCalibrated: true));
   }
 }

@@ -21,12 +21,12 @@ class RulerState extends Equatable {
 
   @override
   List<Object?> get props => [
-        markerA,
-        markerB,
-        scaleFactor,
-        unit,
-        isCalibrated,
-      ];
+    markerA,
+    markerB,
+    scaleFactor,
+    unit,
+    isCalibrated,
+  ];
 
   RulerState copyWith({
     double? markerA,

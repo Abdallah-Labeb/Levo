@@ -22,14 +22,14 @@ class SoundMeterState extends Equatable {
 
   @override
   List<Object?> get props => [
-        currentDb,
-        peakDb,
-        averageDb,
-        minDb,
-        isSensorAvailable,
-        errorMessage,
-        permissionGranted,
-      ];
+    currentDb,
+    peakDb,
+    averageDb,
+    minDb,
+    isSensorAvailable,
+    errorMessage,
+    permissionGranted,
+  ];
 
   SoundMeterState copyWith({
     double? currentDb,

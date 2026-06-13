@@ -6,10 +6,7 @@ import 'package:levo/app/theme/app_typography.dart';
 
 /// Custom Painter that renders a real-time scrolling seismograph grid and waveform.
 class SeismographPainter extends CustomPainter {
-  const SeismographPainter({
-    required this.samples,
-    required this.peak,
-  });
+  const SeismographPainter({required this.samples, required this.peak});
 
   final List<double> samples;
   final double peak;
@@ -43,14 +40,19 @@ class SeismographPainter extends CustomPainter {
       ..color = AppColors.kLevelGreen.withAlpha(50)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
-    canvas.drawLine(Offset(0.0, centerY), Offset(size.width, centerY), baselinePaint);
+    canvas.drawLine(
+      Offset(0.0, centerY),
+      Offset(size.width, centerY),
+      baselinePaint,
+    );
 
     if (samples.isEmpty) return;
 
     // 4. Calculate dynamic Y-axis scaling factor
     // Set a minimum vertical range of 1.0 m/s² to prevent extreme scaling
     final double maxVal = math.max(peak, 1.0);
-    final double verticalRange = maxVal * 1.15; // add 15% padding top and bottom
+    final double verticalRange =
+        maxVal * 1.15; // add 15% padding top and bottom
 
     // 5. Draw the seismograph waveform line
     final path = Path();

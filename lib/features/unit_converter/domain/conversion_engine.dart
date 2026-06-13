@@ -1,19 +1,11 @@
 /// Represents the category of unit conversions.
-enum UnitCategory {
-  length,
-  area,
-  volume,
-  mass,
-  speed,
-  pressure,
-  angle,
-}
+enum UnitCategory { length, area, volume, mass, speed, pressure, angle }
 
 /// A pure-logic conversion engine containing unit multiplier factors and category definitions.
 class ConversionEngine {
   // Conversion factors relative to base SI unit for each category.
   // Base units: Length (m), Area (m²), Volume (l), Mass (kg), Speed (m/s), Pressure (Pa), Angle (deg).
-  
+
   static const Map<UnitCategory, Map<String, double>> conversionFactors = {
     UnitCategory.length: {
       'mm': 0.001,
@@ -68,7 +60,7 @@ class ConversionEngine {
     UnitCategory.angle: {
       'deg': 1.0,
       'rad': 57.295779513, // 180 / pi
-      'grad': 0.9,         // 360 / 400
+      'grad': 0.9, // 360 / 400
     },
   };
 

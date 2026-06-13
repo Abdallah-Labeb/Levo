@@ -34,10 +34,7 @@ final appRouter = GoRouter(
     return null;
   },
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const HomeScreen(),
-    ),
+    GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
     GoRoute(
       path: '/onboarding',
       builder: (context, state) => const OnboardingScreen(),
@@ -54,10 +51,7 @@ final appRouter = GoRouter(
       path: '/compass',
       builder: (context, state) => const CompassScreen(),
     ),
-    GoRoute(
-      path: '/ruler',
-      builder: (context, state) => const RulerScreen(),
-    ),
+    GoRoute(path: '/ruler', builder: (context, state) => const RulerScreen()),
     GoRoute(
       path: '/protractor',
       builder: (context, state) => const ProtractorScreen(),

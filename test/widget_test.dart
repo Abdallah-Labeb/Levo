@@ -5,28 +5,25 @@ import 'package:levo/core/widgets/led_display.dart';
 
 void main() {
   group('Core Widgets Smoke Tests', () {
-    testWidgets('MetalPanel renders child content', (WidgetTester tester) async {
+    testWidgets('MetalPanel renders child content', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: MetalPanel(
-              child: Text('Machined Edge'),
-            ),
-          ),
+          home: Scaffold(body: MetalPanel(child: Text('Machined Edge'))),
         ),
       );
 
       expect(find.text('Machined Edge'), findsOneWidget);
     });
 
-    testWidgets('LedDisplay displays value and optional unit', (WidgetTester tester) async {
+    testWidgets('LedDisplay displays value and optional unit', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: LedDisplay(
-              value: '1.24',
-              unit: '°',
-            ),
+            body: LedDisplay(value: '1.24', unit: '°'),
           ),
         ),
       );

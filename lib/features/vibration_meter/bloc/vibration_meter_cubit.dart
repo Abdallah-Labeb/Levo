@@ -24,22 +24,27 @@ class VibrationMeterCubit extends Cubit<VibrationMeterState> {
   void startListening() {
     _sensorSub?.cancel();
     try {
-      _sensorSub = accelerometerEventStream(
-        samplingPeriod: SensorInterval.uiInterval,
-      ).listen(
-        _onAccelerometerEvent,
-        onError: (_) {
-          emit(state.copyWith(
-            isSensorAvailable: false,
-            errorMessage: "Error reading accelerometer sensor",
-          ));
-        },
-      );
+      _sensorSub =
+          accelerometerEventStream(
+            samplingPeriod: SensorInterval.uiInterval,
+          ).listen(
+            _onAccelerometerEvent,
+            onError: (_) {
+              emit(
+                state.copyWith(
+                  isSensorAvailable: false,
+                  errorMessage: "Error reading accelerometer sensor",
+                ),
+              );
+            },
+          );
     } catch (_) {
-      emit(state.copyWith(
-        isSensorAvailable: false,
-        errorMessage: "Accelerometer sensor is not available",
-      ));
+      emit(
+        state.copyWith(
+          isSensorAvailable: false,
+          errorMessage: "Accelerometer sensor is not available",
+        ),
+      );
     }
   }
 
@@ -56,47 +61,44 @@ class VibrationMeterCubit extends Cubit<VibrationMeterState> {
     double finalVibe = rawVibe - state.baseline;
 
     // Maintain scrolling sample queue
-    final List<double> updatedSamples = List.from(state.samples)..add(finalVibe);
+    final List<double> updatedSamples = List.from(state.samples)
+      ..add(finalVibe);
     if (updatedSamples.length > kMaxSamples) {
       updatedSamples.removeAt(0);
     }
 
     final double peak = math.max(state.peak, finalVibe.abs());
 
-    emit(state.copyWith(
-      samples: updatedSamples,
-      peak: peak,
-    ));
+    emit(state.copyWith(samples: updatedSamples, peak: peak));
   }
 
   /// Sets the average of current vibration samples as the zero-reference baseline.
   void calibrateBaseline() {
     if (state.samples.isEmpty) return;
-    
+
     // Average last 15 samples to establish a steady state baseline
     final int samplesToAverage = math.min(15, state.samples.length);
     final List<double> calibrationData = state.samples.sublist(
       state.samples.length - samplesToAverage,
     );
-    
-    final double averageOffset = calibrationData.reduce((a, b) => a + b) / samplesToAverage;
-    
+
+    final double averageOffset =
+        calibrationData.reduce((a, b) => a + b) / samplesToAverage;
+
     // Add to existing baseline
     final double newBaseline = state.baseline + averageOffset;
 
-    emit(state.copyWith(
-      baseline: newBaseline,
-      peak: 0.0, // Reset peak after new calibration
-    ));
+    emit(
+      state.copyWith(
+        baseline: newBaseline,
+        peak: 0.0, // Reset peak after new calibration
+      ),
+    );
   }
 
   /// Resets peak tracking and clears graph history.
   void reset() {
-    emit(state.copyWith(
-      samples: const [],
-      peak: 0.0,
-      baseline: 0.0,
-    ));
+    emit(state.copyWith(samples: const [], peak: 0.0, baseline: 0.0));
   }
 
   @override

@@ -13,6 +13,7 @@ import 'package:levo/core/widgets/levo_banner.dart';
 import 'package:levo/core/widgets/noise_texture_helper.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/l10n/l10n_extension.dart';
+import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/features/ruler/bloc/ruler_cubit.dart';
 import 'package:levo/features/ruler/bloc/ruler_state.dart';
 import 'package:levo/features/ruler/widgets/ruler_painter.dart';
@@ -40,7 +41,11 @@ class RulerView extends StatefulWidget {
 class _RulerViewState extends State<RulerView> {
   bool _initialized = false;
 
-  String _formatDistance(BuildContext context, double distanceMm, RulerUnit unit) {
+  String _formatDistance(
+    BuildContext context,
+    double distanceMm,
+    RulerUnit unit,
+  ) {
     final locale = Localizations.localeOf(context).toString();
     double value = distanceMm;
     String unitStr = '';
@@ -65,7 +70,11 @@ class _RulerViewState extends State<RulerView> {
     return "${formatter.format(value)} $unitStr";
   }
 
-  void _showCalibrationDialog(BuildContext context, RulerCubit cubit, double currentPixelDistance) {
+  void _showCalibrationDialog(
+    BuildContext context,
+    RulerCubit cubit,
+    double currentPixelDistance,
+  ) {
     showDialog(
       context: context,
       builder: (context) {
@@ -74,10 +83,7 @@ class _RulerViewState extends State<RulerView> {
 
         return AlertDialog(
           backgroundColor: AppColors.kSurface,
-          title: Text(
-            l10n.rulerCalibrationTitle,
-            style: AppTypography.kTitleL,
-          ),
+          title: Text(l10n.rulerCalibrationTitle, style: AppTypography.kTitleL),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -86,12 +92,16 @@ class _RulerViewState extends State<RulerView> {
                 isAr
                     ? "قم بمحاذاة بطاقة الائتمان أو الورقة المرجعية بين المقبضين أ وب، ثم حدد نوع البطاقة لمعايرة دقة المسطرة."
                     : "Place a credit card or sheet edges between Handles A & B, then choose a preset below to calibrate.",
-                style: AppTypography.kBodySmall.copyWith(color: AppColors.kTextSecondary),
+                style: AppTypography.kBodySmall.copyWith(
+                  color: AppColors.kTextSecondary,
+                ),
               ),
               const SizedBox(height: AppDimensions.space16),
               // Preset options
               TactileButton(
-                padding: const EdgeInsets.symmetric(vertical: AppDimensions.paddingS),
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppDimensions.paddingS,
+                ),
                 onPressed: () async {
                   Navigator.pop(context);
                   await cubit.calibrate(
@@ -101,7 +111,9 @@ class _RulerViewState extends State<RulerView> {
                   if (context.mounted) {
                     LevoBanner.show(
                       context,
-                      message: isAr ? "تمت معايرة المسطرة بنجاح" : "Ruler calibrated successfully",
+                      message: isAr
+                          ? "تمت معايرة المسطرة بنجاح"
+                          : "Ruler calibrated successfully",
                       type: LevoBannerType.success,
                     );
                   }
@@ -110,7 +122,9 @@ class _RulerViewState extends State<RulerView> {
               ),
               const SizedBox(height: AppDimensions.space8),
               TactileButton(
-                padding: const EdgeInsets.symmetric(vertical: AppDimensions.paddingS),
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppDimensions.paddingS,
+                ),
                 onPressed: () async {
                   Navigator.pop(context);
                   await cubit.calibrate(
@@ -120,7 +134,9 @@ class _RulerViewState extends State<RulerView> {
                   if (context.mounted) {
                     LevoBanner.show(
                       context,
-                      message: isAr ? "تمت معايرة المسطرة بنجاح" : "Ruler calibrated successfully",
+                      message: isAr
+                          ? "تمت معايرة المسطرة بنجاح"
+                          : "Ruler calibrated successfully",
                       type: LevoBannerType.success,
                     );
                   }
@@ -129,7 +145,9 @@ class _RulerViewState extends State<RulerView> {
               ),
               const SizedBox(height: AppDimensions.space8),
               TactileButton(
-                padding: const EdgeInsets.symmetric(vertical: AppDimensions.paddingS),
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppDimensions.paddingS,
+                ),
                 onPressed: () async {
                   Navigator.pop(context);
                   await cubit.calibrate(
@@ -139,7 +157,9 @@ class _RulerViewState extends State<RulerView> {
                   if (context.mounted) {
                     LevoBanner.show(
                       context,
-                      message: isAr ? "تمت معايرة المسطرة بنجاح" : "Ruler calibrated successfully",
+                      message: isAr
+                          ? "تمت معايرة المسطرة بنجاح"
+                          : "Ruler calibrated successfully",
                       type: LevoBannerType.success,
                     );
                   }
@@ -195,7 +215,9 @@ class _RulerViewState extends State<RulerView> {
                   if (state.markerA == null || state.markerB == null) {
                     return const Center(
                       child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.kYellow),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColors.kYellow,
+                        ),
                       ),
                     );
                   }
@@ -226,7 +248,11 @@ class _RulerViewState extends State<RulerView> {
                         top: math.min(a, b) + (distancePixels / 2) - 25.0,
                         child: Center(
                           child: LedDisplay(
-                            value: _formatDistance(context, distanceMm, state.unit),
+                            value: _formatDistance(
+                              context,
+                              distanceMm,
+                              state.unit,
+                            ),
                           ),
                         ),
                       ),
@@ -238,7 +264,10 @@ class _RulerViewState extends State<RulerView> {
                         right: 0.0,
                         child: GestureDetector(
                           onVerticalDragUpdate: (details) {
-                            final double newA = (a + details.delta.dy).clamp(0.0, constraints.maxHeight);
+                            final double newA = (a + details.delta.dy).clamp(
+                              0.0,
+                              constraints.maxHeight,
+                            );
                             cubit.updateMarkerA(newA);
                           },
                           child: _buildDraggableHandle("A"),
@@ -252,7 +281,10 @@ class _RulerViewState extends State<RulerView> {
                         right: 0.0,
                         child: GestureDetector(
                           onVerticalDragUpdate: (details) {
-                            final double newB = (b + details.delta.dy).clamp(0.0, constraints.maxHeight);
+                            final double newB = (b + details.delta.dy).clamp(
+                              0.0,
+                              constraints.maxHeight,
+                            );
                             cubit.updateMarkerB(newB);
                           },
                           child: _buildDraggableHandle("B"),
@@ -274,7 +306,8 @@ class _RulerViewState extends State<RulerView> {
                                 Expanded(
                                   child: TactileButton(
                                     isActive: state.unit == RulerUnit.mm,
-                                    onPressed: () => cubit.setUnit(RulerUnit.mm),
+                                    onPressed: () =>
+                                        cubit.setUnit(RulerUnit.mm),
                                     text: "mm",
                                   ),
                                 ),
@@ -282,7 +315,8 @@ class _RulerViewState extends State<RulerView> {
                                 Expanded(
                                   child: TactileButton(
                                     isActive: state.unit == RulerUnit.cm,
-                                    onPressed: () => cubit.setUnit(RulerUnit.cm),
+                                    onPressed: () =>
+                                        cubit.setUnit(RulerUnit.cm),
                                     text: "cm",
                                   ),
                                 ),
@@ -290,7 +324,8 @@ class _RulerViewState extends State<RulerView> {
                                 Expanded(
                                   child: TactileButton(
                                     isActive: state.unit == RulerUnit.inch,
-                                    onPressed: () => cubit.setUnit(RulerUnit.inch),
+                                    onPressed: () =>
+                                        cubit.setUnit(RulerUnit.inch),
                                     text: "inch",
                                   ),
                                 ),
@@ -302,7 +337,11 @@ class _RulerViewState extends State<RulerView> {
                               children: [
                                 Expanded(
                                   child: TactileButton(
-                                    onPressed: () => _showCalibrationDialog(context, cubit, distancePixels),
+                                    onPressed: () => _showCalibrationDialog(
+                                      context,
+                                      cubit,
+                                      distancePixels,
+                                    ),
                                     text: l10n.spiritLevelButtonCalibrate,
                                     icon: const Icon(Icons.tune),
                                   ),
@@ -314,7 +353,9 @@ class _RulerViewState extends State<RulerView> {
                                       cubit.resetCalibration();
                                       LevoBanner.show(
                                         context,
-                                        message: isAr ? "تمت إعادة ضبط المعايرة" : "Calibration reset",
+                                        message: isAr
+                                            ? "تمت إعادة ضبط المعايرة"
+                                            : "Calibration reset",
                                         type: LevoBannerType.info,
                                       );
                                     },
@@ -335,6 +376,7 @@ class _RulerViewState extends State<RulerView> {
           ),
         ),
       ),
+      bottomNavigationBar: const AdaptiveBannerAdWidget(),
     );
   }
 
@@ -346,10 +388,7 @@ class _RulerViewState extends State<RulerView> {
         alignment: Alignment.center,
         children: [
           // Drag Grip Line
-          Container(
-            height: 4.0,
-            color: AppColors.kYellow,
-          ),
+          Container(height: 4.0, color: AppColors.kYellow),
           // Knurled grip backing channel (machined metal slider plate)
           Container(
             height: 18.0,
@@ -359,7 +398,11 @@ class _RulerViewState extends State<RulerView> {
               border: Border.all(color: AppColors.kBorderHighlight),
               borderRadius: BorderRadius.circular(4.0),
               boxShadow: const [
-                BoxShadow(color: Colors.black45, blurRadius: 3, offset: Offset(0, 1.5)),
+                BoxShadow(
+                  color: Colors.black45,
+                  blurRadius: 3,
+                  offset: Offset(0, 1.5),
+                ),
               ],
             ),
             child: Row(
@@ -379,7 +422,10 @@ class _RulerViewState extends State<RulerView> {
           Positioned(
             right: 0.0,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 3.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10.0,
+                vertical: 3.0,
+              ),
               decoration: BoxDecoration(
                 gradient: AppColors.kGradientYellowCasing,
                 border: Border.all(color: AppColors.kYellowDark),
@@ -388,7 +434,11 @@ class _RulerViewState extends State<RulerView> {
                   bottomLeft: Radius.circular(4.0),
                 ),
                 boxShadow: const [
-                  BoxShadow(color: Colors.black38, blurRadius: 2, offset: Offset(-1, 1)),
+                  BoxShadow(
+                    color: Colors.black38,
+                    blurRadius: 2,
+                    offset: Offset(-1, 1),
+                  ),
                 ],
               ),
               child: Text(

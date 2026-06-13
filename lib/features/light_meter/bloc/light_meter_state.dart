@@ -24,15 +24,15 @@ class LightMeterState extends Equatable {
 
   @override
   List<Object?> get props => [
-        lux,
-        exposureValue,
-        scene,
-        isCameraFallback,
-        isSensorAvailable,
-        cameraPermissionGranted,
-        isCameraInitialized,
-        errorMessage,
-      ];
+    lux,
+    exposureValue,
+    scene,
+    isCameraFallback,
+    isSensorAvailable,
+    cameraPermissionGranted,
+    isCameraInitialized,
+    errorMessage,
+  ];
 
   LightMeterState copyWith({
     double? lux,
@@ -50,7 +50,8 @@ class LightMeterState extends Equatable {
       scene: scene ?? this.scene,
       isCameraFallback: isCameraFallback ?? this.isCameraFallback,
       isSensorAvailable: isSensorAvailable ?? this.isSensorAvailable,
-      cameraPermissionGranted: cameraPermissionGranted ?? this.cameraPermissionGranted,
+      cameraPermissionGranted:
+          cameraPermissionGranted ?? this.cameraPermissionGranted,
       isCameraInitialized: isCameraInitialized ?? this.isCameraInitialized,
       errorMessage: errorMessage ?? this.errorMessage,
     );

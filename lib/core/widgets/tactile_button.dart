@@ -50,8 +50,8 @@ class _TactileButtonState extends State<TactileButton> {
     final gradient = widget.isActive
         ? AppColors.kGradientButtonActive
         : (_isPressed
-            ? AppColors.kGradientButtonPressed
-            : AppColors.kGradientButtonNormal);
+              ? AppColors.kGradientButtonPressed
+              : AppColors.kGradientButtonNormal);
 
     // Determine shadow based on state
     final boxShadow = _isPressed
@@ -60,7 +60,7 @@ class _TactileButtonState extends State<TactileButton> {
               color: Color(0x99000000),
               offset: Offset(0, 1),
               blurRadius: 3,
-            )
+            ),
           ]
         : const [
             BoxShadow(
@@ -82,7 +82,9 @@ class _TactileButtonState extends State<TactileButton> {
     );
 
     // Determine content colors
-    final contentColor = widget.isActive ? AppColors.kTextOnYellow : AppColors.kTextPrimary;
+    final contentColor = widget.isActive
+        ? AppColors.kTextOnYellow
+        : AppColors.kTextPrimary;
 
     return GestureDetector(
       onTapDown: _onTapDown,
@@ -93,7 +95,9 @@ class _TactileButtonState extends State<TactileButton> {
         duration: AppAnimations.buttonPress,
         curve: Curves.easeOut,
         child: AnimatedContainer(
-          duration: _isPressed ? AppAnimations.buttonPress : AppAnimations.buttonRelease,
+          duration: _isPressed
+              ? AppAnimations.buttonPress
+              : AppAnimations.buttonRelease,
           curve: Curves.easeOut,
           padding: widget.padding,
           decoration: BoxDecoration(
@@ -116,7 +120,8 @@ class _TactileButtonState extends State<TactileButton> {
                   ),
                   child: widget.icon!,
                 ),
-                if (widget.text != null) const SizedBox(width: AppDimensions.space8),
+                if (widget.text != null)
+                  const SizedBox(width: AppDimensions.space8),
               ],
               if (widget.text != null)
                 Text(

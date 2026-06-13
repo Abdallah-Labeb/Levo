@@ -10,16 +10,17 @@ import 'package:levo/features/spirit_level/bloc/spirit_level_state.dart';
 
 /// Cubit managing sensor processing, calibration offsets, and feedback logic for the Spirit Level.
 class SpiritLevelCubit extends Cubit<SpiritLevelState> {
-  SpiritLevelCubit({
-    required PreferencesService prefs,
-  })  : _prefs = prefs,
-        super(const SpiritLevelState()) {
+  SpiritLevelCubit({required PreferencesService prefs})
+    : _prefs = prefs,
+      super(const SpiritLevelState()) {
     // Read persisted mode and sound/haptic toggles on init
-    emit(state.copyWith(
-      mode: SpiritLevelMode.values[_prefs.levelModeIndex],
-      soundOn: _prefs.levelSoundOn,
-      hapticOn: _prefs.levelHapticOn,
-    ));
+    emit(
+      state.copyWith(
+        mode: SpiritLevelMode.values[_prefs.levelModeIndex],
+        soundOn: _prefs.levelSoundOn,
+        hapticOn: _prefs.levelHapticOn,
+      ),
+    );
   }
 
   final PreferencesService _prefs;
@@ -27,8 +28,12 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
   late final AudioPlayer _audioPlayer = AudioPlayer();
 
   // Filters for Pitch and Roll axes
-  late final LowPassFilter _pitchFilter = LowPassFilter(alpha: _computeAlpha(_prefs.levelViscosity));
-  late final LowPassFilter _rollFilter = LowPassFilter(alpha: _computeAlpha(_prefs.levelViscosity));
+  late final LowPassFilter _pitchFilter = LowPassFilter(
+    alpha: _computeAlpha(_prefs.levelViscosity),
+  );
+  late final LowPassFilter _rollFilter = LowPassFilter(
+    alpha: _computeAlpha(_prefs.levelViscosity),
+  );
 
   // Audio/Haptic state tracking to prevent overlapping triggers
   bool _levelPlayed = false;
@@ -53,22 +58,27 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
   void startListening() {
     _sensorSub?.cancel();
     try {
-      _sensorSub = accelerometerEventStream(
-        samplingPeriod: SensorInterval.uiInterval,
-      ).listen(
-        _onSensorEvent,
-        onError: (_) {
-          emit(state.copyWith(
-            isSensorAvailable: false,
-            errorMessage: "Sensor error occurred",
-          ));
-        },
-      );
+      _sensorSub =
+          accelerometerEventStream(
+            samplingPeriod: SensorInterval.uiInterval,
+          ).listen(
+            _onSensorEvent,
+            onError: (_) {
+              emit(
+                state.copyWith(
+                  isSensorAvailable: false,
+                  errorMessage: "Sensor error occurred",
+                ),
+              );
+            },
+          );
     } catch (_) {
-      emit(state.copyWith(
-        isSensorAvailable: false,
-        errorMessage: "Accelerometer sensor is not available",
-      ));
+      emit(
+        state.copyWith(
+          isSensorAvailable: false,
+          errorMessage: "Accelerometer sensor is not available",
+        ),
+      );
     }
   }
 
@@ -76,10 +86,8 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
     if (state.isHeld) return;
 
     // Pitch: angle relative to x-axis
-    final rawPitch = math.atan2(
-          -event.x,
-          math.sqrt(event.y * event.y + event.z * event.z),
-        ) *
+    final rawPitch =
+        math.atan2(-event.x, math.sqrt(event.y * event.y + event.z * event.z)) *
         (180.0 / math.pi);
 
     // Roll: angle relative to y-axis/z-axis
@@ -100,7 +108,9 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
     // Calculate total slope deviation
     final totalDeviation = state.mode == SpiritLevelMode.flat2d
         ? math.sqrt(finalPitch * finalPitch + finalRoll * finalRoll)
-        : (state.mode == SpiritLevelMode.edge1d ? finalRoll.abs() : finalPitch.abs());
+        : (state.mode == SpiritLevelMode.edge1d
+              ? finalRoll.abs()
+              : finalPitch.abs());
 
     // Determine status relative to threshold
     final threshold = _prefs.levelThreshold;
@@ -114,11 +124,7 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
       status = LevelStatus.off;
     }
 
-    emit(state.copyWith(
-      pitch: finalPitch,
-      roll: finalRoll,
-      status: status,
-    ));
+    emit(state.copyWith(pitch: finalPitch, roll: finalRoll, status: status));
 
     // Handle audio/haptics when level is achieved
     _triggerFeedbackIfNeeded(status);
@@ -129,7 +135,9 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
       if (!_levelPlayed) {
         _levelPlayed = true;
         if (state.soundOn) {
-          _audioPlayer.play(AssetSource('audio/level_beep.mp3')).catchError((_) {
+          _audioPlayer.play(AssetSource('audio/level_beep.mp3')).catchError((
+            _,
+          ) {
             // Ignore asset missing error in simulation/tests
             return null;
           });

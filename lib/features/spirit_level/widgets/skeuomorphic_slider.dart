@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
@@ -19,6 +20,10 @@ class SkeuomorphicSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
+    final locale = Localizations.localeOf(context).toString();
+    final percentageFormatter = NumberFormat("0", locale);
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final double trackWidth = constraints.maxWidth;
@@ -35,10 +40,12 @@ class SkeuomorphicSlider extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: AppTypography.kBodySmall.copyWith(color: AppColors.kTextSecondary),
+                  style: AppTypography.kBodySmall.copyWith(
+                    color: AppColors.kTextSecondary,
+                  ),
                 ),
                 Text(
-                  "${(value * 100).toInt()}%",
+                  "${percentageFormatter.format((value * 100).toInt())}%",
                   style: AppTypography.kBodySmall.copyWith(
                     color: AppColors.kYellow,
                     fontWeight: FontWeight.bold,
@@ -49,17 +56,39 @@ class SkeuomorphicSlider extends StatelessWidget {
             const SizedBox(height: AppDimensions.space8),
             GestureDetector(
               onHorizontalDragUpdate: (details) {
-                final RenderBox renderBox = context.findRenderObject() as RenderBox;
-                final localPosition = renderBox.globalToLocal(details.globalPosition);
-                // Compute position relative to slider width
-                double newValue = (localPosition.dx - thumbWidth / 2) / maxScrollable;
+                final RenderBox renderBox =
+                    context.findRenderObject() as RenderBox;
+                final localPosition = renderBox.globalToLocal(
+                  details.globalPosition,
+                );
+                // Compute position relative to slider width, taking RTL into account
+                double newValue;
+                if (isRtl) {
+                  newValue =
+                      (trackWidth - localPosition.dx - thumbWidth / 2) /
+                      maxScrollable;
+                } else {
+                  newValue =
+                      (localPosition.dx - thumbWidth / 2) / maxScrollable;
+                }
                 newValue = newValue.clamp(0.0, 1.0);
                 onChanged(newValue);
               },
               onTapDown: (details) {
-                final RenderBox renderBox = context.findRenderObject() as RenderBox;
-                final localPosition = renderBox.globalToLocal(details.globalPosition);
-                double newValue = (localPosition.dx - thumbWidth / 2) / maxScrollable;
+                final RenderBox renderBox =
+                    context.findRenderObject() as RenderBox;
+                final localPosition = renderBox.globalToLocal(
+                  details.globalPosition,
+                );
+                double newValue;
+                if (isRtl) {
+                  newValue =
+                      (trackWidth - localPosition.dx - thumbWidth / 2) /
+                      maxScrollable;
+                } else {
+                  newValue =
+                      (localPosition.dx - thumbWidth / 2) / maxScrollable;
+                }
                 newValue = newValue.clamp(0.0, 1.0);
                 onChanged(newValue);
               },
@@ -67,7 +96,7 @@ class SkeuomorphicSlider extends StatelessWidget {
                 color: Colors.transparent, // expand tap target area
                 height: thumbHeight,
                 child: Stack(
-                  alignment: Alignment.centerLeft,
+                  alignment: AlignmentDirectional.centerStart,
                   children: [
                     // Slide Groove (inset slot)
                     Container(
@@ -83,14 +112,12 @@ class SkeuomorphicSlider extends StatelessWidget {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                        child: CustomPaint(
-                          painter: SliderTrackTicksPainter(),
-                        ),
+                        child: CustomPaint(painter: SliderTrackTicksPainter()),
                       ),
                     ),
                     // Slide Knob (Physical metal toggle slider)
-                    Positioned(
-                      left: thumbOffset,
+                    PositionedDirectional(
+                      start: thumbOffset,
                       child: Container(
                         width: thumbWidth,
                         height: thumbHeight,
@@ -157,11 +184,7 @@ class SliderTrackTicksPainter extends CustomPainter {
     final double step = size.width / tickCount;
     for (int i = 1; i < tickCount; i++) {
       final double dx = i * step;
-      canvas.drawLine(
-        Offset(dx, 2),
-        Offset(dx, size.height - 2),
-        tickPaint,
-      );
+      canvas.drawLine(Offset(dx, 2), Offset(dx, size.height - 2), tickPaint);
     }
   }
 

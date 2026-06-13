@@ -7,30 +7,30 @@ import 'package:levo/features/spirit_level/bloc/spirit_level_state.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  
+
   late PreferencesService prefs;
   late SpiritLevelCubit cubit;
 
   setUp(() async {
     // Mock Audioplayers global MethodChannel
-    const MethodChannel('xyz.luan/audioplayers.global').setMockMethodCallHandler(
-      (MethodCall methodCall) async => null,
-    );
+    const MethodChannel(
+      'xyz.luan/audioplayers.global',
+    ).setMockMethodCallHandler((MethodCall methodCall) async => null);
 
     // Mock Audioplayers player MethodChannel
-    const MethodChannel('xyz.luan/audioplayers').setMockMethodCallHandler(
-      (MethodCall methodCall) async => null,
-    );
+    const MethodChannel(
+      'xyz.luan/audioplayers',
+    ).setMockMethodCallHandler((MethodCall methodCall) async => null);
 
     // Mock Vibration MethodChannel
-    const MethodChannel('vibration').setMockMethodCallHandler(
-      (MethodCall methodCall) async {
-        if (methodCall.method == 'hasVibrator') {
-          return true;
-        }
-        return null;
-      },
-    );
+    const MethodChannel('vibration').setMockMethodCallHandler((
+      MethodCall methodCall,
+    ) async {
+      if (methodCall.method == 'hasVibrator') {
+        return true;
+      }
+      return null;
+    });
 
     SharedPreferences.setMockInitialValues({
       'level_mode_index': 0,
@@ -87,11 +87,14 @@ void main() {
       expect(prefs.levelModeIndex, SpiritLevelMode.plumb.index);
     });
 
-    test('saveCalibration updates offsets in preferences and resets filter state', () async {
-      await cubit.saveCalibration(1.25, -0.75);
-      expect(prefs.calLevelPitch, 1.25);
-      expect(prefs.calLevelRoll, -0.75);
-    });
+    test(
+      'saveCalibration updates offsets in preferences and resets filter state',
+      () async {
+        await cubit.saveCalibration(1.25, -0.75);
+        expect(prefs.calLevelPitch, 1.25);
+        expect(prefs.calLevelRoll, -0.75);
+      },
+    );
 
     test('toggleSound and toggleHaptic update states and preferences', () {
       cubit.toggleSound(false);

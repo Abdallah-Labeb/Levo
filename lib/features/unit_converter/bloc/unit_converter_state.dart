@@ -21,13 +21,13 @@ class UnitConverterState extends Equatable {
 
   @override
   List<Object?> get props => [
-        category,
-        fromUnit,
-        toUnit,
-        inputValue,
-        resultValue,
-        inputString,
-      ];
+    category,
+    fromUnit,
+    toUnit,
+    inputValue,
+    resultValue,
+    inputString,
+  ];
 
   UnitConverterState copyWith({
     UnitCategory? category,

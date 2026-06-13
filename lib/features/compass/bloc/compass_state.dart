@@ -27,15 +27,15 @@ class CompassState extends Equatable {
 
   @override
   List<Object?> get props => [
-        heading,
-        accuracy,
-        isLocked,
-        trueNorthEnabled,
-        declination,
-        isSensorAvailable,
-        errorMessage,
-        hasInterference,
-      ];
+    heading,
+    accuracy,
+    isLocked,
+    trueNorthEnabled,
+    declination,
+    isSensorAvailable,
+    errorMessage,
+    hasInterference,
+  ];
 
   CompassState copyWith({
     double? heading,

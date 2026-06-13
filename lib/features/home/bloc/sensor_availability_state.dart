@@ -16,11 +16,11 @@ class SensorAvailabilityState extends Equatable {
 
   @override
   List<Object?> get props => [
-        isAccelerometerAvailable,
-        isMagnetometerAvailable,
-        isLightSensorAvailable,
-        isLoading,
-      ];
+    isAccelerometerAvailable,
+    isMagnetometerAvailable,
+    isLightSensorAvailable,
+    isLoading,
+  ];
 
   SensorAvailabilityState copyWith({
     bool? isAccelerometerAvailable,
@@ -29,9 +29,12 @@ class SensorAvailabilityState extends Equatable {
     bool? isLoading,
   }) {
     return SensorAvailabilityState(
-      isAccelerometerAvailable: isAccelerometerAvailable ?? this.isAccelerometerAvailable,
-      isMagnetometerAvailable: isMagnetometerAvailable ?? this.isMagnetometerAvailable,
-      isLightSensorAvailable: isLightSensorAvailable ?? this.isLightSensorAvailable,
+      isAccelerometerAvailable:
+          isAccelerometerAvailable ?? this.isAccelerometerAvailable,
+      isMagnetometerAvailable:
+          isMagnetometerAvailable ?? this.isMagnetometerAvailable,
+      isLightSensorAvailable:
+          isLightSensorAvailable ?? this.isLightSensorAvailable,
       isLoading: isLoading ?? this.isLoading,
     );
   }

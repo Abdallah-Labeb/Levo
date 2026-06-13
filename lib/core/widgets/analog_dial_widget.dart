@@ -6,11 +6,7 @@ import 'package:levo/app/theme/app_animations.dart';
 
 /// Defines a colored arc zone within the analog dial.
 class DialZone {
-  const DialZone({
-    required this.start,
-    required this.end,
-    required this.color,
-  });
+  const DialZone({required this.start, required this.end, required this.color});
 
   /// Start value, from 0.0 to 1.0.
   final double start;
@@ -74,8 +70,10 @@ class _AnalogDialWidgetState extends State<AnalogDialWidget>
       vsync: this,
       duration: AppAnimations.dialNeedle,
     );
-    _animation = Tween<double>(begin: widget.value, end: widget.value)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _animation = Tween<double>(
+      begin: widget.value,
+      end: widget.value,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -83,9 +81,10 @@ class _AnalogDialWidgetState extends State<AnalogDialWidget>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value != widget.value) {
       _oldValue = oldWidget.value;
-      _animation = Tween<double>(begin: _oldValue, end: widget.value).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-      );
+      _animation = Tween<double>(
+        begin: _oldValue,
+        end: widget.value,
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
       _controller.forward(from: 0.0);
     }
   }
@@ -168,11 +167,9 @@ class _DialPainter extends CustomPainter {
     ..color = AppColors.kDangerRed
     ..style = PaintingStyle.fill;
 
-  static final _centerCapPaint = Paint()
-    ..style = PaintingStyle.fill;
+  static final _centerCapPaint = Paint()..style = PaintingStyle.fill;
 
-  static final _tickPaint = Paint()
-    ..style = PaintingStyle.stroke;
+  static final _tickPaint = Paint()..style = PaintingStyle.stroke;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -193,7 +190,8 @@ class _DialPainter extends CustomPainter {
     // So 12 o'clock is -pi/2, 6 o'clock is pi/2.
     // -110 degrees = -110 * pi / 180 = -1.91986 radians.
     // 220 degrees = 220 * pi / 180 = 3.83972 radians.
-    const sweepStartDegrees = -200.0; // Starting sweep at 10 o'clock direction (-200 deg)
+    const sweepStartDegrees =
+        -200.0; // Starting sweep at 10 o'clock direction (-200 deg)
     const sweepAngleDegrees = 220.0;
     const sweepStartRad = (sweepStartDegrees) * math.pi / 180.0;
     const sweepAngleRad = sweepAngleDegrees * math.pi / 180.0;
@@ -203,13 +201,13 @@ class _DialPainter extends CustomPainter {
     for (final zone in zones) {
       final zoneStart = sweepStartRad + (zone.start * sweepAngleRad);
       final zoneSweep = (zone.end - zone.start) * sweepAngleRad;
-      
+
       final zonePaint = Paint()
         ..color = zone.color
         ..style = PaintingStyle.stroke
         ..strokeWidth = radius * 0.08
         ..strokeCap = StrokeCap.square;
-      
+
       canvas.drawArc(arcRect, zoneStart, zoneSweep, false, zonePaint);
     }
 
@@ -218,7 +216,7 @@ class _DialPainter extends CustomPainter {
     for (int i = 0; i <= totalTicks; i++) {
       final percent = i / totalTicks;
       final angle = sweepStartRad + (percent * sweepAngleRad);
-      
+
       double tickLength = 4.0;
       double strokeWidth = 0.5;
       Color tickColor = AppColors.kChromeDark;
@@ -254,15 +252,15 @@ class _DialPainter extends CustomPainter {
     // needle rotation angle
     final needleAngle = sweepStartRad + (value.clamp(0.0, 1.0) * sweepAngleRad);
     final needleLength = radius * 0.65;
-    
+
     // Draw thin elongated triangle for needle
     final needlePath = Path();
     final baseWidth = radius * 0.04;
-    
+
     // Orthogonal angles for base points
     final baseAngle1 = needleAngle + math.pi / 2;
     final baseAngle2 = needleAngle - math.pi / 2;
-    
+
     final pBase1 = Offset(
       center.dx + baseWidth * math.cos(baseAngle1),
       center.dy + baseWidth * math.sin(baseAngle1),
@@ -275,12 +273,12 @@ class _DialPainter extends CustomPainter {
       center.dx + needleLength * math.cos(needleAngle),
       center.dy + needleLength * math.sin(needleAngle),
     );
-    
+
     needlePath.moveTo(pBase1.dx, pBase1.dy);
     needlePath.lineTo(pBase2.dx, pBase2.dy);
     needlePath.lineTo(pTip.dx, pTip.dy);
     needlePath.close();
-    
+
     canvas.drawPath(needlePath, _needlePaint);
 
     // 5. Draw Center Cap
@@ -335,7 +333,9 @@ class _DialPainter extends CustomPainter {
       canvas,
       Offset(
         center.dx + (radius * 0.55) * math.cos(minAngle) - minPainter.width / 2,
-        center.dy + (radius * 0.55) * math.sin(minAngle) - minPainter.height / 2,
+        center.dy +
+            (radius * 0.55) * math.sin(minAngle) -
+            minPainter.height / 2,
       ),
     );
 
@@ -356,7 +356,9 @@ class _DialPainter extends CustomPainter {
       canvas,
       Offset(
         center.dx + (radius * 0.55) * math.cos(maxAngle) - maxPainter.width / 2,
-        center.dy + (radius * 0.55) * math.sin(maxAngle) - maxPainter.height / 2,
+        center.dy +
+            (radius * 0.55) * math.sin(maxAngle) -
+            maxPainter.height / 2,
       ),
     );
   }

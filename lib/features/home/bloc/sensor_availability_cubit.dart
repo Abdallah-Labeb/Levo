@@ -4,10 +4,9 @@ import 'package:levo/features/home/bloc/sensor_availability_state.dart';
 
 /// Cubit to check and manage availability status of device sensors.
 class SensorAvailabilityCubit extends Cubit<SensorAvailabilityState> {
-  SensorAvailabilityCubit({
-    required SensorAvailabilityService sensorService,
-  })  : _sensorService = sensorService,
-        super(const SensorAvailabilityState());
+  SensorAvailabilityCubit({required SensorAvailabilityService sensorService})
+    : _sensorService = sensorService,
+      super(const SensorAvailabilityState());
 
   final SensorAvailabilityService _sensorService;
 
@@ -19,11 +18,13 @@ class SensorAvailabilityCubit extends Cubit<SensorAvailabilityState> {
     final isMagAvailable = await _sensorService.checkMagnetometer();
     final isLightAvailable = await _sensorService.checkAmbientLight();
 
-    emit(SensorAvailabilityState(
-      isAccelerometerAvailable: isAccelAvailable,
-      isMagnetometerAvailable: isMagAvailable,
-      isLightSensorAvailable: isLightAvailable,
-      isLoading: false,
-    ));
+    emit(
+      SensorAvailabilityState(
+        isAccelerometerAvailable: isAccelAvailable,
+        isMagnetometerAvailable: isMagAvailable,
+        isLightSensorAvailable: isLightAvailable,
+        isLoading: false,
+      ),
+    );
   }
 }

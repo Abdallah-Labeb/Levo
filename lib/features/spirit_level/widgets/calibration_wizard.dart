@@ -14,10 +14,7 @@ import 'package:levo/features/spirit_level/bloc/spirit_level_cubit.dart';
 /// Interactive 3-step Wizard to calibrate the Spirit Level.
 /// Utilizes a 180° rotation technique to compute true sensor zero references.
 class CalibrationWizard extends StatefulWidget {
-  const CalibrationWizard({
-    super.key,
-    required this.cubit,
-  });
+  const CalibrationWizard({super.key, required this.cubit});
 
   final SpiritLevelCubit cubit;
 
@@ -29,7 +26,7 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
   int _step = 1; // 1 = Capture A, 2 = Capture B, 3 = Calculate/Done
   bool _isCapturing = false;
   int _capturedCount = 0;
-  
+
   // Accumulated raw angles for averaging
   double _pitchSum = 0.0;
   double _rollSum = 0.0;
@@ -60,41 +57,47 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
     // Capture 20 samples to filter out hand tremors and stabilize readings
     const int targetSamplesCount = 20;
 
-    _accelSub = accelerometerEventStream(
-      samplingPeriod: SensorInterval.uiInterval,
-    ).listen((event) {
-      final double rawPitch = math.atan2(
-            -event.x,
-            math.sqrt(event.y * event.y + event.z * event.z),
-          ) *
-          (180.0 / math.pi);
+    _accelSub =
+        accelerometerEventStream(
+          samplingPeriod: SensorInterval.uiInterval,
+        ).listen(
+          (event) {
+            final double rawPitch =
+                math.atan2(
+                  -event.x,
+                  math.sqrt(event.y * event.y + event.z * event.z),
+                ) *
+                (180.0 / math.pi);
 
-      final double rawRoll = math.atan2(event.y, event.z) * (180.0 / math.pi);
+            final double rawRoll =
+                math.atan2(event.y, event.z) * (180.0 / math.pi);
 
-      _pitchSum += rawPitch;
-      _rollSum += rawRoll;
-      _capturedCount++;
+            _pitchSum += rawPitch;
+            _rollSum += rawRoll;
+            _capturedCount++;
 
-      if (_capturedCount >= targetSamplesCount) {
-        _accelSub?.cancel();
-        setState(() {
-          _isCapturing = false;
-        });
-        onDone();
-      }
-    }, onError: (_) {
-      _accelSub?.cancel();
-      if (mounted) {
-        setState(() {
-          _isCapturing = false;
-        });
-        LevoBanner.show(
-          context,
-          message: "Error reading sensors",
-          type: LevoBannerType.error,
+            if (_capturedCount >= targetSamplesCount) {
+              _accelSub?.cancel();
+              setState(() {
+                _isCapturing = false;
+              });
+              onDone();
+            }
+          },
+          onError: (_) {
+            _accelSub?.cancel();
+            if (mounted) {
+              setState(() {
+                _isCapturing = false;
+              });
+              LevoBanner.show(
+                context,
+                message: "Error reading sensors",
+                type: LevoBannerType.error,
+              );
+            }
+          },
         );
-      }
-    });
   }
 
   void _onCaptureA() {
@@ -139,10 +142,7 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                l10n.calibrationWizardTitle,
-                style: AppTypography.kTitleL,
-              ),
+              Text(l10n.calibrationWizardTitle, style: AppTypography.kTitleL),
               IconButton(
                 icon: const Icon(Icons.close, color: AppColors.kChromeLight),
                 onPressed: () {
@@ -161,9 +161,7 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
               borderRadius: BorderRadius.circular(AppDimensions.radiusDisplay),
               border: Border.all(color: AppColors.kDivider),
             ),
-            child: Center(
-              child: _buildStepIcon(),
-            ),
+            child: Center(child: _buildStepIcon()),
           ),
           const SizedBox(height: AppDimensions.space16),
           // Text Instructions
@@ -182,7 +180,9 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
                   width: 32,
                   height: 32,
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.kYellow),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      AppColors.kYellow,
+                    ),
                     strokeWidth: 3,
                   ),
                 ),
@@ -222,7 +222,11 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
             Icon(Icons.phone_android, size: 64, color: AppColors.kChromeMid),
             Positioned(
               bottom: 20,
-              child: Icon(Icons.arrow_downward, size: 24, color: AppColors.kYellow),
+              child: Icon(
+                Icons.arrow_downward,
+                size: 24,
+                color: AppColors.kYellow,
+              ),
             ),
           ],
         );
@@ -230,7 +234,11 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
         return const Icon(Icons.sync, size: 64, color: AppColors.kYellow);
       case 3:
       default:
-        return const Icon(Icons.check_circle_outline, size: 64, color: AppColors.kLevelGreen);
+        return const Icon(
+          Icons.check_circle_outline,
+          size: 64,
+          color: AppColors.kLevelGreen,
+        );
     }
   }
 

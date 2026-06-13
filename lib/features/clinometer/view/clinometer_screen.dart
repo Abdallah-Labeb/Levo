@@ -12,6 +12,7 @@ import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/l10n/l10n_extension.dart';
+import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/features/clinometer/bloc/clinometer_cubit.dart';
 import 'package:levo/features/clinometer/bloc/clinometer_state.dart';
 import 'package:levo/features/clinometer/widgets/slope_diagram_painter.dart';
@@ -41,7 +42,9 @@ class ClinometerView extends StatelessWidget {
   String _getDirectionText(BuildContext context, double pitch) {
     final l10n = context.l10n;
     if (pitch.abs() < 0.5) return l10n.clinometerDirectionLevel;
-    return pitch > 0 ? l10n.clinometerDirectionRight : l10n.clinometerDirectionLeft;
+    return pitch > 0
+        ? l10n.clinometerDirectionRight
+        : l10n.clinometerDirectionLeft;
   }
 
   String _getClassification(BuildContext context, double percent) {
@@ -92,7 +95,9 @@ class ClinometerView extends StatelessWidget {
                     // 1. Scene description / info banner
                     Text(
                       l10n.clinometerDesc,
-                      style: AppTypography.kBody.copyWith(color: AppColors.kTextSecondary),
+                      style: AppTypography.kBody.copyWith(
+                        color: AppColors.kTextSecondary,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppDimensions.space12),
@@ -109,7 +114,9 @@ class ClinometerView extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: AppColors.kSurfaceInset,
                             border: Border.all(color: AppColors.kDivider),
-                            borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
+                            borderRadius: BorderRadius.circular(
+                              AppDimensions.radiusChip,
+                            ),
                           ),
                           child: Text(
                             _getDirectionText(context, state.pitch),
@@ -128,7 +135,9 @@ class ClinometerView extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: AppColors.kSurfaceInset,
                             border: Border.all(color: AppColors.kDivider),
-                            borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
+                            borderRadius: BorderRadius.circular(
+                              AppDimensions.radiusChip,
+                            ),
                           ),
                           child: Text(
                             _getClassification(context, state.percentGrade),
@@ -148,7 +157,9 @@ class ClinometerView extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           color: AppColors.kSurfaceInset,
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusPanel,
+                          ),
                           border: Border.all(
                             color: AppColors.kBorderHighlight,
                             width: 1.5,
@@ -164,9 +175,7 @@ class ClinometerView extends StatelessWidget {
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: CustomPaint(
-                          painter: SlopeDiagramPainter(
-                            pitch: state.pitch,
-                          ),
+                          painter: SlopeDiagramPainter(pitch: state.pitch),
                         ),
                       ),
                     ),
@@ -196,9 +205,15 @@ class ClinometerView extends StatelessWidget {
                                         letterSpacing: 0.5,
                                       ),
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     LedDisplay(
-                                      value: _formatVal(context, state.pitch.abs(), "0.0"),
+                                      value: _formatVal(
+                                        context,
+                                        state.pitch.abs(),
+                                        "0.0",
+                                      ),
                                       unit: l10n.commonUnitDegrees,
                                       textStyle: AppTypography.kDisplayS,
                                     ),
@@ -228,9 +243,15 @@ class ClinometerView extends StatelessWidget {
                                         letterSpacing: 0.5,
                                       ),
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     LedDisplay(
-                                      value: _formatVal(context, state.percentGrade.abs(), "0.0"),
+                                      value: _formatVal(
+                                        context,
+                                        state.percentGrade.abs(),
+                                        "0.0",
+                                      ),
                                       unit: l10n.commonUnitPercent,
                                       textStyle: AppTypography.kDisplayS,
                                     ),
@@ -254,9 +275,13 @@ class ClinometerView extends StatelessWidget {
                                 ? l10n.spiritLevelButtonRelease
                                 : l10n.spiritLevelButtonHold,
                             icon: Icon(
-                              state.isHeld ? Icons.play_arrow_outlined : Icons.pause_outlined,
+                              state.isHeld
+                                  ? Icons.play_arrow_outlined
+                                  : Icons.pause_outlined,
                             ),
-                            backgroundColor: state.isHeld ? AppColors.kYellow.withAlpha(20) : null,
+                            backgroundColor: state.isHeld
+                                ? AppColors.kYellow.withAlpha(20)
+                                : null,
                             textColor: state.isHeld ? AppColors.kYellow : null,
                           ),
                         ),
@@ -276,6 +301,7 @@ class ClinometerView extends StatelessWidget {
               ),
             ),
           ),
+          bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
     );

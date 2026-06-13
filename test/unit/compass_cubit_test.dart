@@ -13,45 +13,44 @@ void main() {
 
   setUp(() async {
     // Mock Geolocator platform channel
-    const MethodChannel('flutter.baseflow.com/geolocator').setMockMethodCallHandler(
-      (MethodCall methodCall) async {
-        if (methodCall.method == 'checkPermission') {
-          return 3; // LocationPermission.whileInUse (3 is index/value on platform side)
-        }
-        if (methodCall.method == 'getCurrentPosition' || methodCall.method == 'getLastKnownPosition') {
-          return {
-            'latitude': 52.5200,
-            'longitude': 13.4050,
-            'timestamp': 1000,
-            'accuracy': 10.0,
-            'altitude': 30.0,
-            'speed': 0.0,
-            'speed_accuracy': 0.0,
-            'heading': 0.0,
-          };
-        }
-        return null;
-      },
-    );
+    const MethodChannel(
+      'flutter.baseflow.com/geolocator',
+    ).setMockMethodCallHandler((MethodCall methodCall) async {
+      if (methodCall.method == 'checkPermission') {
+        return 3; // LocationPermission.whileInUse (3 is index/value on platform side)
+      }
+      if (methodCall.method == 'getCurrentPosition' ||
+          methodCall.method == 'getLastKnownPosition') {
+        return {
+          'latitude': 52.5200,
+          'longitude': 13.4050,
+          'timestamp': 1000,
+          'accuracy': 10.0,
+          'altitude': 30.0,
+          'speed': 0.0,
+          'speed_accuracy': 0.0,
+          'heading': 0.0,
+        };
+      }
+      return null;
+    });
 
     // Mock PermissionHandler platform channel
-    const MethodChannel('flutter.baseflow.com/permissions/methods').setMockMethodCallHandler(
-      (MethodCall methodCall) async {
-        if (methodCall.method == 'checkPermissionStatus') {
-          return 1; // PermissionStatus.granted
-        }
-        if (methodCall.method == 'requestPermissions') {
-          return {
-            1: 1 // LocationStatus: Granted
-          };
-        }
-        return null;
-      },
-    );
-
-    SharedPreferences.setMockInitialValues({
-      'true_north_enabled': false,
+    const MethodChannel(
+      'flutter.baseflow.com/permissions/methods',
+    ).setMockMethodCallHandler((MethodCall methodCall) async {
+      if (methodCall.method == 'checkPermissionStatus') {
+        return 1; // PermissionStatus.granted
+      }
+      if (methodCall.method == 'requestPermissions') {
+        return {
+          1: 1, // LocationStatus: Granted
+        };
+      }
+      return null;
     });
+
+    SharedPreferences.setMockInitialValues({'true_north_enabled': false});
     final sharedPrefs = await SharedPreferences.getInstance();
     prefs = PreferencesService(sharedPrefs);
     cubit = CompassCubit(prefs: prefs);

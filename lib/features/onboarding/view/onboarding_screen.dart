@@ -100,10 +100,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     width: isActive ? 16.0 : 8.0,
                     height: 8.0,
                     decoration: BoxDecoration(
-                      color: isActive ? AppColors.kYellow : AppColors.kChromeDark,
+                      color: isActive
+                          ? AppColors.kYellow
+                          : AppColors.kChromeDark,
                       borderRadius: BorderRadius.circular(4.0),
                       boxShadow: isActive
-                          ? const [BoxShadow(color: AppColors.kYellow, blurRadius: 4.0)]
+                          ? const [
+                              BoxShadow(
+                                color: AppColors.kYellow,
+                                blurRadius: 4.0,
+                              ),
+                            ]
                           : null,
                     ),
                   );
@@ -175,11 +182,7 @@ class _OnboardingCard extends StatelessWidget {
                 ),
               ],
             ),
-            child: Icon(
-              icon,
-              color: AppColors.kYellow,
-              size: 40.0,
-            ),
+            child: Icon(icon, color: AppColors.kYellow, size: 40.0),
           ),
           const SizedBox(height: AppDimensions.space24),
           Text(

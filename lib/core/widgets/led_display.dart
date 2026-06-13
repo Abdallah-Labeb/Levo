@@ -21,7 +21,9 @@ class LedDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Determine active colors
-    final displayColor = isDim ? AppColors.kDisplayGreenDim : AppColors.kDisplayGreen;
+    final displayColor = isDim
+        ? AppColors.kDisplayGreenDim
+        : AppColors.kDisplayGreen;
 
     // Outer container boxShadow
     final boxShadow = [
@@ -36,10 +38,7 @@ class LedDisplay extends StatelessWidget {
         blurRadius: 2,
       ),
       if (!isDim)
-        const BoxShadow(
-          color: AppColors.kDisplayGreenGlow,
-          blurRadius: 10,
-        ),
+        const BoxShadow(color: AppColors.kDisplayGreenGlow, blurRadius: 10),
     ];
 
     return Container(
@@ -58,10 +57,7 @@ class LedDisplay extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.baseline,
         textBaseline: TextBaseline.alphabetic,
         children: [
-          Text(
-            value,
-            style: textStyle.copyWith(color: displayColor),
-          ),
+          Text(value, style: textStyle.copyWith(color: displayColor)),
           if (unit != null) ...[
             const SizedBox(width: AppDimensions.space4),
             Text(

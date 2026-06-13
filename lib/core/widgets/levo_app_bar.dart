@@ -7,12 +7,7 @@ import 'package:levo/core/widgets/metal_panel.dart';
 /// Custom skeuomorphic App Bar for Levo screens.
 /// Features a machined metal panel container and localized back navigation support.
 class LevoAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const LevoAppBar({
-    super.key,
-    required this.title,
-    this.onBack,
-    this.actions,
-  });
+  const LevoAppBar({super.key, required this.title, this.onBack, this.actions});
 
   final String title;
   final VoidCallback? onBack;
@@ -40,9 +35,7 @@ class LevoAppBar extends StatelessWidget implements PreferredSizeWidget {
                   child: Container(
                     width: AppDimensions.space48,
                     height: AppDimensions.space48,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
+                    decoration: const BoxDecoration(shape: BoxShape.circle),
                     child: Icon(
                       isRtl ? Icons.chevron_right : Icons.chevron_left,
                       color: AppColors.kChromeLight,
@@ -62,10 +55,7 @@ class LevoAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
               if (actions != null && actions!.isNotEmpty)
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: actions!,
-                )
+                Row(mainAxisSize: MainAxisSize.min, children: actions!)
               else
                 const SizedBox(width: AppDimensions.space48),
               const SizedBox(width: AppDimensions.space8),
@@ -77,5 +67,6 @@ class LevoAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(AppDimensions.appBarHeight + 8.0);
+  Size get preferredSize =>
+      const Size.fromHeight(AppDimensions.appBarHeight + 8.0);
 }

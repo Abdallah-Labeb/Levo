@@ -12,6 +12,7 @@ import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_texture_helper.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/l10n/l10n_extension.dart';
+import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/features/protractor/bloc/protractor_cubit.dart';
 import 'package:levo/features/protractor/bloc/protractor_state.dart';
 import 'package:levo/features/protractor/widgets/protractor_painter.dart';
@@ -42,7 +43,9 @@ class ProtractorView extends StatelessWidget {
     final locale = Localizations.localeOf(context).toString();
     // tangent of angle (tangent behaves poorly close to 90 degrees)
     if ((angle - 90.0).abs() < 1.0) {
-      return Directionality.of(context) == TextDirection.rtl ? "عمودي" : "Vertical";
+      return Directionality.of(context) == TextDirection.rtl
+          ? "عمودي"
+          : "Vertical";
     }
 
     final double slope = math.tan(angle * math.pi / 180.0);
@@ -71,8 +74,9 @@ class ProtractorView extends StatelessWidget {
             builder: (context, constraints) {
               final double centerX = constraints.maxWidth / 2;
               final double centerY = constraints.maxHeight / 2;
-              final double dialRadius = math.min(constraints.maxWidth, constraints.maxHeight) * 0.35;
-              
+              final double dialRadius =
+                  math.min(constraints.maxWidth, constraints.maxHeight) * 0.35;
+
               // Position the handle dial knobs slightly outside the ticking graduation scale
               final double handleRadius = dialRadius + 24.0;
 
@@ -80,13 +84,17 @@ class ProtractorView extends StatelessWidget {
                 builder: (context, state) {
                   // Coordinate math for handle A
                   final double radA = state.angleA * math.pi / 180.0;
-                  final double handleAx = centerX + handleRadius * math.cos(radA);
-                  final double handleAy = centerY + handleRadius * math.sin(radA);
+                  final double handleAx =
+                      centerX + handleRadius * math.cos(radA);
+                  final double handleAy =
+                      centerY + handleRadius * math.sin(radA);
 
                   // Coordinate math for handle B
                   final double radB = state.angleB * math.pi / 180.0;
-                  final double handleBx = centerX + handleRadius * math.cos(radB);
-                  final double handleBy = centerY + handleRadius * math.sin(radB);
+                  final double handleBx =
+                      centerX + handleRadius * math.cos(radB);
+                  final double handleBy =
+                      centerY + handleRadius * math.sin(radB);
 
                   return Stack(
                     children: [
@@ -113,10 +121,19 @@ class ProtractorView extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             gradient: AppColors.kGradientBrushedAluminum,
-                            border: Border.all(color: AppColors.kBorderHighlight, width: 1.0),
-                            borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
+                            border: Border.all(
+                              color: AppColors.kBorderHighlight,
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(
+                              AppDimensions.radiusPanel,
+                            ),
                             boxShadow: const [
-                              BoxShadow(color: Colors.black38, blurRadius: 6, offset: Offset(0, 3)),
+                              BoxShadow(
+                                color: Colors.black38,
+                                blurRadius: 6,
+                                offset: Offset(0, 3),
+                              ),
                             ],
                           ),
                           child: Row(
@@ -126,11 +143,16 @@ class ProtractorView extends StatelessWidget {
                                 children: [
                                   Text(
                                     isAr ? "الزاوية المقاسة" : "Angle",
-                                    style: AppTypography.kCaption.copyWith(color: AppColors.kTextSecondary),
+                                    style: AppTypography.kCaption.copyWith(
+                                      color: AppColors.kTextSecondary,
+                                    ),
                                   ),
                                   const SizedBox(height: AppDimensions.space6),
                                   LedDisplay(
-                                    value: _formatAngle(context, state.measuredAngle),
+                                    value: _formatAngle(
+                                      context,
+                                      state.measuredAngle,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -138,11 +160,16 @@ class ProtractorView extends StatelessWidget {
                                 children: [
                                   Text(
                                     isAr ? "درجة الميل" : "Slope Grade",
-                                    style: AppTypography.kCaption.copyWith(color: AppColors.kTextSecondary),
+                                    style: AppTypography.kCaption.copyWith(
+                                      color: AppColors.kTextSecondary,
+                                    ),
                                   ),
                                   const SizedBox(height: AppDimensions.space6),
                                   LedDisplay(
-                                    value: _formatSlope(context, state.measuredAngle),
+                                    value: _formatSlope(
+                                      context,
+                                      state.measuredAngle,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -159,9 +186,12 @@ class ProtractorView extends StatelessWidget {
                           onPanUpdate: (details) {
                             final Offset localPos = details.localPosition;
                             // Transform coordinates relative to dial center
-                            final double dx = (handleAx - 20.0 + localPos.dx) - centerX;
-                            final double dy = (handleAy - 20.0 + localPos.dy) - centerY;
-                            final double angle = math.atan2(dy, dx) * 180.0 / math.pi;
+                            final double dx =
+                                (handleAx - 20.0 + localPos.dx) - centerX;
+                            final double dy =
+                                (handleAy - 20.0 + localPos.dy) - centerY;
+                            final double angle =
+                                math.atan2(dy, dx) * 180.0 / math.pi;
                             cubit.updateAngleA(angle);
                           },
                           child: _buildHandleKnob("A", AppColors.kOrangeDark),
@@ -175,9 +205,12 @@ class ProtractorView extends StatelessWidget {
                         child: GestureDetector(
                           onPanUpdate: (details) {
                             final Offset localPos = details.localPosition;
-                            final double dx = (handleBx - 20.0 + localPos.dx) - centerX;
-                            final double dy = (handleBy - 20.0 + localPos.dy) - centerY;
-                            final double angle = math.atan2(dy, dx) * 180.0 / math.pi;
+                            final double dx =
+                                (handleBx - 20.0 + localPos.dx) - centerX;
+                            final double dy =
+                                (handleBy - 20.0 + localPos.dy) - centerY;
+                            final double angle =
+                                math.atan2(dy, dx) * 180.0 / math.pi;
                             cubit.updateAngleB(angle);
                           },
                           child: _buildHandleKnob("B", AppColors.kYellowDark),
@@ -227,6 +260,7 @@ class ProtractorView extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const AdaptiveBannerAdWidget(),
     );
   }
 

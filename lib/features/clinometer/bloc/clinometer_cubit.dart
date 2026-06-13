@@ -10,12 +10,12 @@ import 'package:levo/features/clinometer/bloc/clinometer_state.dart';
 /// slope grade ratios, low-pass smoothing, and visual holds.
 class ClinometerCubit extends Cubit<ClinometerState> {
   ClinometerCubit({required PreferencesService prefs})
-      : _prefs = prefs,
-        super(const ClinometerState());
+    : _prefs = prefs,
+      super(const ClinometerState());
 
   final PreferencesService _prefs;
   StreamSubscription<AccelerometerEvent>? _sensorSub;
-  
+
   // Use a low-pass filter to smooth the values
   late final LowPassFilter _pitchFilter = LowPassFilter(alpha: 0.15);
   late final LowPassFilter _rollFilter = LowPassFilter(alpha: 0.15);
@@ -29,22 +29,27 @@ class ClinometerCubit extends Cubit<ClinometerState> {
   void startListening() {
     _sensorSub?.cancel();
     try {
-      _sensorSub = accelerometerEventStream(
-        samplingPeriod: SensorInterval.uiInterval,
-      ).listen(
-        _onAccelerometerEvent,
-        onError: (_) {
-          emit(state.copyWith(
-            isSensorAvailable: false,
-            errorMessage: "Error reading accelerometer sensor",
-          ));
-        },
-      );
+      _sensorSub =
+          accelerometerEventStream(
+            samplingPeriod: SensorInterval.uiInterval,
+          ).listen(
+            _onAccelerometerEvent,
+            onError: (_) {
+              emit(
+                state.copyWith(
+                  isSensorAvailable: false,
+                  errorMessage: "Error reading accelerometer sensor",
+                ),
+              );
+            },
+          );
     } catch (_) {
-      emit(state.copyWith(
-        isSensorAvailable: false,
-        errorMessage: "Accelerometer sensor is not available",
-      ));
+      emit(
+        state.copyWith(
+          isSensorAvailable: false,
+          errorMessage: "Accelerometer sensor is not available",
+        ),
+      );
     }
   }
 
@@ -52,10 +57,10 @@ class ClinometerCubit extends Cubit<ClinometerState> {
     if (state.isHeld) return;
 
     // Pitch: math.atan2(y, sqrt(x² + z²))
-    final double rawPitch = math.atan2(
-      event.y,
-      math.sqrt(event.x * event.x + event.z * event.z),
-    ) * 180.0 / math.pi;
+    final double rawPitch =
+        math.atan2(event.y, math.sqrt(event.x * event.x + event.z * event.z)) *
+        180.0 /
+        math.pi;
 
     // Roll: math.atan2(-x, z)
     final double rawRoll = math.atan2(-event.x, event.z) * 180.0 / math.pi;
@@ -82,11 +87,13 @@ class ClinometerCubit extends Cubit<ClinometerState> {
       grade = grade.clamp(-999.9, 999.9);
     }
 
-    emit(state.copyWith(
-      pitch: smoothedPitch,
-      roll: smoothedRoll,
-      percentGrade: grade,
-    ));
+    emit(
+      state.copyWith(
+        pitch: smoothedPitch,
+        roll: smoothedRoll,
+        percentGrade: grade,
+      ),
+    );
   }
 
   /// Freezes/holds the current readings.

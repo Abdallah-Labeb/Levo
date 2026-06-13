@@ -20,13 +20,13 @@ class ClinometerState extends Equatable {
 
   @override
   List<Object?> get props => [
-        pitch,
-        roll,
-        percentGrade,
-        isHeld,
-        isSensorAvailable,
-        errorMessage,
-      ];
+    pitch,
+    roll,
+    percentGrade,
+    isHeld,
+    isSensorAvailable,
+    errorMessage,
+  ];
 
   ClinometerState copyWith({
     double? pitch,

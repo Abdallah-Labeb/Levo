@@ -7,6 +7,8 @@ import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/core/storage/preferences_service.dart';
+import 'package:levo/core/widgets/metal_panel.dart';
+import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_texture_helper.dart';
@@ -94,7 +96,8 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
         }
 
         // Gimbal lock warning check: pitch tilt angle exceeding 80 degrees
-        final bool showGimbalLockWarning = state.mode != SpiritLevelMode.plumb && state.pitch.abs() > 80.0;
+        final bool showGimbalLockWarning =
+            state.mode != SpiritLevelMode.plumb && state.pitch.abs() > 80.0;
 
         Widget visualizer;
         if (state.mode == SpiritLevelMode.flat2d) {
@@ -107,10 +110,7 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
           );
         } else if (state.mode == SpiritLevelMode.edge1d) {
           visualizer = Center(
-            child: BubbleLevel1dWidget(
-              roll: state.roll,
-              status: state.status,
-            ),
+            child: BubbleLevel1dWidget(roll: state.roll, status: state.status),
           );
         } else {
           visualizer = PlumbBobWidget(
@@ -138,13 +138,16 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
 
                   // 1. Sub-mode Segmented control selectors (2D surface, 1D edge, plumb bob)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.paddingL,
+                    ),
                     child: Row(
                       children: [
                         Expanded(
                           child: TactileButton(
                             isActive: state.mode == SpiritLevelMode.flat2d,
-                            onPressed: () => cubit.setMode(SpiritLevelMode.flat2d),
+                            onPressed: () =>
+                                cubit.setMode(SpiritLevelMode.flat2d),
                             text: l10n.spiritLevelModeFlat,
                           ),
                         ),
@@ -152,7 +155,8 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                         Expanded(
                           child: TactileButton(
                             isActive: state.mode == SpiritLevelMode.edge1d,
-                            onPressed: () => cubit.setMode(SpiritLevelMode.edge1d),
+                            onPressed: () =>
+                                cubit.setMode(SpiritLevelMode.edge1d),
                             text: l10n.spiritLevelModeEdge,
                           ),
                         ),
@@ -160,7 +164,8 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                         Expanded(
                           child: TactileButton(
                             isActive: state.mode == SpiritLevelMode.plumb,
-                            onPressed: () => cubit.setMode(SpiritLevelMode.plumb),
+                            onPressed: () =>
+                                cubit.setMode(SpiritLevelMode.plumb),
                             text: l10n.spiritLevelModePlumb,
                           ),
                         ),
@@ -185,8 +190,13 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                               ),
                               decoration: BoxDecoration(
                                 color: AppColors.kDangerRedDim.withAlpha(200),
-                                border: Border.all(color: AppColors.kDangerRed, width: 1.0),
-                                borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
+                                border: Border.all(
+                                  color: AppColors.kDangerRed,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  AppDimensions.radiusChip,
+                                ),
                               ),
                               child: Text(
                                 l10n.spiritLevelGimbalLockHint,
@@ -204,13 +214,20 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
 
                   // 3. LED Angle Display coordinates
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.paddingL,
+                    ),
                     child: Container(
                       padding: const EdgeInsets.all(AppDimensions.paddingM),
                       decoration: BoxDecoration(
                         gradient: AppColors.kGradientBrushedAluminum,
-                        border: Border.all(color: AppColors.kBorderHighlight, width: 1.0),
-                        borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
+                        border: Border.all(
+                          color: AppColors.kBorderHighlight,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          AppDimensions.radiusPanel,
+                        ),
                         boxShadow: const [
                           BoxShadow(
                             color: Color(0x33000000),
@@ -227,12 +244,22 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                                   children: [
                                     Text(
                                       isAr ? "الانحراف" : "Roll",
-                                      style: AppTypography.kCaption.copyWith(color: AppColors.kTextSecondary),
+                                      style: AppTypography.kCaption.copyWith(
+                                        color: AppColors.kTextSecondary,
+                                      ),
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     LedDisplay(
-                                      value: _formatValue(context, state.roll, state.showPercent),
-                                      unit: state.showPercent ? l10n.commonUnitPercent : l10n.commonUnitDegrees,
+                                      value: _formatValue(
+                                        context,
+                                        state.roll,
+                                        state.showPercent,
+                                      ),
+                                      unit: state.showPercent
+                                          ? l10n.commonUnitPercent
+                                          : l10n.commonUnitDegrees,
                                     ),
                                   ],
                                 ),
@@ -245,12 +272,22 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                                   children: [
                                     Text(
                                       isAr ? "الميل" : "Pitch",
-                                      style: AppTypography.kCaption.copyWith(color: AppColors.kTextSecondary),
+                                      style: AppTypography.kCaption.copyWith(
+                                        color: AppColors.kTextSecondary,
+                                      ),
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     LedDisplay(
-                                      value: _formatValue(context, state.pitch, state.showPercent),
-                                      unit: state.showPercent ? l10n.commonUnitPercent : l10n.commonUnitDegrees,
+                                      value: _formatValue(
+                                        context,
+                                        state.pitch,
+                                        state.showPercent,
+                                      ),
+                                      unit: state.showPercent
+                                          ? l10n.commonUnitPercent
+                                          : l10n.commonUnitDegrees,
                                     ),
                                   ],
                                 ),
@@ -258,12 +295,22 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                                   children: [
                                     Text(
                                       isAr ? "الدوران" : "Roll",
-                                      style: AppTypography.kCaption.copyWith(color: AppColors.kTextSecondary),
+                                      style: AppTypography.kCaption.copyWith(
+                                        color: AppColors.kTextSecondary,
+                                      ),
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     LedDisplay(
-                                      value: _formatValue(context, state.roll, state.showPercent),
-                                      unit: state.showPercent ? l10n.commonUnitPercent : l10n.commonUnitDegrees,
+                                      value: _formatValue(
+                                        context,
+                                        state.roll,
+                                        state.showPercent,
+                                      ),
+                                      unit: state.showPercent
+                                          ? l10n.commonUnitPercent
+                                          : l10n.commonUnitDegrees,
                                     ),
                                   ],
                                 ),
@@ -276,7 +323,9 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
 
                   // 4. Primary Physical Actions Row (Hold, Unit, Calibrate)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.paddingL,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -284,8 +333,12 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                           child: TactileButton(
                             onPressed: () => cubit.toggleHold(),
                             isActive: state.isHeld,
-                            text: state.isHeld ? l10n.spiritLevelButtonRelease : l10n.spiritLevelButtonHold,
-                            icon: Icon(state.isHeld ? Icons.play_arrow : Icons.pause),
+                            text: state.isHeld
+                                ? l10n.spiritLevelButtonRelease
+                                : l10n.spiritLevelButtonHold,
+                            icon: Icon(
+                              state.isHeld ? Icons.play_arrow : Icons.pause,
+                            ),
                           ),
                         ),
                         const SizedBox(width: AppDimensions.space8),
@@ -293,13 +346,16 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                           child: TactileButton(
                             onPressed: () => cubit.togglePercent(),
                             isActive: state.showPercent,
-                            text: state.showPercent ? l10n.commonUnitDegrees : l10n.commonUnitPercent,
+                            text: state.showPercent
+                                ? l10n.commonUnitDegrees
+                                : l10n.commonUnitPercent,
                           ),
                         ),
                         const SizedBox(width: AppDimensions.space8),
                         Expanded(
                           child: TactileButton(
-                            onPressed: () => _showCalibrationWizard(context, cubit),
+                            onPressed: () =>
+                                _showCalibrationWizard(context, cubit),
                             text: l10n.spiritLevelButtonCalibrate,
                             icon: const Icon(Icons.build),
                           ),
@@ -312,7 +368,9 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
 
                   // 5. Zero Reference Operations Row (Set Ref, Reset Ref)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.paddingL,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -339,13 +397,20 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
 
                   // 6. Viscosity / Damping slider panel
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.paddingL,
+                    ),
                     child: Container(
                       padding: const EdgeInsets.all(AppDimensions.paddingM),
                       decoration: BoxDecoration(
                         gradient: AppColors.kGradientBrushedAluminum,
-                        border: Border.all(color: AppColors.kBorderHighlight, width: 1.0),
-                        borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
+                        border: Border.all(
+                          color: AppColors.kBorderHighlight,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                          AppDimensions.radiusPanel,
+                        ),
                         boxShadow: const [
                           BoxShadow(
                             color: Color(0x33000000),
@@ -356,7 +421,9 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                       ),
                       child: SkeuomorphicSlider(
                         value: _viscosity,
-                        label: isAr ? "اللزوجة (تخميد الحركة)" : "Viscosity (Damping)",
+                        label: isAr
+                            ? "اللزوجة (تخميد الحركة)"
+                            : "Viscosity (Damping)",
                         onChanged: (val) {
                           setState(() {
                             _viscosity = val;
@@ -373,6 +440,7 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
               ),
             ),
           ),
+          bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
     );

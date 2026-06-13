@@ -67,6 +67,7 @@
   "commonButtonCopy": "Copy",
   "commonButtonClose": "Close",
   "commonButtonOpenSettings": "Open Settings",
+  "commonButtonOpen": "Open",
   "sensorErrorTitle": "Sensor Unavailable",
   "sensorErrorBody": "{sensorName} is not available on this device.",
   "@sensorErrorBody": {
@@ -153,5 +154,14 @@
   "clinometerGradeSteepRoad": "Very steep road",
   "vibrationMeterPeak": "Peak Acceleration",
   "vibrationMeterBaseline": "Baseline",
-  "vibrationMeterButtonCalibrate": "Calibrate Zero"
+  "vibrationMeterButtonCalibrate": "Calibrate Zero",
+  "homeScreenInitializingSensors": "Initializing sensors...",
+  "sensorNameAccelerometer": "Accelerometer Sensor",
+  "sensorNameMagnetometerGps": "Magnetometer & GPS",
+  "sensorNameCalibratedDisplay": "Calibrated Display",
+  "sensorNameTouchInput": "Touch Input Scale",
+  "sensorNameMicrophone": "Hardware Microphone",
+  "sensorNameLightCamera": "Light Sensor or Camera",
+  "sensorNameMagnetometer": "Magnetometer Sensor",
+  "sensorNameConversionSolver": "Conversion Solver"
 }

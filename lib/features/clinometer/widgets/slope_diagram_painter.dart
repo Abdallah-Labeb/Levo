@@ -5,9 +5,7 @@ import 'package:levo/app/theme/app_colors.dart';
 /// Renders a 2D slope diagram showing horizontal ground line,
 /// a tilted line matching the device's pitch, and the angle arc sector.
 class SlopeDiagramPainter extends CustomPainter {
-  const SlopeDiagramPainter({
-    required this.pitch,
-  });
+  const SlopeDiagramPainter({required this.pitch});
 
   /// Pitch angle in degrees
   final double pitch;
@@ -40,7 +38,11 @@ class SlopeDiagramPainter extends CustomPainter {
       ..color = AppColors.kLevelGreen.withAlpha(60)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
-    canvas.drawLine(Offset(20.0, center.dy), Offset(width - 20.0, center.dy), groundPaint);
+    canvas.drawLine(
+      Offset(20.0, center.dy),
+      Offset(width - 20.0, center.dy),
+      groundPaint,
+    );
 
     // 3. Tilted Surface Line (Representing the device pitch)
     // Convert pitch to radians. Negative pitch tilts left side up, positive tilts right side up.
@@ -115,7 +117,10 @@ class SlopeDiagramPainter extends CustomPainter {
 
       textPainter.paint(
         canvas,
-        Offset(labelOffset.dx - textPainter.width / 2, labelOffset.dy - textPainter.height / 2),
+        Offset(
+          labelOffset.dx - textPainter.width / 2,
+          labelOffset.dy - textPainter.height / 2,
+        ),
       );
     }
   }

@@ -8,10 +8,7 @@ import 'package:levo/features/compass/bloc/compass_state.dart';
 /// Custom Painter that renders a premium skeuomorphic compass.
 /// Displays a machined chrome bezel, cardinal index markers, and a rotating 3D teardrop needle.
 class CompassPainter extends CustomPainter {
-  const CompassPainter({
-    required this.heading,
-    required this.accuracy,
-  });
+  const CompassPainter({required this.heading, required this.accuracy});
 
   final double heading;
   final CompassAccuracy accuracy;
@@ -39,11 +36,7 @@ class CompassPainter extends CustomPainter {
     // 2. Draw dial face (dark carbon/brushed center plate)
     final facePaint = Paint()
       ..shader = const RadialGradient(
-        colors: [
-          Color(0xFF222222),
-          Color(0xFF141414),
-          Color(0xFF0C0C0C),
-        ],
+        colors: [Color(0xFF222222), Color(0xFF141414), Color(0xFF0C0C0C)],
         stops: [0.0, 0.7, 1.0],
       ).createShader(Rect.fromCircle(center: center, radius: dialRadius));
     canvas.drawCircle(center, dialRadius, facePaint);
@@ -78,20 +71,15 @@ class CompassPainter extends CustomPainter {
     }
 
     // 4. Draw static cardinal plate texts (N, S, E, W)
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
 
-    const cardinalLabels = {
-      0: 'N',
-      90: 'E',
-      180: 'S',
-      270: 'W',
-    };
+    const cardinalLabels = {0: 'N', 90: 'E', 180: 'S', 270: 'W'};
 
     cardinalLabels.forEach((angle, text) {
       final double angleRad = angle * math.pi / 180.0;
-      final color = text == 'N' ? AppColors.kCompassNorth : AppColors.kTextPrimary;
+      final color = text == 'N'
+          ? AppColors.kCompassNorth
+          : AppColors.kTextPrimary;
 
       textPainter.text = TextSpan(
         text: text,
@@ -126,7 +114,7 @@ class CompassPainter extends CustomPainter {
     final shadowPaint = Paint()
       ..color = Colors.black.withAlpha(120)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5.0);
-    
+
     final Path northPath = _getTeardropNeedlePath(needleWidth, needleLength);
     final Path southPath = _getTeardropNeedlePath(needleWidth, -needleLength);
 
@@ -135,28 +123,39 @@ class CompassPainter extends CustomPainter {
 
     // North Needle (Red Teardrop)
     final northPaint = Paint()
-      ..shader = const RadialGradient(
-        center: Alignment(-0.25, -0.3),
-        colors: [
-          Color(0xFFFF8B8B), // highlight
-          AppColors.kCompassNorth,
-          Color(0xFF7D1616), // shade
-        ],
-        stops: [0.0, 0.6, 1.0],
-      ).createShader(Rect.fromLTWH(-needleWidth, -needleLength, needleWidth * 2, needleLength));
+      ..shader =
+          const RadialGradient(
+            center: Alignment(-0.25, -0.3),
+            colors: [
+              Color(0xFFFF8B8B), // highlight
+              AppColors.kCompassNorth,
+              Color(0xFF7D1616), // shade
+            ],
+            stops: [0.0, 0.6, 1.0],
+          ).createShader(
+            Rect.fromLTWH(
+              -needleWidth,
+              -needleLength,
+              needleWidth * 2,
+              needleLength,
+            ),
+          );
     canvas.drawPath(northPath, northPaint);
 
     // South Needle (Silver Teardrop)
     final southPaint = Paint()
-      ..shader = const RadialGradient(
-        center: Alignment(-0.25, 0.3),
-        colors: [
-          Color(0xFFFFFFFF),
-          AppColors.kChromeMid,
-          AppColors.kChromeDarker,
-        ],
-        stops: [0.0, 0.55, 1.0],
-      ).createShader(Rect.fromLTWH(-needleWidth, 0, needleWidth * 2, needleLength));
+      ..shader =
+          const RadialGradient(
+            center: Alignment(-0.25, 0.3),
+            colors: [
+              Color(0xFFFFFFFF),
+              AppColors.kChromeMid,
+              AppColors.kChromeDarker,
+            ],
+            stops: [0.0, 0.55, 1.0],
+          ).createShader(
+            Rect.fromLTWH(-needleWidth, 0, needleWidth * 2, needleLength),
+          );
     canvas.drawPath(southPath, southPaint);
 
     // Draw central mechanical pivot pin (metallic brass look)
@@ -168,11 +167,7 @@ class CompassPainter extends CustomPainter {
     final pivotPaint = Paint()
       ..shader = const RadialGradient(
         center: Alignment(-0.3, -0.3),
-        colors: [
-          Color(0xFFFFEA9F),
-          Color(0xFFCCA214),
-          Color(0xFF6B5102),
-        ],
+        colors: [Color(0xFFFFEA9F), Color(0xFFCCA214), Color(0xFF6B5102)],
         stops: [0.0, 0.55, 1.0],
       ).createShader(const Rect.fromLTRB(-10, -10, 10, 10));
     canvas.drawCircle(Offset.zero, 10.0, pivotPaint);

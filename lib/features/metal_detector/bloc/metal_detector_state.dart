@@ -1,13 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 /// Represents levels of proximity to metallic objects/fields.
-enum MetalAlertLevel {
-  none,
-  weak,
-  medium,
-  strong,
-  veryStrong,
-}
+enum MetalAlertLevel { none, weak, medium, strong, veryStrong }
 
 /// State representation of the Metal Detector.
 class MetalDetectorState extends Equatable {
@@ -33,15 +27,15 @@ class MetalDetectorState extends Equatable {
 
   @override
   List<Object?> get props => [
-        deltaUt,
-        baseline,
-        sensitivity,
-        alertLevel,
-        isSensorAvailable,
-        soundOn,
-        hapticOn,
-        errorMessage,
-      ];
+    deltaUt,
+    baseline,
+    sensitivity,
+    alertLevel,
+    isSensorAvailable,
+    soundOn,
+    hapticOn,
+    errorMessage,
+  ];
 
   MetalDetectorState copyWith({
     double? deltaUt,

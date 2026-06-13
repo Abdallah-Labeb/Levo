@@ -16,7 +16,10 @@ import 'package:levo/l10n/l10n_extension.dart';
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
-  void _showResetCalibrationDialog(BuildContext context, PreferencesService prefs) {
+  void _showResetCalibrationDialog(
+    BuildContext context,
+    PreferencesService prefs,
+  ) {
     showDialog(
       context: context,
       builder: (context) {
@@ -97,13 +100,16 @@ class SettingsScreen extends StatelessWidget {
                     children: [
                       // Language Selector
                       ListTile(
-                        title: Text(context.l10n.settingsLanguageLabel, style: AppTypography.kBody),
+                        title: Text(
+                          context.l10n.settingsLanguageLabel,
+                          style: AppTypography.kBody,
+                        ),
                         subtitle: Text(
                           state.locale?.languageCode == 'ar'
                               ? context.l10n.settingsLanguageArabic
                               : (state.locale?.languageCode == 'en'
-                                  ? context.l10n.settingsLanguageEnglish
-                                  : context.l10n.settingsLanguageSystem),
+                                    ? context.l10n.settingsLanguageEnglish
+                                    : context.l10n.settingsLanguageSystem),
                           style: AppTypography.kBodySmall,
                         ),
                         trailing: DropdownButton<String>(
@@ -136,14 +142,19 @@ class SettingsScreen extends StatelessWidget {
                       const Divider(color: AppColors.kDivider),
                       // Theme (Dark Only in v1)
                       ListTile(
-                        title: Text(context.l10n.settingsThemeLabel, style: AppTypography.kBody),
+                        title: Text(
+                          context.l10n.settingsThemeLabel,
+                          style: AppTypography.kBody,
+                        ),
                         subtitle: Text(
                           context.l10n.settingsThemeDark,
                           style: AppTypography.kBodySmall,
                         ),
                         trailing: Text(
                           isAr ? "(داكن فقط)" : "(Dark only)",
-                          style: AppTypography.kCaption.copyWith(color: AppColors.kChromeMid),
+                          style: AppTypography.kCaption.copyWith(
+                            color: AppColors.kChromeMid,
+                          ),
                         ),
                       ),
                     ],
@@ -158,7 +169,9 @@ class SettingsScreen extends StatelessWidget {
                     children: [
                       ListTile(
                         title: Text(
-                          isAr ? "الوحدة الافتراضية للمسطرة" : "Default Ruler Unit",
+                          isAr
+                              ? "الوحدة الافتراضية للمسطرة"
+                              : "Default Ruler Unit",
                           style: AppTypography.kBody,
                         ),
                         trailing: DropdownButton<String>(
@@ -168,19 +181,26 @@ class SettingsScreen extends StatelessWidget {
                           items: const [
                             DropdownMenuItem(value: 'mm', child: Text("mm")),
                             DropdownMenuItem(value: 'cm', child: Text("cm")),
-                            DropdownMenuItem(value: 'in', child: Text("inches")),
+                            DropdownMenuItem(
+                              value: 'in',
+                              child: Text("inches"),
+                            ),
                           ],
                           onChanged: (val) async {
                             await prefs.setRulerDefaultUnit(val!);
                             // Rebuild setting view
-                            settingsCubit.toggleKeepScreenOn(state.keepScreenOn);
+                            settingsCubit.toggleKeepScreenOn(
+                              state.keepScreenOn,
+                            );
                           },
                         ),
                       ),
                       const Divider(color: AppColors.kDivider),
                       ListTile(
                         title: Text(
-                          isAr ? "فئة المحول الافتراضية" : "Default Converter Category",
+                          isAr
+                              ? "فئة المحول الافتراضية"
+                              : "Default Converter Category",
                           style: AppTypography.kBody,
                         ),
                         trailing: DropdownButton<String>(
@@ -188,18 +208,44 @@ class SettingsScreen extends StatelessWidget {
                           dropdownColor: AppColors.kSurface,
                           underline: const SizedBox(),
                           items: const [
-                            DropdownMenuItem(value: 'length', child: Text("Length")),
-                            DropdownMenuItem(value: 'area', child: Text("Area")),
-                            DropdownMenuItem(value: 'volume', child: Text("Volume")),
-                            DropdownMenuItem(value: 'mass', child: Text("Mass")),
-                            DropdownMenuItem(value: 'temperature', child: Text("Temperature")),
-                            DropdownMenuItem(value: 'pressure', child: Text("Pressure")),
-                            DropdownMenuItem(value: 'speed', child: Text("Speed")),
-                            DropdownMenuItem(value: 'angle', child: Text("Angle")),
+                            DropdownMenuItem(
+                              value: 'length',
+                              child: Text("Length"),
+                            ),
+                            DropdownMenuItem(
+                              value: 'area',
+                              child: Text("Area"),
+                            ),
+                            DropdownMenuItem(
+                              value: 'volume',
+                              child: Text("Volume"),
+                            ),
+                            DropdownMenuItem(
+                              value: 'mass',
+                              child: Text("Mass"),
+                            ),
+                            DropdownMenuItem(
+                              value: 'temperature',
+                              child: Text("Temperature"),
+                            ),
+                            DropdownMenuItem(
+                              value: 'pressure',
+                              child: Text("Pressure"),
+                            ),
+                            DropdownMenuItem(
+                              value: 'speed',
+                              child: Text("Speed"),
+                            ),
+                            DropdownMenuItem(
+                              value: 'angle',
+                              child: Text("Angle"),
+                            ),
                           ],
                           onChanged: (val) async {
                             await prefs.setConverterDefaultCategory(val!);
-                            settingsCubit.toggleKeepScreenOn(state.keepScreenOn);
+                            settingsCubit.toggleKeepScreenOn(
+                              state.keepScreenOn,
+                            );
                           },
                         ),
                       ),
@@ -226,7 +272,9 @@ class SettingsScreen extends StatelessWidget {
                       const Divider(color: AppColors.kDivider),
                       ListTile(
                         title: Text(
-                          isAr ? "مقياس معايرة المسطرة" : "Ruler Calibration Scale",
+                          isAr
+                              ? "مقياس معايرة المسطرة"
+                              : "Ruler Calibration Scale",
                           style: AppTypography.kBody,
                         ),
                         subtitle: Text(
@@ -237,11 +285,19 @@ class SettingsScreen extends StatelessWidget {
                       const Divider(color: AppColors.kDivider),
                       ListTile(
                         title: Text(
-                          isAr ? "إعادة ضبط جميع المعايرات" : "Reset All Calibration Data",
-                          style: AppTypography.kBody.copyWith(color: AppColors.kDangerRed),
+                          isAr
+                              ? "إعادة ضبط جميع المعايرات"
+                              : "Reset All Calibration Data",
+                          style: AppTypography.kBody.copyWith(
+                            color: AppColors.kDangerRed,
+                          ),
                         ),
-                        trailing: const Icon(Icons.refresh, color: AppColors.kDangerRed),
-                        onTap: () => _showResetCalibrationDialog(context, prefs),
+                        trailing: const Icon(
+                          Icons.refresh,
+                          color: AppColors.kDangerRed,
+                        ),
+                        onTap: () =>
+                            _showResetCalibrationDialog(context, prefs),
                       ),
                     ],
                   ),
@@ -252,7 +308,10 @@ class SettingsScreen extends StatelessWidget {
                 _buildSectionHeader(context.l10n.settingsSectionDisplay),
                 _buildSettingsCard(
                   child: SwitchListTile(
-                    title: Text(context.l10n.settingsKeepScreenOn, style: AppTypography.kBody),
+                    title: Text(
+                      context.l10n.settingsKeepScreenOn,
+                      style: AppTypography.kBody,
+                    ),
                     activeTrackColor: AppColors.kYellow,
                     value: state.keepScreenOn,
                     onChanged: (val) => settingsCubit.toggleKeepScreenOn(val),
@@ -273,7 +332,10 @@ class SettingsScreen extends StatelessWidget {
                           style: AppTypography.kBody,
                         ),
                         trailing: state.isPro
-                            ? const Icon(Icons.workspace_premium_rounded, color: AppColors.kYellow)
+                            ? const Icon(
+                                Icons.workspace_premium_rounded,
+                                color: AppColors.kYellow,
+                              )
                             : null,
                       ),
                       if (!state.isPro) ...[
@@ -283,10 +345,25 @@ class SettingsScreen extends StatelessWidget {
                             horizontal: AppDimensions.paddingM,
                             vertical: AppDimensions.paddingS,
                           ),
-                          child: TactileButton(
-                            onPressed: () => settingsCubit.setPro(true),
-                            text: context.l10n.settingsProUpgradeButton,
-                            icon: const Icon(Icons.shopping_cart_outlined),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TactileButton(
+                                  onPressed: () => settingsCubit.upgradeToPro(),
+                                  text: context.l10n.settingsProUpgradeButton,
+                                  icon: const Icon(
+                                    Icons.shopping_cart_outlined,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: AppDimensions.space8),
+                              TactileButton(
+                                size: const Size(60, 44),
+                                onPressed: () =>
+                                    settingsCubit.restorePurchases(),
+                                icon: const Icon(Icons.restore_outlined),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -307,16 +384,23 @@ class SettingsScreen extends StatelessWidget {
                         ),
                         trailing: Text(
                           "1.0.0 (Build 1)",
-                          style: AppTypography.kBodySmall.copyWith(color: AppColors.kChromeMid),
+                          style: AppTypography.kBodySmall.copyWith(
+                            color: AppColors.kChromeMid,
+                          ),
                         ),
                       ),
                       const Divider(color: AppColors.kDivider),
                       ListTile(
                         title: Text(
-                          isAr ? "التراخيص مفتوحة المصدر" : "Open Source Licenses",
+                          isAr
+                              ? "التراخيص مفتوحة المصدر"
+                              : "Open Source Licenses",
                           style: AppTypography.kBody,
                         ),
-                        trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16.0),
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 16.0,
+                        ),
                         onTap: () => showLicensePage(
                           context: context,
                           applicationName: "Levo",
@@ -337,9 +421,9 @@ class SettingsScreen extends StatelessWidget {
 
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.only(
-        left: AppDimensions.paddingS,
-        right: AppDimensions.paddingS,
+      padding: const EdgeInsetsDirectional.only(
+        start: AppDimensions.paddingS,
+        end: AppDimensions.paddingS,
         bottom: AppDimensions.paddingS,
       ),
       child: Text(title, style: AppTypography.kSectionHeader),
@@ -347,9 +431,6 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _buildSettingsCard({required Widget child}) {
-    return MetalPanel(
-      padding: EdgeInsets.zero,
-      child: child,
-    );
+    return MetalPanel(padding: EdgeInsets.zero, child: child);
   }
 }

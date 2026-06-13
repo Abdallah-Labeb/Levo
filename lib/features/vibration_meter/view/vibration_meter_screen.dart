@@ -11,6 +11,7 @@ import 'package:levo/core/widgets/noise_texture_helper.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
+import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/features/vibration_meter/bloc/vibration_meter_cubit.dart';
 import 'package:levo/features/vibration_meter/bloc/vibration_meter_state.dart';
@@ -75,7 +76,9 @@ class VibrationMeterView extends StatelessWidget {
                     // 1. Informational text / description banner
                     Text(
                       l10n.vibrationMeterDesc,
-                      style: AppTypography.kBody.copyWith(color: AppColors.kTextSecondary),
+                      style: AppTypography.kBody.copyWith(
+                        color: AppColors.kTextSecondary,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppDimensions.space16),
@@ -86,7 +89,9 @@ class VibrationMeterView extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           color: AppColors.kSurfaceInset,
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusPanel,
+                          ),
                           border: Border.all(
                             color: AppColors.kBorderHighlight,
                             width: 1.5,
@@ -135,7 +140,9 @@ class VibrationMeterView extends StatelessWidget {
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     LedDisplay(
                                       value: _formatVal(context, state.peak),
                                       unit: l10n.commonUnitMetersPerSecSq,
@@ -167,9 +174,14 @@ class VibrationMeterView extends StatelessWidget {
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     LedDisplay(
-                                      value: _formatVal(context, state.baseline),
+                                      value: _formatVal(
+                                        context,
+                                        state.baseline,
+                                      ),
                                       unit: l10n.commonUnitMetersPerSecSq,
                                       textStyle: AppTypography.kDisplayS,
                                     ),
@@ -190,7 +202,9 @@ class VibrationMeterView extends StatelessWidget {
                           child: TactileButton(
                             onPressed: () => cubit.calibrateBaseline(),
                             text: l10n.vibrationMeterButtonCalibrate,
-                            icon: const Icon(Icons.compass_calibration_outlined),
+                            icon: const Icon(
+                              Icons.compass_calibration_outlined,
+                            ),
                           ),
                         ),
                         const SizedBox(width: AppDimensions.space12),
@@ -209,6 +223,7 @@ class VibrationMeterView extends StatelessWidget {
               ),
             ),
           ),
+          bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
     );

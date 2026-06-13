@@ -51,7 +51,9 @@ class _ToolCardState extends State<ToolCard> {
     final decoration = BoxDecoration(
       gradient: AppColors.kGradientBrushedAluminum,
       border: Border.all(
-        color: _isPressed ? AppColors.kBorderShadow : AppColors.kBorderHighlight,
+        color: _isPressed
+            ? AppColors.kBorderShadow
+            : AppColors.kBorderHighlight,
         width: 1.0,
       ),
       borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
@@ -61,7 +63,7 @@ class _ToolCardState extends State<ToolCard> {
                 color: Color(0x99000000),
                 offset: Offset(0, 1),
                 blurRadius: 3,
-              )
+              ),
             ]
           : const [
               BoxShadow(
@@ -90,7 +92,9 @@ class _ToolCardState extends State<ToolCard> {
         child: AspectRatio(
           aspectRatio: AppDimensions.toolCardAspectRatio,
           child: AnimatedContainer(
-            duration: _isPressed ? AppAnimations.buttonPress : AppAnimations.buttonRelease,
+            duration: _isPressed
+                ? AppAnimations.buttonPress
+                : AppAnimations.buttonRelease,
             curve: Curves.easeOut,
             decoration: decoration,
             padding: const EdgeInsets.all(AppDimensions.paddingM),

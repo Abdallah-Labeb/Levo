@@ -67,6 +67,7 @@
   "commonButtonCopy": "نسخ",
   "commonButtonClose": "إغلاق",
   "commonButtonOpenSettings": "فتح الإعدادات",
+  "commonButtonOpen": "افتح",
   "sensorErrorTitle": "المستشعر غير متوفر",
   "sensorErrorBody": "مستشعر {sensorName} غير متوفر على هذا الجهاز.",
   "@sensorErrorBody": {
@@ -153,5 +154,14 @@
   "clinometerGradeSteepRoad": "طريق منحدر جداً",
   "vibrationMeterPeak": "تسارع الذروة",
   "vibrationMeterBaseline": "خط الأساس",
-  "vibrationMeterButtonCalibrate": "معايرة الصفر"
+  "vibrationMeterButtonCalibrate": "معايرة الصفر",
+  "homeScreenInitializingSensors": "جاري تهيئة الحساسات...",
+  "sensorNameAccelerometer": "مستشعر التسارع (Accelerometer)",
+  "sensorNameMagnetometerGps": "المغناطيسية والموقع (GPS/Magnetometer)",
+  "sensorNameCalibratedDisplay": "الشاشة المعايرة (Calibrated Display)",
+  "sensorNameTouchInput": "شاشة اللمس (Touch Screen)",
+  "sensorNameMicrophone": "الميكروفون (Microphone)",
+  "sensorNameLightCamera": "مستشعر الضوء أو الكاميرا (Light/Camera)",
+  "sensorNameMagnetometer": "المستشعر المغناطيسي (Magnetometer)",
+  "sensorNameConversionSolver": "محرك الحسابات (Mathematics Engine)"
 }

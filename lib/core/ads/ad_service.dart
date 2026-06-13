@@ -12,8 +12,10 @@ class AdService {
   bool _isInterstitialLoading = false;
 
   // Test Ad Unit IDs (Android)
-  static const String _kTestBannerAdUnitId = 'ca-app-pub-3940256099942544/6300978111';
-  static const String _kTestInterstitialAdUnitId = 'ca-app-pub-3940256099942544/1033173712';
+  static const String _kTestBannerAdUnitId =
+      'ca-app-pub-3940256099942544/6300978111';
+  static const String _kTestInterstitialAdUnitId =
+      'ca-app-pub-3940256099942544/1033173712';
 
   /// Initializes the Mobile Ads SDK.
   Future<void> initialize() async {
@@ -42,7 +44,8 @@ class AdService {
 
   /// Loads the interstitial ad.
   void _loadInterstitialAd() {
-    if (_prefs.isPro || _isInterstitialLoading || _interstitialAd != null) return;
+    if (_prefs.isPro || _isInterstitialLoading || _interstitialAd != null)
+      return;
 
     _isInterstitialLoading = true;
     InterstitialAd.load(

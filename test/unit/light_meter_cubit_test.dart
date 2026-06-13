@@ -10,19 +10,19 @@ void main() {
 
   setUp(() {
     // Mock PermissionHandler platform channel
-    const MethodChannel('flutter.baseflow.com/permissions/methods').setMockMethodCallHandler(
-      (MethodCall methodCall) async {
-        if (methodCall.method == 'checkPermissionStatus') {
-          return isCameraPermissionGranted ? 1 : 0; // Granted or Denied
-        }
-        if (methodCall.method == 'requestPermissions') {
-          return {
-            1: isCameraPermissionGranted ? 1 : 0 // Camera (1)
-          };
-        }
-        return null;
-      },
-    );
+    const MethodChannel(
+      'flutter.baseflow.com/permissions/methods',
+    ).setMockMethodCallHandler((MethodCall methodCall) async {
+      if (methodCall.method == 'checkPermissionStatus') {
+        return isCameraPermissionGranted ? 1 : 0; // Granted or Denied
+      }
+      if (methodCall.method == 'requestPermissions') {
+        return {
+          1: isCameraPermissionGranted ? 1 : 0, // Camera (1)
+        };
+      }
+      return null;
+    });
 
     cubit = LightMeterCubit();
   });
@@ -43,12 +43,15 @@ void main() {
       expect(cubit.state.errorMessage, isNull);
     });
 
-    test('checkCameraPermission returns false when permission denied', () async {
-      isCameraPermissionGranted = false;
-      await cubit.checkCameraPermission();
-      expect(cubit.state.cameraPermissionGranted, false);
-      expect(cubit.state.isCameraInitialized, false);
-    });
+    test(
+      'checkCameraPermission returns false when permission denied',
+      () async {
+        isCameraPermissionGranted = false;
+        await cubit.checkCameraPermission();
+        expect(cubit.state.cameraPermissionGranted, false);
+        expect(cubit.state.isCameraInitialized, false);
+      },
+    );
 
     test('requestCameraPermission requests permissions correctly', () async {
       isCameraPermissionGranted = true;

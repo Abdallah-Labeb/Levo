@@ -14,6 +14,7 @@ import 'package:levo/core/widgets/noise_texture_helper.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
+import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/features/sound_meter/bloc/sound_meter_cubit.dart';
 import 'package:levo/features/sound_meter/bloc/sound_meter_state.dart';
@@ -55,7 +56,7 @@ class SoundMeterView extends StatelessWidget {
   void _requestPermission(BuildContext context, SoundMeterCubit cubit) async {
     final isAr = Directionality.of(context) == TextDirection.rtl;
     final status = await Permission.microphone.status;
-    
+
     if (status.isGranted) {
       cubit.setPermissionGranted(true);
     } else if (status.isDenied) {
@@ -167,14 +168,31 @@ class SoundMeterView extends StatelessWidget {
         final bool showPermissionPanel = !state.permissionGranted;
 
         // Normalize value between 30 dB (0.0) and 130 dB (1.0)
-        final double normalizedValue = ((state.currentDb - 30.0) / (130.0 - 30.0)).clamp(0.0, 1.0);
+        final double normalizedValue =
+            ((state.currentDb - 30.0) / (130.0 - 30.0)).clamp(0.0, 1.0);
 
         // Define colored dial scale zones matching standard decibel levels
         final List<DialZone> dialZones = [
-          const DialZone(start: 0.0, end: 0.3, color: AppColors.kLevelGreen),        // 30-60 dB (Quiet)
-          const DialZone(start: 0.3, end: 0.55, color: AppColors.kWarningYellow),  // 60-85 dB (Moderate)
-          const DialZone(start: 0.55, end: 0.8, color: AppColors.kOrange),          // 85-110 dB (Loud)
-          const DialZone(start: 0.8, end: 1.0, color: AppColors.kDangerRed),         // 110-130 dB (Danger)
+          const DialZone(
+            start: 0.0,
+            end: 0.3,
+            color: AppColors.kLevelGreen,
+          ), // 30-60 dB (Quiet)
+          const DialZone(
+            start: 0.3,
+            end: 0.55,
+            color: AppColors.kWarningYellow,
+          ), // 60-85 dB (Moderate)
+          const DialZone(
+            start: 0.55,
+            end: 0.8,
+            color: AppColors.kOrange,
+          ), // 85-110 dB (Loud)
+          const DialZone(
+            start: 0.8,
+            end: 1.0,
+            color: AppColors.kDangerRed,
+          ), // 110-130 dB (Danger)
         ];
 
         return Scaffold(
@@ -219,12 +237,15 @@ class SoundMeterView extends StatelessWidget {
                               const SizedBox(height: AppDimensions.space12),
                               Text(
                                 l10n.permissionMicBody,
-                                style: AppTypography.kBodySmall.copyWith(color: AppColors.kTextSecondary),
+                                style: AppTypography.kBodySmall.copyWith(
+                                  color: AppColors.kTextSecondary,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: AppDimensions.space24),
                               TactileButton(
-                                onPressed: () => _requestPermission(context, cubit),
+                                onPressed: () =>
+                                    _requestPermission(context, cubit),
                                 text: isAr ? "منح الصلاحية" : "Grant Access",
                                 icon: const Icon(Icons.check),
                               ),
@@ -248,12 +269,16 @@ class SoundMeterView extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: AppColors.kSurfaceInset,
                               border: Border.all(color: AppColors.kDivider),
-                              borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
+                              borderRadius: BorderRadius.circular(
+                                AppDimensions.radiusChip,
+                              ),
                             ),
                             child: Text(
                               _getZoneDescription(context, state.currentDb),
                               style: AppTypography.kCaption.copyWith(
-                                color: state.currentDb >= 110.0 ? AppColors.kDangerRed : AppColors.kYellow,
+                                color: state.currentDb >= 110.0
+                                    ? AppColors.kDangerRed
+                                    : AppColors.kYellow,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -280,13 +305,22 @@ class SoundMeterView extends StatelessWidget {
 
                         // 3. Peak / Average / Min LEDs readout grid
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppDimensions.paddingL,
+                          ),
                           child: Container(
-                            padding: const EdgeInsets.all(AppDimensions.paddingM),
+                            padding: const EdgeInsets.all(
+                              AppDimensions.paddingM,
+                            ),
                             decoration: BoxDecoration(
                               gradient: AppColors.kGradientBrushedAluminum,
-                              border: Border.all(color: AppColors.kBorderHighlight, width: 1.0),
-                              borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
+                              border: Border.all(
+                                color: AppColors.kBorderHighlight,
+                                width: 1.0,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                AppDimensions.radiusPanel,
+                              ),
                               boxShadow: const [
                                 BoxShadow(
                                   color: Color(0x33000000),
@@ -303,11 +337,19 @@ class SoundMeterView extends StatelessWidget {
                                   children: [
                                     Text(
                                       l10n.soundMeterMin,
-                                      style: AppTypography.kCaption.copyWith(color: AppColors.kTextSecondary),
+                                      style: AppTypography.kCaption.copyWith(
+                                        color: AppColors.kTextSecondary,
+                                      ),
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     LedDisplay(
-                                      value: _formatDb(context, state.minDb, 120.0),
+                                      value: _formatDb(
+                                        context,
+                                        state.minDb,
+                                        120.0,
+                                      ),
                                       textStyle: AppTypography.kDisplayS,
                                     ),
                                   ],
@@ -317,11 +359,19 @@ class SoundMeterView extends StatelessWidget {
                                   children: [
                                     Text(
                                       l10n.soundMeterAverage,
-                                      style: AppTypography.kCaption.copyWith(color: AppColors.kTextSecondary),
+                                      style: AppTypography.kCaption.copyWith(
+                                        color: AppColors.kTextSecondary,
+                                      ),
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     LedDisplay(
-                                      value: _formatDb(context, state.averageDb, 0.0),
+                                      value: _formatDb(
+                                        context,
+                                        state.averageDb,
+                                        0.0,
+                                      ),
                                       textStyle: AppTypography.kDisplayS,
                                     ),
                                   ],
@@ -331,11 +381,19 @@ class SoundMeterView extends StatelessWidget {
                                   children: [
                                     Text(
                                       l10n.soundMeterPeak,
-                                      style: AppTypography.kCaption.copyWith(color: AppColors.kTextSecondary),
+                                      style: AppTypography.kCaption.copyWith(
+                                        color: AppColors.kTextSecondary,
+                                      ),
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     LedDisplay(
-                                      value: _formatDb(context, state.peakDb, 0.0),
+                                      value: _formatDb(
+                                        context,
+                                        state.peakDb,
+                                        0.0,
+                                      ),
                                       textStyle: AppTypography.kDisplayS,
                                     ),
                                   ],
@@ -349,7 +407,9 @@ class SoundMeterView extends StatelessWidget {
 
                         // 4. Control buttons (Reset statistics)
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppDimensions.paddingL,
+                          ),
                           child: TactileButton(
                             onPressed: () => cubit.reset(),
                             text: l10n.commonButtonReset,
@@ -362,6 +422,7 @@ class SoundMeterView extends StatelessWidget {
                     ),
             ),
           ),
+          bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
     );

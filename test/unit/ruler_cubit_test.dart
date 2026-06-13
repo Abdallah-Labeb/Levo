@@ -41,7 +41,7 @@ void main() {
 
     test('updateMarkerA and updateMarkerB update state positions', () {
       cubit.initialize(devicePixelRatio: 2.0, screenHeight: 600.0);
-      
+
       cubit.updateMarkerA(100.0);
       expect(cubit.state.markerA, 100.0);
 
@@ -61,10 +61,10 @@ void main() {
 
     test('calibrate computes correct scale factor and saves it', () async {
       cubit.initialize(devicePixelRatio: 2.0, screenHeight: 600.0);
-      
+
       // Say 300 pixels should equal 85.6 mm physical reference
       await cubit.calibrate(referenceMm: 85.6, pixelDistance: 300.0);
-      
+
       // Expected mmPerPixel = 85.6 / 300 = 0.28533
       // Expected scaleFactor = calculatedScale = 85.6 / (300 * (25.4 / 160.0)) = 1.7976
       expect(cubit.state.scaleFactor, closeTo(1.7976, 0.001));

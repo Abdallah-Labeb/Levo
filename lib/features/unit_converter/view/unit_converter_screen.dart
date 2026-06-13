@@ -12,6 +12,7 @@ import 'package:levo/core/widgets/noise_texture_helper.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/l10n/l10n_extension.dart';
+import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/features/unit_converter/domain/conversion_engine.dart';
 import 'package:levo/features/unit_converter/bloc/unit_converter_cubit.dart';
 import 'package:levo/features/unit_converter/bloc/unit_converter_state.dart';
@@ -76,13 +77,13 @@ class _UnitConverterViewState extends State<UnitConverterView> {
   String _formatDouble(BuildContext context, double val) {
     if (val == 0.0) return "0";
     final locale = Localizations.localeOf(context).toString();
-    
+
     // Check if the value is extremely small or large to format in scientific notation
     if (val.abs() < 1e-4 || val.abs() >= 1e6) {
       final formatter = NumberFormat("0.###E0", locale);
       return formatter.format(val);
     }
-    
+
     final formatter = NumberFormat("0.####", locale);
     return formatter.format(val);
   }
@@ -96,8 +97,12 @@ class _UnitConverterViewState extends State<UnitConverterView> {
           SnackBar(
             backgroundColor: AppColors.kSurfaceInset,
             content: Text(
-              isAr ? "تم نسخ النتيجة إلى الحافظة!" : "Copied result to clipboard!",
-              style: AppTypography.kBodySmall.copyWith(color: AppColors.kYellow),
+              isAr
+                  ? "تم نسخ النتيجة إلى الحافظة!"
+                  : "Copied result to clipboard!",
+              style: AppTypography.kBodySmall.copyWith(
+                color: AppColors.kYellow,
+              ),
             ),
             duration: const Duration(seconds: 2),
           ),
@@ -147,12 +152,16 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                           final cat = UnitCategory.values[index];
                           final isSelected = state.category == cat;
                           return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4.0,
+                            ),
                             child: TactileButton(
                               size: const Size(100.0, 40.0),
                               onPressed: () => cubit.setCategory(cat),
                               text: _getCategoryName(context, cat),
-                              backgroundColor: isSelected ? AppColors.kYellow.withAlpha(20) : null,
+                              backgroundColor: isSelected
+                                  ? AppColors.kYellow.withAlpha(20)
+                                  : null,
                               textColor: isSelected ? AppColors.kYellow : null,
                             ),
                           );
@@ -181,13 +190,20 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                               height: 48.0,
                               decoration: BoxDecoration(
                                 color: AppColors.kSurfaceInset,
-                                borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
+                                borderRadius: BorderRadius.circular(
+                                  AppDimensions.radiusChip,
+                                ),
                               ),
-                              padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingM),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppDimensions.paddingM,
+                              ),
                               alignment: Alignment.center,
                               child: TextField(
                                 controller: _inputController,
-                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                      decimal: true,
+                                    ),
                                 style: AppTypography.kDisplayS.copyWith(
                                   fontSize: 18.0,
                                   color: AppColors.kYellow,
@@ -197,10 +213,14 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                                   border: InputBorder.none,
                                   isDense: true,
                                   hintText: "0.0",
-                                  hintStyle: TextStyle(color: AppColors.kChromeDark),
+                                  hintStyle: TextStyle(
+                                    color: AppColors.kChromeDark,
+                                  ),
                                 ),
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d*\.?\d*'),
+                                  ),
                                 ],
                                 onChanged: (val) => cubit.updateInput(val),
                               ),
@@ -244,7 +264,10 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                               children: [
                                 Expanded(
                                   child: LedDisplay(
-                                    value: _formatDouble(context, state.resultValue),
+                                    value: _formatDouble(
+                                      context,
+                                      state.resultValue,
+                                    ),
                                     unit: state.toUnit,
                                     textStyle: AppTypography.kDisplayS,
                                   ),
@@ -252,8 +275,15 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                                 const SizedBox(width: AppDimensions.space12),
                                 TactileButton(
                                   size: const Size(60, 44),
-                                  onPressed: () => _copyToClipboard(context, state.resultValue, state.toUnit),
-                                  icon: const Icon(Icons.copy_outlined, size: 20.0),
+                                  onPressed: () => _copyToClipboard(
+                                    context,
+                                    state.resultValue,
+                                    state.toUnit,
+                                  ),
+                                  icon: const Icon(
+                                    Icons.copy_outlined,
+                                    size: 20.0,
+                                  ),
                                 ),
                               ],
                             ),
@@ -282,12 +312,15 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                                         letterSpacing: 0.5,
                                       ),
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     Expanded(
                                       child: DrumPickerWidget(
                                         items: units,
                                         selectedItem: state.fromUnit,
-                                        onChanged: (unit) => cubit.setFromUnit(unit),
+                                        onChanged: (unit) =>
+                                            cubit.setFromUnit(unit),
                                         width: double.infinity,
                                       ),
                                     ),
@@ -308,12 +341,15 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                                         letterSpacing: 0.5,
                                       ),
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     Expanded(
                                       child: DrumPickerWidget(
                                         items: units,
                                         selectedItem: state.toUnit,
-                                        onChanged: (unit) => cubit.setToUnit(unit),
+                                        onChanged: (unit) =>
+                                            cubit.setToUnit(unit),
                                         width: double.infinity,
                                       ),
                                     ),
@@ -331,6 +367,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
               ),
             ),
           ),
+          bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
     );

@@ -14,7 +14,7 @@ class AppTheme {
       dividerColor: AppColors.kDivider,
       fontFamily: 'Inter',
       useMaterial3: true,
-      
+
       // Override default text selection colors for input fields
       textSelectionTheme: const TextSelectionThemeData(
         cursorColor: AppColors.kYellow,

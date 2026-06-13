@@ -11,13 +11,10 @@ import 'package:levo/features/compass/bloc/compass_state.dart';
 /// Cubit managing orientation compass sensor tracking, magnetic interference levels,
 /// declination computation for true-north referencing, and value locking.
 class CompassCubit extends Cubit<CompassState> {
-  CompassCubit({
-    required PreferencesService prefs,
-  })  : _prefs = prefs,
-        super(const CompassState()) {
-    emit(state.copyWith(
-      trueNorthEnabled: _prefs.trueNorthEnabled,
-    ));
+  CompassCubit({required PreferencesService prefs})
+    : _prefs = prefs,
+      super(const CompassState()) {
+    emit(state.copyWith(trueNorthEnabled: _prefs.trueNorthEnabled));
   }
 
   final PreferencesService _prefs;
@@ -44,27 +41,33 @@ class CompassCubit extends Cubit<CompassState> {
     try {
       final Stream<CompassEvent>? stream = FlutterCompass.events;
       if (stream == null) {
-        emit(state.copyWith(
-          isSensorAvailable: false,
-          errorMessage: "Compass sensors are not available on this device",
-        ));
+        emit(
+          state.copyWith(
+            isSensorAvailable: false,
+            errorMessage: "Compass sensors are not available on this device",
+          ),
+        );
         return;
       }
 
       _compassSub = stream.listen(
         _onCompassEvent,
         onError: (_) {
-          emit(state.copyWith(
-            isSensorAvailable: false,
-            errorMessage: "An error occurred reading the compass sensor",
-          ));
+          emit(
+            state.copyWith(
+              isSensorAvailable: false,
+              errorMessage: "An error occurred reading the compass sensor",
+            ),
+          );
         },
       );
     } catch (_) {
-      emit(state.copyWith(
-        isSensorAvailable: false,
-        errorMessage: "Failed to initialize compass sensor stream",
-      ));
+      emit(
+        state.copyWith(
+          isSensorAvailable: false,
+          errorMessage: "Failed to initialize compass sensor stream",
+        ),
+      );
     }
   }
 
@@ -101,8 +104,9 @@ class CompassCubit extends Cubit<CompassState> {
     final double headingRad = rawHeading * math.pi / 180.0;
     final double filteredCos = _cosFilter.filter(math.cos(headingRad));
     final double filteredSin = _sinFilter.filter(math.sin(headingRad));
-    
-    double filteredHeading = math.atan2(filteredSin, filteredCos) * 180.0 / math.pi;
+
+    double filteredHeading =
+        math.atan2(filteredSin, filteredCos) * 180.0 / math.pi;
     if (filteredHeading < 0.0) filteredHeading += 360.0;
 
     // Calculate final heading (apply true north magnetic declination shift if enabled)
@@ -123,11 +127,13 @@ class CompassCubit extends Cubit<CompassState> {
       }
     }
 
-    emit(state.copyWith(
-      heading: finalHeading,
-      accuracy: accuracy,
-      isSensorAvailable: true,
-    ));
+    emit(
+      state.copyWith(
+        heading: finalHeading,
+        accuracy: accuracy,
+        isSensorAvailable: true,
+      ),
+    );
   }
 
   /// Toggles the compass locked status (freezes values).
@@ -169,7 +175,8 @@ class CompassCubit extends Cubit<CompassState> {
   Future<void> _updateDeclination() async {
     try {
       final Position? lastPos = await Geolocator.getLastKnownPosition();
-      final Position pos = lastPos ??
+      final Position pos =
+          lastPos ??
           await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.low,
             timeLimit: const Duration(seconds: 4),
@@ -194,7 +201,8 @@ class CompassCubit extends Cubit<CompassState> {
 
     final double dLon = poleLonRad - lonRad;
     final double y = math.sin(dLon) * math.cos(poleLatRad);
-    final double x = math.cos(latRad) * math.sin(poleLatRad) -
+    final double x =
+        math.cos(latRad) * math.sin(poleLatRad) -
         math.sin(latRad) * math.cos(poleLatRad) * math.cos(dLon);
 
     final double declination = math.atan2(y, x) * 180.0 / math.pi;

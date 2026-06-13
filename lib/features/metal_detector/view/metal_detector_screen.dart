@@ -13,6 +13,7 @@ import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/l10n/l10n_extension.dart';
+import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/features/metal_detector/bloc/metal_detector_cubit.dart';
 import 'package:levo/features/metal_detector/bloc/metal_detector_state.dart';
 import 'package:levo/features/metal_detector/widgets/proximity_indicator_painter.dart';
@@ -161,7 +162,9 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
             blendMode: BlendMode.srcOver,
             child: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.paddingL,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -170,10 +173,14 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                     // 1. Dismissible Warning Banner (skeuomorphic notification)
                     if (_showWarningBanner)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: AppDimensions.paddingM),
+                        padding: const EdgeInsets.only(
+                          bottom: AppDimensions.paddingM,
+                        ),
                         child: MetalPanel(
                           child: Padding(
-                            padding: const EdgeInsets.all(AppDimensions.paddingM),
+                            padding: const EdgeInsets.all(
+                              AppDimensions.paddingM,
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
@@ -187,16 +194,17 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                                     Expanded(
                                       child: Text(
                                         l10n.metalDetectorFirstLaunchWarning,
-                                        style: AppTypography.kBodySmall.copyWith(
-                                          color: AppColors.kTextSecondary,
-                                        ),
+                                        style: AppTypography.kBodySmall
+                                            .copyWith(
+                                              color: AppColors.kTextSecondary,
+                                            ),
                                       ),
                                     ),
                                   ],
                                 ),
                                 const SizedBox(height: AppDimensions.space12),
                                 Align(
-                                  alignment: Alignment.centerRight,
+                                  alignment: AlignmentDirectional.centerEnd,
                                   child: TactileButton(
                                     size: const Size(80, 36),
                                     onPressed: () {
@@ -224,7 +232,9 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                         decoration: BoxDecoration(
                           color: AppColors.kSurfaceInset,
                           border: Border.all(color: AppColors.kDivider),
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusChip,
+                          ),
                         ),
                         child: Text(
                           _getAlertText(context, state.alertLevel),
@@ -285,7 +295,9 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     LedDisplay(
                                       value: _formatUt(context, state.deltaUt),
                                       unit: l10n.commonUnitMicrotesla,
@@ -318,7 +330,9 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
-                                    const SizedBox(height: AppDimensions.space8),
+                                    const SizedBox(
+                                      height: AppDimensions.space8,
+                                    ),
                                     LedDisplay(
                                       value: _formatUt(context, state.baseline),
                                       unit: l10n.commonUnitMicrotesla,
@@ -364,7 +378,8 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                                   min: 0.5,
                                   max: 2.5,
                                   divisions: 8,
-                                  onChanged: (val) => cubit.updateSensitivity(val),
+                                  onChanged: (val) =>
+                                      cubit.updateSensitivity(val),
                                 ),
                               ),
                             ),
@@ -393,7 +408,9 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                               state.soundOn
                                   ? Icons.volume_up_outlined
                                   : Icons.volume_off_outlined,
-                              color: state.soundOn ? AppColors.kYellow : AppColors.kChromeMid,
+                              color: state.soundOn
+                                  ? AppColors.kYellow
+                                  : AppColors.kChromeMid,
                             ),
                           ),
                         ),
@@ -402,13 +419,16 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                         // Toggle Haptic
                         Expanded(
                           child: TactileButton(
-                            onPressed: () => cubit.toggleHaptic(!state.hapticOn),
+                            onPressed: () =>
+                                cubit.toggleHaptic(!state.hapticOn),
                             text: state.hapticOn ? "HAPTIC ON" : "HAPTIC MUTED",
                             icon: Icon(
                               state.hapticOn
                                   ? Icons.vibration_outlined
                                   : Icons.phone_android_outlined,
-                              color: state.hapticOn ? AppColors.kYellow : AppColors.kChromeMid,
+                              color: state.hapticOn
+                                  ? AppColors.kYellow
+                                  : AppColors.kChromeMid,
                             ),
                           ),
                         ),
@@ -430,6 +450,7 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
               ),
             ),
           ),
+          bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
     );

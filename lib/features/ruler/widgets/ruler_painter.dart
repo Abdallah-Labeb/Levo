@@ -36,9 +36,7 @@ class RulerPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
 
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
 
     if (unit == RulerUnit.mm || unit == RulerUnit.cm) {
       // Metric logic (1 tick = 1mm)
@@ -61,11 +59,7 @@ class RulerPainter extends CustomPainter {
         final currentPaint = isCm ? majorTickPaint : tickPaint;
 
         // Draw left-aligned ticks
-        canvas.drawLine(
-          Offset(0.0, y),
-          Offset(tickLength, y),
-          currentPaint,
-        );
+        canvas.drawLine(Offset(0.0, y), Offset(tickLength, y), currentPaint);
 
         // Print numbers for centimeters
         if (isCm && mmIndex > 0) {
@@ -105,18 +99,10 @@ class RulerPainter extends CustomPainter {
 
         final double tickLength = isInch
             ? 24.0
-            : (isHalf
-                ? 18.0
-                : (isQuarter
-                    ? 14.0
-                    : (isEighth ? 9.0 : 5.0)));
+            : (isHalf ? 18.0 : (isQuarter ? 14.0 : (isEighth ? 9.0 : 5.0)));
         final currentPaint = isInch ? majorTickPaint : tickPaint;
 
-        canvas.drawLine(
-          Offset(0.0, y),
-          Offset(tickLength, y),
-          currentPaint,
-        );
+        canvas.drawLine(Offset(0.0, y), Offset(tickLength, y), currentPaint);
 
         // Print numbers for inches
         if (isInch && sixteenthIndex > 0) {
@@ -157,14 +143,22 @@ class RulerPainter extends CustomPainter {
         ..color = AppColors.kYellow.withAlpha(60)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.0;
-      
+
       const double dashWidth = 5.0;
       const double dashSpace = 4.0;
-      
+
       double currentX = 0.0;
       while (currentX < size.width) {
-        canvas.drawLine(Offset(currentX, top), Offset(currentX + dashWidth, top), dashPaint);
-        canvas.drawLine(Offset(currentX, bottom), Offset(currentX + dashWidth, bottom), dashPaint);
+        canvas.drawLine(
+          Offset(currentX, top),
+          Offset(currentX + dashWidth, top),
+          dashPaint,
+        );
+        canvas.drawLine(
+          Offset(currentX, bottom),
+          Offset(currentX + dashWidth, bottom),
+          dashPaint,
+        );
         currentX += dashWidth + dashSpace;
       }
     }

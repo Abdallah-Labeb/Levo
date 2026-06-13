@@ -36,12 +36,12 @@ class LevoApp extends StatelessWidget {
           return MaterialApp.router(
             title: 'Levo',
             routerConfig: appRouter,
-            
+
             // Localization setups
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             locale: settings.locale,
-            
+
             // Themes and layout rules
             theme: AppTheme.darkTheme,
             debugShowCheckedModeBanner: false,

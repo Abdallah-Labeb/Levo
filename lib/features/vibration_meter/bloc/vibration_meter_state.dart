@@ -18,12 +18,12 @@ class VibrationMeterState extends Equatable {
 
   @override
   List<Object?> get props => [
-        samples,
-        peak,
-        baseline,
-        isSensorAvailable,
-        errorMessage,
-      ];
+    samples,
+    peak,
+    baseline,
+    isSensorAvailable,
+    errorMessage,
+  ];
 
   VibrationMeterState copyWith({
     List<double>? samples,

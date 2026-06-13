@@ -38,19 +38,23 @@ class SoundMeterCubit extends Cubit<SoundMeterState> {
       _noiseSub = _noiseMeter.noise.listen(
         _onNoiseReading,
         onError: (error) {
-          emit(state.copyWith(
-            isSensorAvailable: false,
-            errorMessage: "Error reading audio stream: $error",
-          ));
+          emit(
+            state.copyWith(
+              isSensorAvailable: false,
+              errorMessage: "Error reading audio stream: $error",
+            ),
+          );
         },
         cancelOnError: true,
       );
       emit(state.copyWith(isSensorAvailable: true));
     } catch (e) {
-      emit(state.copyWith(
-        isSensorAvailable: false,
-        errorMessage: "Microphone input is not available",
-      ));
+      emit(
+        state.copyWith(
+          isSensorAvailable: false,
+          errorMessage: "Microphone input is not available",
+        ),
+      );
     }
   }
 
@@ -67,12 +71,14 @@ class SoundMeterCubit extends Cubit<SoundMeterState> {
     _sumDb += current;
     final double average = _sumDb / _sampleCount;
 
-    emit(state.copyWith(
-      currentDb: current,
-      peakDb: peak,
-      minDb: min,
-      averageDb: average,
-    ));
+    emit(
+      state.copyWith(
+        currentDb: current,
+        peakDb: peak,
+        minDb: min,
+        averageDb: average,
+      ),
+    );
 
     // Alarm feedback if decibels reach hazardous levels (110+ dB)
     if (current >= kDangerThresholdDb) {
@@ -92,12 +98,9 @@ class SoundMeterCubit extends Cubit<SoundMeterState> {
   void reset() {
     _sampleCount = 0;
     _sumDb = 0.0;
-    emit(state.copyWith(
-      currentDb: 0.0,
-      peakDb: 0.0,
-      minDb: 120.0,
-      averageDb: 0.0,
-    ));
+    emit(
+      state.copyWith(currentDb: 0.0, peakDb: 0.0, minDb: 120.0, averageDb: 0.0),
+    );
   }
 
   /// Sets permission status inside the Cubit.

@@ -4,13 +4,10 @@ import 'package:levo/features/protractor/bloc/protractor_state.dart';
 
 /// Cubit managing protractor arm angles, snapping increments, and reflex angles.
 class ProtractorCubit extends Cubit<ProtractorState> {
-  ProtractorCubit({
-    required PreferencesService prefs,
-  })  : _prefs = prefs,
-        super(const ProtractorState()) {
-    emit(state.copyWith(
-      snapEnabled: _prefs.protractorSnapEnabled,
-    ));
+  ProtractorCubit({required PreferencesService prefs})
+    : _prefs = prefs,
+      super(const ProtractorState()) {
+    emit(state.copyWith(snapEnabled: _prefs.protractorSnapEnabled));
   }
 
   final PreferencesService _prefs;
@@ -29,13 +26,15 @@ class ProtractorCubit extends Cubit<ProtractorState> {
   void toggleSnap() {
     final bool nextValue = !state.snapEnabled;
     _prefs.setProtractorSnapEnabled(nextValue);
-    
+
     // Snaps current values immediately when enabled
-    emit(state.copyWith(
-      snapEnabled: nextValue,
-      angleA: nextValue ? _snapAngle(state.angleA) : state.angleA,
-      angleB: nextValue ? _snapAngle(state.angleB) : state.angleB,
-    ));
+    emit(
+      state.copyWith(
+        snapEnabled: nextValue,
+        angleA: nextValue ? _snapAngle(state.angleA) : state.angleA,
+        angleB: nextValue ? _snapAngle(state.angleB) : state.angleB,
+      ),
+    );
   }
 
   /// Toggles between interior (0-180) and reflex (180-360) angle sectors.
@@ -59,9 +58,6 @@ class ProtractorCubit extends Cubit<ProtractorState> {
 
   /// Resets arms to default positions (0° and 45°).
   void reset() {
-    emit(state.copyWith(
-      angleA: 0.0,
-      angleB: 45.0,
-    ));
+    emit(state.copyWith(angleA: 0.0, angleB: 45.0));
   }
 }
