@@ -1,0 +1,938 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_ar.dart';
+import 'app_localizations_en.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'generated/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('ar'),
+    Locale('en'),
+  ];
+
+  /// No description provided for @appName.
+  ///
+  /// In en, this message translates to:
+  /// **'Levo'**
+  String get appName;
+
+  /// No description provided for @homeScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Levo'**
+  String get homeScreenTitle;
+
+  /// No description provided for @homeScreenSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional Measurement Toolkit'**
+  String get homeScreenSubtitle;
+
+  /// No description provided for @spiritLevelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Spirit Level'**
+  String get spiritLevelTitle;
+
+  /// No description provided for @spiritLevelDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'2D/1D bubble level and plumb bob'**
+  String get spiritLevelDesc;
+
+  /// No description provided for @compassTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compass'**
+  String get compassTitle;
+
+  /// No description provided for @compassDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Tilt-compensated magnetic compass'**
+  String get compassDesc;
+
+  /// No description provided for @rulerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital Ruler'**
+  String get rulerTitle;
+
+  /// No description provided for @rulerDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure objects using your screen scale'**
+  String get rulerDesc;
+
+  /// No description provided for @protractorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Protractor'**
+  String get protractorTitle;
+
+  /// No description provided for @protractorDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure angles drawn on screen'**
+  String get protractorDesc;
+
+  /// No description provided for @soundMeterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound Level Meter'**
+  String get soundMeterTitle;
+
+  /// No description provided for @soundMeterDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure ambient noise in decibels'**
+  String get soundMeterDesc;
+
+  /// No description provided for @vibrationMeterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vibration Meter'**
+  String get vibrationMeterTitle;
+
+  /// No description provided for @vibrationMeterDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Plot real-time vibration seismograph'**
+  String get vibrationMeterDesc;
+
+  /// No description provided for @lightMeterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Meter'**
+  String get lightMeterTitle;
+
+  /// No description provided for @lightMeterDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure illuminance in Lux'**
+  String get lightMeterDesc;
+
+  /// No description provided for @metalDetectorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Metal Detector'**
+  String get metalDetectorTitle;
+
+  /// No description provided for @metalDetectorDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Detect magnetic field strength'**
+  String get metalDetectorDesc;
+
+  /// No description provided for @unitConverterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit Converter'**
+  String get unitConverterTitle;
+
+  /// No description provided for @unitConverterDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert construction-related units'**
+  String get unitConverterDesc;
+
+  /// No description provided for @clinometerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinometer'**
+  String get clinometerTitle;
+
+  /// No description provided for @clinometerDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure slope angle and grade'**
+  String get clinometerDesc;
+
+  /// No description provided for @spiritLevelModeFlat.
+  ///
+  /// In en, this message translates to:
+  /// **'2D Surface'**
+  String get spiritLevelModeFlat;
+
+  /// No description provided for @spiritLevelModeEdge.
+  ///
+  /// In en, this message translates to:
+  /// **'1D Edge'**
+  String get spiritLevelModeEdge;
+
+  /// No description provided for @spiritLevelModePlumb.
+  ///
+  /// In en, this message translates to:
+  /// **'Plumb Bob'**
+  String get spiritLevelModePlumb;
+
+  /// No description provided for @spiritLevelButtonCalibrate.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibrate'**
+  String get spiritLevelButtonCalibrate;
+
+  /// No description provided for @spiritLevelButtonHold.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold'**
+  String get spiritLevelButtonHold;
+
+  /// No description provided for @spiritLevelButtonRelease.
+  ///
+  /// In en, this message translates to:
+  /// **'Release'**
+  String get spiritLevelButtonRelease;
+
+  /// No description provided for @spiritLevelButtonSetRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Reference'**
+  String get spiritLevelButtonSetRef;
+
+  /// No description provided for @spiritLevelLabelHeld.
+  ///
+  /// In en, this message translates to:
+  /// **'HOLD'**
+  String get spiritLevelLabelHeld;
+
+  /// No description provided for @spiritLevelErrorNoSensor.
+  ///
+  /// In en, this message translates to:
+  /// **'Accelerometer not available on this device'**
+  String get spiritLevelErrorNoSensor;
+
+  /// No description provided for @spiritLevelGimbalLockHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate device to avoid gimbal lock'**
+  String get spiritLevelGimbalLockHint;
+
+  /// No description provided for @calibrationWizardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Level Calibration'**
+  String get calibrationWizardTitle;
+
+  /// No description provided for @calibrationWizardStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Step 1: Lay device flat on a stable surface (face up) and tap Capture A.'**
+  String get calibrationWizardStep1;
+
+  /// No description provided for @calibrationWizardStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Step 2: Rotate the device 180° horizontally on the same spot and tap Capture B.'**
+  String get calibrationWizardStep2;
+
+  /// No description provided for @calibrationWizardStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Step 3: Calculating calibration offset. Tap Finish to save.'**
+  String get calibrationWizardStep3;
+
+  /// No description provided for @calibrationWizardCaptureA.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture A'**
+  String get calibrationWizardCaptureA;
+
+  /// No description provided for @calibrationWizardCaptureB.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture B'**
+  String get calibrationWizardCaptureB;
+
+  /// No description provided for @calibrationWizardButtonFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get calibrationWizardButtonFinish;
+
+  /// No description provided for @calibrationWizardSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibration successful!'**
+  String get calibrationWizardSuccess;
+
+  /// No description provided for @calibrationWizardReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Calibration'**
+  String get calibrationWizardReset;
+
+  /// No description provided for @commonUnitDegrees.
+  ///
+  /// In en, this message translates to:
+  /// **'°'**
+  String get commonUnitDegrees;
+
+  /// No description provided for @commonUnitPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'%'**
+  String get commonUnitPercent;
+
+  /// No description provided for @commonUnitMm.
+  ///
+  /// In en, this message translates to:
+  /// **'mm'**
+  String get commonUnitMm;
+
+  /// No description provided for @commonUnitCm.
+  ///
+  /// In en, this message translates to:
+  /// **'cm'**
+  String get commonUnitCm;
+
+  /// No description provided for @commonUnitInch.
+  ///
+  /// In en, this message translates to:
+  /// **'in'**
+  String get commonUnitInch;
+
+  /// No description provided for @commonUnitLux.
+  ///
+  /// In en, this message translates to:
+  /// **'lx'**
+  String get commonUnitLux;
+
+  /// No description provided for @commonUnitDecibel.
+  ///
+  /// In en, this message translates to:
+  /// **'dB'**
+  String get commonUnitDecibel;
+
+  /// No description provided for @commonUnitMicrotesla.
+  ///
+  /// In en, this message translates to:
+  /// **'µT'**
+  String get commonUnitMicrotesla;
+
+  /// No description provided for @commonUnitMetersPerSecSq.
+  ///
+  /// In en, this message translates to:
+  /// **'m/s²'**
+  String get commonUnitMetersPerSecSq;
+
+  /// No description provided for @commonButtonReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get commonButtonReset;
+
+  /// No description provided for @commonButtonCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get commonButtonCopy;
+
+  /// No description provided for @commonButtonClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get commonButtonClose;
+
+  /// No description provided for @commonButtonOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get commonButtonOpenSettings;
+
+  /// No description provided for @sensorErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensor Unavailable'**
+  String get sensorErrorTitle;
+
+  /// No description provided for @sensorErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{sensorName} is not available on this device.'**
+  String sensorErrorBody(String sensorName);
+
+  /// No description provided for @permissionMicTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone Access'**
+  String get permissionMicTitle;
+
+  /// No description provided for @permissionMicBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Needed to measure sound levels'**
+  String get permissionMicBody;
+
+  /// No description provided for @permissionLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Access'**
+  String get permissionLocationTitle;
+
+  /// No description provided for @permissionLocationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Used once to compute magnetic declination for true north'**
+  String get permissionLocationBody;
+
+  /// No description provided for @permissionCameraTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera Access'**
+  String get permissionCameraTitle;
+
+  /// No description provided for @permissionCameraBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Used to estimate ambient light when sensor unavailable'**
+  String get permissionCameraBody;
+
+  /// No description provided for @permissionDeniedPermanentlyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission permanently denied. Open app settings to grant it.'**
+  String get permissionDeniedPermanentlyBody;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsSectionAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get settingsSectionAppearance;
+
+  /// No description provided for @settingsSectionDefaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement Defaults'**
+  String get settingsSectionDefaults;
+
+  /// No description provided for @settingsSectionSensor.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensor & Calibration'**
+  String get settingsSectionSensor;
+
+  /// No description provided for @settingsSectionDisplay.
+  ///
+  /// In en, this message translates to:
+  /// **'Display'**
+  String get settingsSectionDisplay;
+
+  /// No description provided for @settingsSectionPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro & Ads'**
+  String get settingsSectionPro;
+
+  /// No description provided for @settingsSectionAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settingsSectionAbout;
+
+  /// No description provided for @settingsThemeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settingsThemeLabel;
+
+  /// No description provided for @settingsThemeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get settingsThemeDark;
+
+  /// No description provided for @settingsThemeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light (Coming Soon)'**
+  String get settingsThemeLight;
+
+  /// No description provided for @settingsThemeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System (Coming Soon)'**
+  String get settingsThemeSystem;
+
+  /// No description provided for @settingsLanguageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguageLabel;
+
+  /// No description provided for @settingsLanguageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get settingsLanguageEnglish;
+
+  /// No description provided for @settingsLanguageArabic.
+  ///
+  /// In en, this message translates to:
+  /// **'العربية'**
+  String get settingsLanguageArabic;
+
+  /// No description provided for @settingsLanguageSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System Default'**
+  String get settingsLanguageSystem;
+
+  /// No description provided for @settingsKeepScreenOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Screen On'**
+  String get settingsKeepScreenOn;
+
+  /// No description provided for @settingsProStatusFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free — Ads Enabled'**
+  String get settingsProStatusFree;
+
+  /// No description provided for @settingsProStatusPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro — No Ads'**
+  String get settingsProStatusPro;
+
+  /// No description provided for @settingsProUpgradeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Ads — \$2.99'**
+  String get settingsProUpgradeButton;
+
+  /// No description provided for @onboardingPage1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'10 Professional Tools'**
+  String get onboardingPage1Title;
+
+  /// No description provided for @onboardingPage1Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One app. Always offline.'**
+  String get onboardingPage1Subtitle;
+
+  /// No description provided for @onboardingPage2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Industrial Feel'**
+  String get onboardingPage2Title;
+
+  /// No description provided for @onboardingPage2Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Real precision, real materials.'**
+  String get onboardingPage2Subtitle;
+
+  /// No description provided for @onboardingPage3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibrate for Accuracy'**
+  String get onboardingPage3Title;
+
+  /// No description provided for @onboardingPage3Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up the level and ruler once — they stay calibrated.'**
+  String get onboardingPage3Subtitle;
+
+  /// No description provided for @onboardingButtonNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingButtonNext;
+
+  /// No description provided for @onboardingButtonFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get onboardingButtonFinish;
+
+  /// No description provided for @compassAccuracyLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low accuracy — calibrate sensor'**
+  String get compassAccuracyLow;
+
+  /// No description provided for @compassAccuracyMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium accuracy'**
+  String get compassAccuracyMedium;
+
+  /// No description provided for @compassAccuracyHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High accuracy'**
+  String get compassAccuracyHigh;
+
+  /// No description provided for @compassCalibrationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave your phone in a figure-8 pattern'**
+  String get compassCalibrationHint;
+
+  /// No description provided for @compassInterferenceWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Magnetic interference detected'**
+  String get compassInterferenceWarning;
+
+  /// No description provided for @compassLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'LOCKED'**
+  String get compassLocked;
+
+  /// No description provided for @compassTrueNorthLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'True North'**
+  String get compassTrueNorthLabel;
+
+  /// No description provided for @compassDeclinationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Declination'**
+  String get compassDeclinationLabel;
+
+  /// No description provided for @rulerUncalibratedWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Ruler not calibrated — readings may be inaccurate'**
+  String get rulerUncalibratedWarning;
+
+  /// No description provided for @rulerCalibrationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibrate Ruler'**
+  String get rulerCalibrationTitle;
+
+  /// No description provided for @rulerPresetCreditCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit Card (85.6 mm)'**
+  String get rulerPresetCreditCard;
+
+  /// No description provided for @rulerPresetA4Width.
+  ///
+  /// In en, this message translates to:
+  /// **'A4 Width (210 mm)'**
+  String get rulerPresetA4Width;
+
+  /// No description provided for @rulerPresetA4Height.
+  ///
+  /// In en, this message translates to:
+  /// **'A4 Height (297 mm)'**
+  String get rulerPresetA4Height;
+
+  /// No description provided for @rulerPresetIdCard.
+  ///
+  /// In en, this message translates to:
+  /// **'ID Card (54 mm)'**
+  String get rulerPresetIdCard;
+
+  /// No description provided for @rulerPresetCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom size'**
+  String get rulerPresetCustom;
+
+  /// No description provided for @rulerMarkerA.
+  ///
+  /// In en, this message translates to:
+  /// **'A'**
+  String get rulerMarkerA;
+
+  /// No description provided for @rulerMarkerB.
+  ///
+  /// In en, this message translates to:
+  /// **'B'**
+  String get rulerMarkerB;
+
+  /// No description provided for @metalDetectorFirstLaunchWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Results may be affected by nearby electronics, speaker magnets, or metal tables.'**
+  String get metalDetectorFirstLaunchWarning;
+
+  /// No description provided for @metalDetectorRecalibrate.
+  ///
+  /// In en, this message translates to:
+  /// **'Recalibrate'**
+  String get metalDetectorRecalibrate;
+
+  /// No description provided for @metalDetectorDetectionNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No metal detected'**
+  String get metalDetectorDetectionNone;
+
+  /// No description provided for @metalDetectorDetectionWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Weak signal'**
+  String get metalDetectorDetectionWeak;
+
+  /// No description provided for @metalDetectorDetectionMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium signal'**
+  String get metalDetectorDetectionMedium;
+
+  /// No description provided for @metalDetectorDetectionStrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong signal'**
+  String get metalDetectorDetectionStrong;
+
+  /// No description provided for @metalDetectorDetectionVeryStrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Very strong signal'**
+  String get metalDetectorDetectionVeryStrong;
+
+  /// No description provided for @soundMeterPeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak'**
+  String get soundMeterPeak;
+
+  /// No description provided for @soundMeterAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg'**
+  String get soundMeterAverage;
+
+  /// No description provided for @soundMeterMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Min'**
+  String get soundMeterMin;
+
+  /// No description provided for @soundMeterZoneSilence.
+  ///
+  /// In en, this message translates to:
+  /// **'Silence'**
+  String get soundMeterZoneSilence;
+
+  /// No description provided for @soundMeterZoneWhisper.
+  ///
+  /// In en, this message translates to:
+  /// **'Whisper'**
+  String get soundMeterZoneWhisper;
+
+  /// No description provided for @soundMeterZoneConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversation'**
+  String get soundMeterZoneConversation;
+
+  /// No description provided for @soundMeterZoneTraffic.
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic'**
+  String get soundMeterZoneTraffic;
+
+  /// No description provided for @soundMeterZoneLoud.
+  ///
+  /// In en, this message translates to:
+  /// **'Loud'**
+  String get soundMeterZoneLoud;
+
+  /// No description provided for @soundMeterZoneDangerous.
+  ///
+  /// In en, this message translates to:
+  /// **'Dangerous'**
+  String get soundMeterZoneDangerous;
+
+  /// No description provided for @soundMeterZoneJet.
+  ///
+  /// In en, this message translates to:
+  /// **'Jet / Extreme'**
+  String get soundMeterZoneJet;
+
+  /// No description provided for @clinometerDirectionLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Left side higher'**
+  String get clinometerDirectionLeft;
+
+  /// No description provided for @clinometerDirectionRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Right side higher'**
+  String get clinometerDirectionRight;
+
+  /// No description provided for @clinometerDirectionLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Level'**
+  String get clinometerDirectionLevel;
+
+  /// No description provided for @clinometerGradeFlat.
+  ///
+  /// In en, this message translates to:
+  /// **'Flat / Level'**
+  String get clinometerGradeFlat;
+
+  /// No description provided for @clinometerGradeDrainage.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum drainage slope'**
+  String get clinometerGradeDrainage;
+
+  /// No description provided for @clinometerGradePedRamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Gentle pedestrian ramp'**
+  String get clinometerGradePedRamp;
+
+  /// No description provided for @clinometerGradeAda.
+  ///
+  /// In en, this message translates to:
+  /// **'ADA/DDA max ramp'**
+  String get clinometerGradeAda;
+
+  /// No description provided for @clinometerGradeSteepRamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Steep ramp'**
+  String get clinometerGradeSteepRamp;
+
+  /// No description provided for @clinometerGradeSteepRoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Very steep road'**
+  String get clinometerGradeSteepRoad;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['ar', 'en'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'ar':
+      return AppLocalizationsAr();
+    case 'en':
+      return AppLocalizationsEn();
+  }
+
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
+}

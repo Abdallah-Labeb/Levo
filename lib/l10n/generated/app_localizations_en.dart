@@ -1,0 +1,424 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
+class AppLocalizationsEn extends AppLocalizations {
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get appName => 'Levo';
+
+  @override
+  String get homeScreenTitle => 'Levo';
+
+  @override
+  String get homeScreenSubtitle => 'Professional Measurement Toolkit';
+
+  @override
+  String get spiritLevelTitle => 'Spirit Level';
+
+  @override
+  String get spiritLevelDesc => '2D/1D bubble level and plumb bob';
+
+  @override
+  String get compassTitle => 'Compass';
+
+  @override
+  String get compassDesc => 'Tilt-compensated magnetic compass';
+
+  @override
+  String get rulerTitle => 'Digital Ruler';
+
+  @override
+  String get rulerDesc => 'Measure objects using your screen scale';
+
+  @override
+  String get protractorTitle => 'Protractor';
+
+  @override
+  String get protractorDesc => 'Measure angles drawn on screen';
+
+  @override
+  String get soundMeterTitle => 'Sound Level Meter';
+
+  @override
+  String get soundMeterDesc => 'Measure ambient noise in decibels';
+
+  @override
+  String get vibrationMeterTitle => 'Vibration Meter';
+
+  @override
+  String get vibrationMeterDesc => 'Plot real-time vibration seismograph';
+
+  @override
+  String get lightMeterTitle => 'Light Meter';
+
+  @override
+  String get lightMeterDesc => 'Measure illuminance in Lux';
+
+  @override
+  String get metalDetectorTitle => 'Metal Detector';
+
+  @override
+  String get metalDetectorDesc => 'Detect magnetic field strength';
+
+  @override
+  String get unitConverterTitle => 'Unit Converter';
+
+  @override
+  String get unitConverterDesc => 'Convert construction-related units';
+
+  @override
+  String get clinometerTitle => 'Clinometer';
+
+  @override
+  String get clinometerDesc => 'Measure slope angle and grade';
+
+  @override
+  String get spiritLevelModeFlat => '2D Surface';
+
+  @override
+  String get spiritLevelModeEdge => '1D Edge';
+
+  @override
+  String get spiritLevelModePlumb => 'Plumb Bob';
+
+  @override
+  String get spiritLevelButtonCalibrate => 'Calibrate';
+
+  @override
+  String get spiritLevelButtonHold => 'Hold';
+
+  @override
+  String get spiritLevelButtonRelease => 'Release';
+
+  @override
+  String get spiritLevelButtonSetRef => 'Set Reference';
+
+  @override
+  String get spiritLevelLabelHeld => 'HOLD';
+
+  @override
+  String get spiritLevelErrorNoSensor =>
+      'Accelerometer not available on this device';
+
+  @override
+  String get spiritLevelGimbalLockHint => 'Rotate device to avoid gimbal lock';
+
+  @override
+  String get calibrationWizardTitle => 'Level Calibration';
+
+  @override
+  String get calibrationWizardStep1 =>
+      'Step 1: Lay device flat on a stable surface (face up) and tap Capture A.';
+
+  @override
+  String get calibrationWizardStep2 =>
+      'Step 2: Rotate the device 180° horizontally on the same spot and tap Capture B.';
+
+  @override
+  String get calibrationWizardStep3 =>
+      'Step 3: Calculating calibration offset. Tap Finish to save.';
+
+  @override
+  String get calibrationWizardCaptureA => 'Capture A';
+
+  @override
+  String get calibrationWizardCaptureB => 'Capture B';
+
+  @override
+  String get calibrationWizardButtonFinish => 'Finish';
+
+  @override
+  String get calibrationWizardSuccess => 'Calibration successful!';
+
+  @override
+  String get calibrationWizardReset => 'Reset Calibration';
+
+  @override
+  String get commonUnitDegrees => '°';
+
+  @override
+  String get commonUnitPercent => '%';
+
+  @override
+  String get commonUnitMm => 'mm';
+
+  @override
+  String get commonUnitCm => 'cm';
+
+  @override
+  String get commonUnitInch => 'in';
+
+  @override
+  String get commonUnitLux => 'lx';
+
+  @override
+  String get commonUnitDecibel => 'dB';
+
+  @override
+  String get commonUnitMicrotesla => 'µT';
+
+  @override
+  String get commonUnitMetersPerSecSq => 'm/s²';
+
+  @override
+  String get commonButtonReset => 'Reset';
+
+  @override
+  String get commonButtonCopy => 'Copy';
+
+  @override
+  String get commonButtonClose => 'Close';
+
+  @override
+  String get commonButtonOpenSettings => 'Open Settings';
+
+  @override
+  String get sensorErrorTitle => 'Sensor Unavailable';
+
+  @override
+  String sensorErrorBody(String sensorName) {
+    return '$sensorName is not available on this device.';
+  }
+
+  @override
+  String get permissionMicTitle => 'Microphone Access';
+
+  @override
+  String get permissionMicBody => 'Needed to measure sound levels';
+
+  @override
+  String get permissionLocationTitle => 'Location Access';
+
+  @override
+  String get permissionLocationBody =>
+      'Used once to compute magnetic declination for true north';
+
+  @override
+  String get permissionCameraTitle => 'Camera Access';
+
+  @override
+  String get permissionCameraBody =>
+      'Used to estimate ambient light when sensor unavailable';
+
+  @override
+  String get permissionDeniedPermanentlyBody =>
+      'Permission permanently denied. Open app settings to grant it.';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsSectionAppearance => 'Appearance';
+
+  @override
+  String get settingsSectionDefaults => 'Measurement Defaults';
+
+  @override
+  String get settingsSectionSensor => 'Sensor & Calibration';
+
+  @override
+  String get settingsSectionDisplay => 'Display';
+
+  @override
+  String get settingsSectionPro => 'Pro & Ads';
+
+  @override
+  String get settingsSectionAbout => 'About';
+
+  @override
+  String get settingsThemeLabel => 'Theme';
+
+  @override
+  String get settingsThemeDark => 'Dark';
+
+  @override
+  String get settingsThemeLight => 'Light (Coming Soon)';
+
+  @override
+  String get settingsThemeSystem => 'System (Coming Soon)';
+
+  @override
+  String get settingsLanguageLabel => 'Language';
+
+  @override
+  String get settingsLanguageEnglish => 'English';
+
+  @override
+  String get settingsLanguageArabic => 'العربية';
+
+  @override
+  String get settingsLanguageSystem => 'System Default';
+
+  @override
+  String get settingsKeepScreenOn => 'Keep Screen On';
+
+  @override
+  String get settingsProStatusFree => 'Free — Ads Enabled';
+
+  @override
+  String get settingsProStatusPro => 'Pro — No Ads';
+
+  @override
+  String get settingsProUpgradeButton => 'Remove Ads — \$2.99';
+
+  @override
+  String get onboardingPage1Title => '10 Professional Tools';
+
+  @override
+  String get onboardingPage1Subtitle => 'One app. Always offline.';
+
+  @override
+  String get onboardingPage2Title => 'Industrial Feel';
+
+  @override
+  String get onboardingPage2Subtitle => 'Real precision, real materials.';
+
+  @override
+  String get onboardingPage3Title => 'Calibrate for Accuracy';
+
+  @override
+  String get onboardingPage3Subtitle =>
+      'Set up the level and ruler once — they stay calibrated.';
+
+  @override
+  String get onboardingButtonNext => 'Next';
+
+  @override
+  String get onboardingButtonFinish => 'Get Started';
+
+  @override
+  String get compassAccuracyLow => 'Low accuracy — calibrate sensor';
+
+  @override
+  String get compassAccuracyMedium => 'Medium accuracy';
+
+  @override
+  String get compassAccuracyHigh => 'High accuracy';
+
+  @override
+  String get compassCalibrationHint => 'Wave your phone in a figure-8 pattern';
+
+  @override
+  String get compassInterferenceWarning => 'Magnetic interference detected';
+
+  @override
+  String get compassLocked => 'LOCKED';
+
+  @override
+  String get compassTrueNorthLabel => 'True North';
+
+  @override
+  String get compassDeclinationLabel => 'Declination';
+
+  @override
+  String get rulerUncalibratedWarning =>
+      'Ruler not calibrated — readings may be inaccurate';
+
+  @override
+  String get rulerCalibrationTitle => 'Calibrate Ruler';
+
+  @override
+  String get rulerPresetCreditCard => 'Credit Card (85.6 mm)';
+
+  @override
+  String get rulerPresetA4Width => 'A4 Width (210 mm)';
+
+  @override
+  String get rulerPresetA4Height => 'A4 Height (297 mm)';
+
+  @override
+  String get rulerPresetIdCard => 'ID Card (54 mm)';
+
+  @override
+  String get rulerPresetCustom => 'Custom size';
+
+  @override
+  String get rulerMarkerA => 'A';
+
+  @override
+  String get rulerMarkerB => 'B';
+
+  @override
+  String get metalDetectorFirstLaunchWarning =>
+      'Results may be affected by nearby electronics, speaker magnets, or metal tables.';
+
+  @override
+  String get metalDetectorRecalibrate => 'Recalibrate';
+
+  @override
+  String get metalDetectorDetectionNone => 'No metal detected';
+
+  @override
+  String get metalDetectorDetectionWeak => 'Weak signal';
+
+  @override
+  String get metalDetectorDetectionMedium => 'Medium signal';
+
+  @override
+  String get metalDetectorDetectionStrong => 'Strong signal';
+
+  @override
+  String get metalDetectorDetectionVeryStrong => 'Very strong signal';
+
+  @override
+  String get soundMeterPeak => 'Peak';
+
+  @override
+  String get soundMeterAverage => 'Avg';
+
+  @override
+  String get soundMeterMin => 'Min';
+
+  @override
+  String get soundMeterZoneSilence => 'Silence';
+
+  @override
+  String get soundMeterZoneWhisper => 'Whisper';
+
+  @override
+  String get soundMeterZoneConversation => 'Conversation';
+
+  @override
+  String get soundMeterZoneTraffic => 'Traffic';
+
+  @override
+  String get soundMeterZoneLoud => 'Loud';
+
+  @override
+  String get soundMeterZoneDangerous => 'Dangerous';
+
+  @override
+  String get soundMeterZoneJet => 'Jet / Extreme';
+
+  @override
+  String get clinometerDirectionLeft => 'Left side higher';
+
+  @override
+  String get clinometerDirectionRight => 'Right side higher';
+
+  @override
+  String get clinometerDirectionLevel => 'Level';
+
+  @override
+  String get clinometerGradeFlat => 'Flat / Level';
+
+  @override
+  String get clinometerGradeDrainage => 'Minimum drainage slope';
+
+  @override
+  String get clinometerGradePedRamp => 'Gentle pedestrian ramp';
+
+  @override
+  String get clinometerGradeAda => 'ADA/DDA max ramp';
+
+  @override
+  String get clinometerGradeSteepRamp => 'Steep ramp';
+
+  @override
+  String get clinometerGradeSteepRoad => 'Very steep road';
+}
