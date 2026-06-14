@@ -4,10 +4,16 @@ import 'package:levo/app/theme/app_colors.dart';
 
 /// Custom Painter that renders a real-time scrolling seismograph grid and waveform.
 class SeismographPainter extends CustomPainter {
-  const SeismographPainter({required this.samples, required this.peak});
+  SeismographPainter({required this.samples, required this.peak});
 
   final List<double> samples;
   final double peak;
+
+  final Paint bgPaint = Paint();
+  final Paint gridPaint = Paint();
+  final Paint baselinePaint = Paint();
+  final Paint glowPaint = Paint();
+  final Paint linePaint = Paint();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -15,11 +21,11 @@ class SeismographPainter extends CustomPainter {
     final centerY = size.height / 2;
 
     // 1. Draw grid background (black cathode screen)
-    final bgPaint = Paint()..color = const Color(0xFF070B07);
+    bgPaint.color = const Color(0xFF070B07);
     canvas.drawRect(rect, bgPaint);
 
     // 2. Draw cathode grid lines (neon green matrix grid)
-    final gridPaint = Paint()
+    gridPaint
       ..color = const Color(0xFF132B13).withAlpha(120)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.5;
@@ -34,7 +40,7 @@ class SeismographPainter extends CustomPainter {
     }
 
     // 3. Draw central baseline (zero reference line)
-    final baselinePaint = Paint()
+    baselinePaint
       ..color = AppColors.kLevelGreen.withAlpha(50)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
@@ -67,7 +73,7 @@ class SeismographPainter extends CustomPainter {
     }
 
     // Shadow glow
-    final glowPaint = Paint()
+    glowPaint
       ..color = AppColors.kLevelGreen.withAlpha(80)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.5
@@ -75,7 +81,7 @@ class SeismographPainter extends CustomPainter {
     canvas.drawPath(path, glowPaint);
 
     // Foreground line
-    final linePaint = Paint()
+    linePaint
       ..color = AppColors.kDisplayGreen
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
