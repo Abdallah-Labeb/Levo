@@ -11,7 +11,7 @@ import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/core/widgets/analog_dial_widget.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
-import 'package:levo/core/widgets/noise_texture_helper.dart';
+import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/l10n/l10n_extension.dart';
@@ -156,7 +156,6 @@ class LightMeterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isAr = Directionality.of(context) == TextDirection.rtl;
     final cubit = context.read<LightMeterCubit>();
 
     return BlocBuilder<LightMeterCubit, LightMeterState>(
@@ -199,14 +198,7 @@ class LightMeterView extends StatelessWidget {
 
         return Scaffold(
           appBar: LevoAppBar(title: l10n.lightMeterTitle),
-          body: ShaderMask(
-            shaderCallback: (rect) {
-              return NoiseTextureHelper.getNoiseShader(rect) ??
-                  const LinearGradient(
-                    colors: [Colors.transparent, Colors.transparent],
-                  ).createShader(rect);
-            },
-            blendMode: BlendMode.srcOver,
+          body: NoiseBackground(
             child: SafeArea(
               child: showPermissionPanel
                   ? Padding(

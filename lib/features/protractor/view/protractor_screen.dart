@@ -8,7 +8,7 @@ import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
-import 'package:levo/core/widgets/noise_texture_helper.dart';
+import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
@@ -42,9 +42,7 @@ class ProtractorView extends StatelessWidget {
     final locale = Localizations.localeOf(context).toString();
     // tangent of angle (tangent behaves poorly close to 90 degrees)
     if ((angle - 90.0).abs() < 1.0) {
-      return Directionality.of(context) == TextDirection.rtl
-          ? "عمودي"
-          : "Vertical";
+      return context.l10n.protractorVertical;
     }
 
     final double slope = math.tan(angle * math.pi / 180.0);
@@ -55,19 +53,11 @@ class ProtractorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isAr = Directionality.of(context) == TextDirection.rtl;
     final cubit = context.read<ProtractorCubit>();
 
     return Scaffold(
       appBar: LevoAppBar(title: l10n.protractorTitle),
-      body: ShaderMask(
-        shaderCallback: (rect) {
-          return NoiseTextureHelper.getNoiseShader(rect) ??
-              const LinearGradient(
-                colors: [Colors.transparent, Colors.transparent],
-              ).createShader(rect);
-        },
-        blendMode: BlendMode.srcOver,
+      body: NoiseBackground(
         child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {

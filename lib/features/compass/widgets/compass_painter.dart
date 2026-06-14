@@ -7,10 +7,22 @@ import 'package:levo/features/compass/bloc/compass_state.dart';
 /// Custom Painter that renders a premium skeuomorphic compass.
 /// Displays a machined chrome bezel, cardinal index markers, and a rotating 3D teardrop needle.
 class CompassPainter extends CustomPainter {
-  const CompassPainter({required this.heading, required this.accuracy});
+  CompassPainter({required this.heading, required this.accuracy});
 
   final double heading;
   final CompassAccuracy accuracy;
+
+  final Paint bezelPaint = Paint();
+  final Paint groovePaint = Paint();
+  final Paint facePaint = Paint();
+  final Paint tickPaint = Paint();
+  final Paint majorTickPaint = Paint();
+  final Paint shadowPaint = Paint();
+  final Paint northPaint = Paint();
+  final Paint southPaint = Paint();
+  final Paint pinShadow = Paint();
+  final Paint pivotPaint = Paint();
+  final Paint capPaint = Paint();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -19,33 +31,31 @@ class CompassPainter extends CustomPainter {
     final dialRadius = outerRadius - 12.0;
 
     // 1. Draw outer chrome bezel sweep gradient (3D ring)
-    final bezelPaint = Paint()
-      ..shader = AppColors.kGradientChromeSweep.createShader(
-        Rect.fromCircle(center: center, radius: outerRadius),
-      );
+    bezelPaint.shader = AppColors.kGradientChromeSweep.createShader(
+      Rect.fromCircle(center: center, radius: outerRadius),
+    );
     canvas.drawCircle(center, outerRadius, bezelPaint);
 
     // Dark bezel inner shadow groove
-    final groovePaint = Paint()
+    groovePaint
       ..color = const Color(0xFF0F0F0F)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
     canvas.drawCircle(center, dialRadius + 1.0, groovePaint);
 
     // 2. Draw dial face (dark carbon/brushed center plate)
-    final facePaint = Paint()
-      ..shader = const RadialGradient(
-        colors: [Color(0xFF222222), Color(0xFF141414), Color(0xFF0C0C0C)],
-        stops: [0.0, 0.7, 1.0],
-      ).createShader(Rect.fromCircle(center: center, radius: dialRadius));
+    facePaint.shader = const RadialGradient(
+      colors: [Color(0xFF222222), Color(0xFF141414), Color(0xFF0C0C0C)],
+      stops: [0.0, 0.7, 1.0],
+    ).createShader(Rect.fromCircle(center: center, radius: dialRadius));
     canvas.drawCircle(center, dialRadius, facePaint);
 
     // 3. Draw static dial marks (ticks and degree labels)
-    final tickPaint = Paint()
+    tickPaint
       ..color = AppColors.kChromeMid.withAlpha(150)
       ..strokeWidth = 1.0;
 
-    final majorTickPaint = Paint()
+    majorTickPaint
       ..color = AppColors.kChromeLight
       ..strokeWidth = 2.0;
 
@@ -110,7 +120,7 @@ class CompassPainter extends CustomPainter {
     const double needleWidth = 12.0;
 
     // Draw shadow under the needle
-    final shadowPaint = Paint()
+    shadowPaint
       ..color = Colors.black.withAlpha(120)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5.0);
 
@@ -121,61 +131,55 @@ class CompassPainter extends CustomPainter {
     canvas.drawPath(southPath.shift(const Offset(2, 4)), shadowPaint);
 
     // North Needle (Red Teardrop)
-    final northPaint = Paint()
-      ..shader =
-          const RadialGradient(
-            center: Alignment(-0.25, -0.3),
-            colors: [
-              Color(0xFFFF8B8B), // highlight
-              AppColors.kCompassNorth,
-              Color(0xFF7D1616), // shade
-            ],
-            stops: [0.0, 0.6, 1.0],
-          ).createShader(
-            Rect.fromLTWH(
-              -needleWidth,
-              -needleLength,
-              needleWidth * 2,
-              needleLength,
-            ),
-          );
+    northPaint.shader = const RadialGradient(
+      center: Alignment(-0.25, -0.3),
+      colors: [
+        Color(0xFFFF8B8B), // highlight
+        AppColors.kCompassNorth,
+        Color(0xFF7D1616), // shade
+      ],
+      stops: [0.0, 0.6, 1.0],
+    ).createShader(
+      Rect.fromLTWH(
+        -needleWidth,
+        -needleLength,
+        needleWidth * 2,
+        needleLength,
+      ),
+    );
     canvas.drawPath(northPath, northPaint);
 
     // South Needle (Silver Teardrop)
-    final southPaint = Paint()
-      ..shader =
-          const RadialGradient(
-            center: Alignment(-0.25, 0.3),
-            colors: [
-              Color(0xFFFFFFFF),
-              AppColors.kChromeMid,
-              AppColors.kChromeDarker,
-            ],
-            stops: [0.0, 0.55, 1.0],
-          ).createShader(
-            Rect.fromLTWH(-needleWidth, 0, needleWidth * 2, needleLength),
-          );
+    southPaint.shader = const RadialGradient(
+      center: Alignment(-0.25, 0.3),
+      colors: [
+        Color(0xFFFFFFFF),
+        AppColors.kChromeMid,
+        AppColors.kChromeDarker,
+      ],
+      stops: [0.0, 0.55, 1.0],
+    ).createShader(
+      Rect.fromLTWH(-needleWidth, 0, needleWidth * 2, needleLength),
+    );
     canvas.drawPath(southPath, southPaint);
 
     // Draw central mechanical pivot pin (metallic brass look)
-    final pinShadow = Paint()
+    pinShadow
       ..color = Colors.black.withAlpha(150)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
     canvas.drawCircle(Offset.zero, 12.0, pinShadow);
 
-    final pivotPaint = Paint()
-      ..shader = const RadialGradient(
-        center: Alignment(-0.3, -0.3),
-        colors: [Color(0xFFFFEA9F), Color(0xFFCCA214), Color(0xFF6B5102)],
-        stops: [0.0, 0.55, 1.0],
-      ).createShader(const Rect.fromLTRB(-10, -10, 10, 10));
+    pivotPaint.shader = const RadialGradient(
+      center: Alignment(-0.3, -0.3),
+      colors: [Color(0xFFFFEA9F), Color(0xFFCCA214), Color(0xFF6B5102)],
+      stops: [0.0, 0.55, 1.0],
+    ).createShader(const Rect.fromLTRB(-10, -10, 10, 10));
     canvas.drawCircle(Offset.zero, 10.0, pivotPaint);
 
     // Draw central silver cap inside pivot pin
-    final capPaint = Paint()
-      ..shader = const LinearGradient(
-        colors: [Colors.white, AppColors.kChromeMid],
-      ).createShader(const Rect.fromLTRB(-4, -4, 4, 4));
+    capPaint.shader = const LinearGradient(
+      colors: [Colors.white, AppColors.kChromeMid],
+    ).createShader(const Rect.fromLTRB(-4, -4, 4, 4));
     canvas.drawCircle(Offset.zero, 4.0, capPaint);
 
     canvas.restore();

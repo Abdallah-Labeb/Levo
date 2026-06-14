@@ -9,7 +9,7 @@ import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
-import 'package:levo/core/widgets/noise_texture_helper.dart';
+import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/l10n/l10n_extension.dart';
@@ -156,7 +156,6 @@ class CompassView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isAr = Directionality.of(context) == TextDirection.rtl;
     final cubit = context.read<CompassCubit>();
 
     return BlocBuilder<CompassCubit, CompassState>(
@@ -174,14 +173,7 @@ class CompassView extends StatelessWidget {
 
         return Scaffold(
           appBar: LevoAppBar(title: l10n.compassTitle),
-          body: ShaderMask(
-            shaderCallback: (rect) {
-              return NoiseTextureHelper.getNoiseShader(rect) ??
-                  const LinearGradient(
-                    colors: [Colors.transparent, Colors.transparent],
-                  ).createShader(rect);
-            },
-            blendMode: BlendMode.srcOver,
+          body: NoiseBackground(
             child: SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

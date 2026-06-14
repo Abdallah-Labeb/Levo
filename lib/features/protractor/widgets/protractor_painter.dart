@@ -7,7 +7,7 @@ import 'package:levo/app/theme/app_typography.dart';
 /// Draws charcoal grid lines on off-white paper, division index rings,
 /// and a glowing orange filled circular sector between Arm A and Arm B.
 class ProtractorPainter extends CustomPainter {
-  const ProtractorPainter({
+  ProtractorPainter({
     required this.angleA,
     required this.angleB,
     required this.reflexEnabled,
@@ -17,6 +17,18 @@ class ProtractorPainter extends CustomPainter {
   final double angleB;
   final bool reflexEnabled;
 
+  final Paint bgPaint = Paint();
+  final Paint gridPaint = Paint();
+  final Paint sectorPaint = Paint();
+  final Paint axisPaint = Paint();
+  final Paint tickPaint = Paint();
+  final Paint majorTickPaint = Paint();
+  final Paint armAPaint = Paint();
+  final Paint armBPaint = Paint();
+  final Paint pivotShadow = Paint();
+  final Paint pivotPaint = Paint();
+  final Paint pinCapPaint = Paint();
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
@@ -24,11 +36,11 @@ class ProtractorPainter extends CustomPainter {
     final outerRingRadius = dialRadius + 5.0;
 
     // 1. Draw warm drafts-paper warm off-white background fill
-    final bgPaint = Paint()..color = const Color(0xFFF3EFE3);
+    bgPaint.color = const Color(0xFFF3EFE3);
     canvas.drawRect(Rect.fromLTWH(0.0, 0.0, size.width, size.height), bgPaint);
 
     // 2. Draw charcoal graph paper grids (spacing 20.0 logical pixels)
-    final gridPaint = Paint()
+    gridPaint
       ..color = const Color(0xFFE0D9C8)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.5;
@@ -61,7 +73,7 @@ class ProtractorPainter extends CustomPainter {
       sweep = diff;
     }
 
-    final sectorPaint = Paint()
+    sectorPaint
       ..color = AppColors.kOrange.withAlpha(50)
       ..style = PaintingStyle.fill;
 
@@ -74,7 +86,7 @@ class ProtractorPainter extends CustomPainter {
     );
 
     // 4. Draw Protractor Scale circular index rings
-    final axisPaint = Paint()
+    axisPaint
       ..color = const Color(0xFF6E6759)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
@@ -82,11 +94,11 @@ class ProtractorPainter extends CustomPainter {
     canvas.drawCircle(center, outerRingRadius, axisPaint);
 
     // 5. Draw graduation tick marks around the scale
-    final tickPaint = Paint()
+    tickPaint
       ..color = const Color(0xFF6E6759)
       ..strokeWidth = 1.0;
 
-    final majorTickPaint = Paint()
+    majorTickPaint
       ..color = const Color(0xFF4A443B)
       ..strokeWidth = 1.5;
 
@@ -133,11 +145,11 @@ class ProtractorPainter extends CustomPainter {
     }
 
     // 6. Draw Arm A & B lines extending from pivot
-    final armAPaint = Paint()
+    armAPaint
       ..color = AppColors.kOrangeDark
       ..strokeWidth = 2.0;
 
-    final armBPaint = Paint()
+    armBPaint
       ..color = AppColors.kYellowDark
       ..strokeWidth = 2.0;
 
@@ -165,20 +177,19 @@ class ProtractorPainter extends CustomPainter {
     );
 
     // 7. Draw machined center pivot peg (brass mechanical center)
-    final pivotShadow = Paint()
+    pivotShadow
       ..color = Colors.black.withAlpha(80)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
     canvas.drawCircle(center, 9.0, pivotShadow);
 
-    final pivotPaint = Paint()
-      ..shader = const RadialGradient(
-        center: Alignment(-0.25, -0.25),
-        colors: [Color(0xFFFFEA9F), Color(0xFFCCA214), Color(0xFF6B5102)],
-        stops: [0.0, 0.55, 1.0],
-      ).createShader(Rect.fromCircle(center: center, radius: 8.0));
+    pivotPaint.shader = const RadialGradient(
+      center: Alignment(-0.25, -0.25),
+      colors: [Color(0xFFFFEA9F), Color(0xFFCCA214), Color(0xFF6B5102)],
+      stops: [0.0, 0.55, 1.0],
+    ).createShader(Rect.fromCircle(center: center, radius: 8.0));
     canvas.drawCircle(center, 8.0, pivotPaint);
 
-    final pinCapPaint = Paint()..color = const Color(0xFFE0DDC5);
+    pinCapPaint.color = const Color(0xFFE0DDC5);
     canvas.drawCircle(center, 3.0, pinCapPaint);
   }
 

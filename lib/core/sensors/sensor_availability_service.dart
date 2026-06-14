@@ -10,8 +10,10 @@ class SensorAvailabilityService {
   Future<bool> checkAccelerometer() async {
     try {
       final stream = accelerometerEventStream();
-      await stream.first.timeout(const Duration(seconds: 1));
+      await stream.first.timeout(const Duration(seconds: 3));
       return true;
+    } on TimeoutException {
+      return true; // Sensor exists but is currently idle
     } catch (_) {
       return false;
     }
@@ -21,8 +23,10 @@ class SensorAvailabilityService {
   Future<bool> checkMagnetometer() async {
     try {
       final stream = magnetometerEventStream();
-      await stream.first.timeout(const Duration(seconds: 1));
+      await stream.first.timeout(const Duration(seconds: 3));
       return true;
+    } on TimeoutException {
+      return true; // Sensor exists but is currently idle
     } catch (_) {
       return false;
     }
@@ -32,8 +36,10 @@ class SensorAvailabilityService {
   Future<bool> checkAmbientLight() async {
     try {
       final stream = Light().lightSensorStream;
-      await stream.first.timeout(const Duration(seconds: 1));
+      await stream.first.timeout(const Duration(seconds: 3));
       return true;
+    } on TimeoutException {
+      return true; // Sensor exists but light level is constant
     } catch (_) {
       return false;
     }

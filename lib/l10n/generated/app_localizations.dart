@@ -1255,6 +1255,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Calibration data reset successfully'**
   String get settingsResetCalibrationSuccess;
+
+  /// No description provided for @protractorVertical.
+  ///
+  /// In en, this message translates to:
+  /// **'Vertical'**
+  String get protractorVertical;
+
+  /// No description provided for @commonCopySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard!'**
+  String get commonCopySuccess;
 }
 
 class _AppLocalizationsDelegate

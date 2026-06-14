@@ -16,4 +16,6 @@
 -keepclassmembers class * {
     @com.google.android.gms.common.annotation.KeepName *;
 }
--keepattribs *Annotation*,Signature,InnerClasses,EnclosingMethod
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
+-dontwarn com.google.android.play.core.**
+

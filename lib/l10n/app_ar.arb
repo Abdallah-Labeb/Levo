@@ -197,5 +197,7 @@
   "settingsResetAllCalibration": "إعادة ضبط جميع المعايرات",
   "settingsOpenSourceLicenses": "التراخيص مفتوحة المصدر",
   "settingsResetCalibrationConfirm": "هل أنت متأكد من رغبتك في مسح كافة قيم المعايرة المخزنة؟",
-  "settingsResetCalibrationSuccess": "تمت إعادة ضبط جميع القيم بنجاح"
+  "settingsResetCalibrationSuccess": "تمت إعادة ضبط جميع القيم بنجاح",
+  "protractorVertical": "عمودي",
+  "commonCopySuccess": "تم النسخ إلى الحافظة!"
 }

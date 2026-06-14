@@ -197,5 +197,7 @@
   "settingsResetAllCalibration": "Reset All Calibration Data",
   "settingsOpenSourceLicenses": "Open Source Licenses",
   "settingsResetCalibrationConfirm": "Are you sure you want to clear all stored calibration data?",
-  "settingsResetCalibrationSuccess": "Calibration data reset successfully"
+  "settingsResetCalibrationSuccess": "Calibration data reset successfully",
+  "protractorVertical": "Vertical",
+  "commonCopySuccess": "Copied to clipboard!"
 }

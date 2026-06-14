@@ -9,7 +9,7 @@ import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/core/widgets/tool_card.dart';
-import 'package:levo/core/widgets/noise_texture_helper.dart';
+import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/features/home/bloc/sensor_availability_cubit.dart';
 import 'package:levo/features/home/bloc/sensor_availability_state.dart';
 import 'package:levo/l10n/l10n_extension.dart';
@@ -231,14 +231,7 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(width: AppDimensions.space8),
               ],
             ),
-            body: ShaderMask(
-              shaderCallback: (rect) {
-                return NoiseTextureHelper.getNoiseShader(rect) ??
-                    const LinearGradient(
-                      colors: [Colors.transparent, Colors.transparent],
-                    ).createShader(rect);
-              },
-              blendMode: BlendMode.srcOver,
+            body: NoiseBackground(
               child: state.isLoading
                   ? Center(
                       child: Text(

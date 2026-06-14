@@ -608,4 +608,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsResetCalibrationSuccess =>
       'Calibration data reset successfully';
+
+  @override
+  String get protractorVertical => 'Vertical';
+
+  @override
+  String get commonCopySuccess => 'Copied to clipboard!';
 }

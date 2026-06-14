@@ -8,7 +8,7 @@ import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
-import 'package:levo/core/widgets/noise_texture_helper.dart';
+import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
@@ -155,14 +155,7 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
 
         return Scaffold(
           appBar: LevoAppBar(title: l10n.metalDetectorTitle),
-          body: ShaderMask(
-            shaderCallback: (rect) {
-              return NoiseTextureHelper.getNoiseShader(rect) ??
-                  const LinearGradient(
-                    colors: [Colors.transparent, Colors.transparent],
-                  ).createShader(rect);
-            },
-            blendMode: BlendMode.srcOver,
+          body: NoiseBackground(
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(

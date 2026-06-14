@@ -177,7 +177,7 @@ class _PlumbBobWidgetState extends State<PlumbBobWidget>
 }
 
 class PlumbBobPainter extends CustomPainter {
-  const PlumbBobPainter({
+  PlumbBobPainter({
     required this.theta,
     required this.dy,
     required this.status,
@@ -186,6 +186,14 @@ class PlumbBobPainter extends CustomPainter {
   final double theta;
   final double dy;
   final LevelStatus status;
+
+  final Paint pegPaint = Paint();
+  final Paint shadowPaint = Paint();
+  final Paint stringPaint = Paint();
+  final Paint bobShadowPaint = Paint();
+  final Paint bobFillPaint = Paint();
+  final Paint collarPaint = Paint();
+  final Paint loopPaint = Paint();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -202,17 +210,15 @@ class PlumbBobPainter extends CustomPainter {
     final double bobCenterY = startY + length * math.cos(theta);
 
     // Draw suspension peg at the top center
-    final pegPaint = Paint()
-      ..shader =
-          const RadialGradient(
-            colors: [AppColors.kChromeLight, AppColors.kChromeDark],
-          ).createShader(
-            Rect.fromCircle(center: Offset(startX, startY), radius: 6.0),
-          );
+    pegPaint.shader = const RadialGradient(
+      colors: [AppColors.kChromeLight, AppColors.kChromeDark],
+    ).createShader(
+      Rect.fromCircle(center: Offset(startX, startY), radius: 6.0),
+    );
     canvas.drawCircle(Offset(startX, startY), 6.0, pegPaint);
 
     // Draw pendulum string line (machined dark thread shadow + thread line)
-    final shadowPaint = Paint()
+    shadowPaint
       ..color = Colors.black.withAlpha(120)
       ..strokeWidth = 1.5;
     // Offset shadow slightly to the right-bottom
@@ -222,7 +228,7 @@ class PlumbBobPainter extends CustomPainter {
       shadowPaint,
     );
 
-    final stringPaint = Paint()
+    stringPaint
       ..color = AppColors.kChromeMid
       ..strokeWidth = 1.2;
     canvas.drawLine(
@@ -242,7 +248,7 @@ class PlumbBobPainter extends CustomPainter {
     canvas.rotate(theta);
 
     // Draw a shadow for the bob shape
-    final bobShadowPaint = Paint()
+    bobShadowPaint
       ..color = Colors.black.withAlpha(100)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4.0);
 
@@ -250,27 +256,25 @@ class PlumbBobPainter extends CustomPainter {
     canvas.drawPath(bobPath.shift(const Offset(3, 4)), bobShadowPaint);
 
     // Fill brass bob
-    final bobFillPaint = Paint()
-      ..shader =
-          const RadialGradient(
-            center: Alignment(-0.25, -0.3),
-            colors: [
-              Color(0xFFFFF0B3), // highlight
-              Color(0xFFDFB831), // brass mid
-              Color(0xFF7A610B), // brass dark shade
-            ],
-            stops: [0.0, 0.55, 1.0],
-          ).createShader(
-            Rect.fromCenter(
-              center: Offset.zero,
-              width: bobWidth,
-              height: bobHeight,
-            ),
-          );
+    bobFillPaint.shader = const RadialGradient(
+      center: Alignment(-0.25, -0.3),
+      colors: [
+        Color(0xFFFFF0B3), // highlight
+        Color(0xFFDFB831), // brass mid
+        Color(0xFF7A610B), // brass dark shade
+      ],
+      stops: [0.0, 0.55, 1.0],
+    ).createShader(
+      Rect.fromCenter(
+        center: Offset.zero,
+        width: bobWidth,
+        height: bobHeight,
+      ),
+    );
     canvas.drawPath(bobPath, bobFillPaint);
 
     // Draw brass tip highlight or collar lines
-    final collarPaint = Paint()
+    collarPaint
       ..color = const Color(0xFF665108)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
@@ -281,7 +285,7 @@ class PlumbBobPainter extends CustomPainter {
     );
 
     // Draw small attachment loop at top of bob
-    final loopPaint = Paint()
+    loopPaint
       ..color = AppColors.kChromeMid
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;

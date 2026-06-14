@@ -7,7 +7,7 @@ import 'package:levo/features/ruler/bloc/ruler_state.dart';
 /// Custom Painter that renders the physical ruler markings (metric/imperial)
 /// and drag overlays for custom dimensions measurement.
 class RulerPainter extends CustomPainter {
-  const RulerPainter({
+  RulerPainter({
     required this.unit,
     required this.scaleFactor,
     required this.markerA,
@@ -22,15 +22,20 @@ class RulerPainter extends CustomPainter {
   static const double kBaseDpi = 160.0;
   static const double kMmPerInch = 25.4;
 
+  final Paint tickPaint = Paint();
+  final Paint majorTickPaint = Paint();
+  final Paint selectionPaint = Paint();
+  final Paint dashPaint = Paint();
+
   @override
   void paint(Canvas canvas, Size size) {
     // 1. Draw ruler tick markings along the left edge of the screen
-    final tickPaint = Paint()
+    tickPaint
       ..color = AppColors.kChromeMid.withAlpha(180)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 
-    final majorTickPaint = Paint()
+    majorTickPaint
       ..color = AppColors.kTextPrimary
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
@@ -127,7 +132,7 @@ class RulerPainter extends CustomPainter {
       final double top = math.min(markerA!, markerB!);
       final double bottom = math.max(markerA!, markerB!);
 
-      final selectionPaint = Paint()
+      selectionPaint
         ..color = AppColors.kYellow.withAlpha(20)
         ..style = PaintingStyle.fill;
 
@@ -138,7 +143,7 @@ class RulerPainter extends CustomPainter {
       );
 
       // Draw dashed guideline border inside the selection band
-      final dashPaint = Paint()
+      dashPaint
         ..color = AppColors.kYellow.withAlpha(60)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.0;

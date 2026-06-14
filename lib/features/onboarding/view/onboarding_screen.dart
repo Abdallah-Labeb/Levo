@@ -7,7 +7,7 @@ import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
-import 'package:levo/core/widgets/noise_texture_helper.dart';
+import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 
 /// Walkthrough shown on the very first launch of the application.
@@ -48,14 +48,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ShaderMask(
-        shaderCallback: (rect) {
-          return NoiseTextureHelper.getNoiseShader(rect) ??
-              const LinearGradient(
-                colors: [Colors.transparent, Colors.transparent],
-              ).createShader(rect);
-        },
-        blendMode: BlendMode.srcOver,
+      body: NoiseBackground(
         child: Padding(
           padding: const EdgeInsets.all(AppDimensions.paddingXL),
           child: Column(

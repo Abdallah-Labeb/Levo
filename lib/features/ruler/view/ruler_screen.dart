@@ -9,7 +9,7 @@ import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/levo_banner.dart';
-import 'package:levo/core/widgets/noise_texture_helper.dart';
+import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
@@ -181,14 +181,7 @@ class _RulerViewState extends State<RulerView> {
 
     return Scaffold(
       appBar: LevoAppBar(title: l10n.rulerTitle),
-      body: ShaderMask(
-        shaderCallback: (rect) {
-          return NoiseTextureHelper.getNoiseShader(rect) ??
-              const LinearGradient(
-                colors: [Colors.transparent, Colors.transparent],
-              ).createShader(rect);
-        },
-        blendMode: BlendMode.srcOver,
+      body: NoiseBackground(
         child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {

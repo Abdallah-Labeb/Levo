@@ -8,7 +8,8 @@ import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
-import 'package:levo/core/widgets/noise_texture_helper.dart';
+import 'package:levo/core/widgets/noise_background.dart';
+import 'package:levo/core/widgets/levo_banner.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/l10n/l10n_extension.dart';
@@ -92,20 +93,10 @@ class _UnitConverterViewState extends State<UnitConverterView> {
     final formatted = _formatDouble(context, val);
     Clipboard.setData(ClipboardData(text: "$formatted $unit")).then((_) {
       if (context.mounted) {
-        final isAr = Directionality.of(context) == TextDirection.rtl;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: AppColors.kSurfaceInset,
-            content: Text(
-              isAr
-                  ? "تم نسخ النتيجة إلى الحافظة!"
-                  : "Copied result to clipboard!",
-              style: AppTypography.kBodySmall.copyWith(
-                color: AppColors.kYellow,
-              ),
-            ),
-            duration: const Duration(seconds: 2),
-          ),
+        LevoBanner.show(
+          context,
+          message: context.l10n.commonCopySuccess,
+          type: LevoBannerType.success,
         );
       }
     });
@@ -128,14 +119,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
 
         return Scaffold(
           appBar: LevoAppBar(title: l10n.unitConverterTitle),
-          body: ShaderMask(
-            shaderCallback: (rect) {
-              return NoiseTextureHelper.getNoiseShader(rect) ??
-                  const LinearGradient(
-                    colors: [Colors.transparent, Colors.transparent],
-                  ).createShader(rect);
-            },
-            blendMode: BlendMode.srcOver,
+          body: NoiseBackground(
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(AppDimensions.paddingL),

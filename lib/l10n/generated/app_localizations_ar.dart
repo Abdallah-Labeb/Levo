@@ -613,4 +613,10 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get settingsResetCalibrationSuccess =>
       'تمت إعادة ضبط جميع القيم بنجاح';
+
+  @override
+  String get protractorVertical => 'عمودي';
+
+  @override
+  String get commonCopySuccess => 'تم النسخ إلى الحافظة!';
 }
