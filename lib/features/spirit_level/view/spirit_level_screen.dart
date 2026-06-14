@@ -242,7 +242,7 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                                 Column(
                                   children: [
                                     Text(
-                                      isAr ? "الانحراف" : "Roll",
+                                      l10n.spiritLevelLabelDeviation,
                                       style: AppTypography.kCaption.copyWith(
                                         color: AppColors.kTextSecondary,
                                       ),
@@ -270,7 +270,7 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                                 Column(
                                   children: [
                                     Text(
-                                      isAr ? "الميل" : "Pitch",
+                                      l10n.spiritLevelLabelPitch,
                                       style: AppTypography.kCaption.copyWith(
                                         color: AppColors.kTextSecondary,
                                       ),
@@ -293,7 +293,7 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                                 Column(
                                   children: [
                                     Text(
-                                      isAr ? "الدوران" : "Roll",
+                                      l10n.spiritLevelLabelRoll,
                                       style: AppTypography.kCaption.copyWith(
                                         color: AppColors.kTextSecondary,
                                       ),

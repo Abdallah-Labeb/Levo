@@ -127,10 +127,18 @@ class _BubbleLevel1dWidgetState extends State<BubbleLevel1dWidget>
 }
 
 class BubbleLevel1dPainter extends CustomPainter {
-  const BubbleLevel1dPainter({required this.x, required this.status});
+  BubbleLevel1dPainter({required this.x, required this.status});
 
   final double x;
   final LevelStatus status;
+
+  final Paint bgPaint = Paint();
+  final Paint wallPaint = Paint();
+  final Paint linePaint = Paint();
+  final Paint tickPaint = Paint();
+  final Paint bubblePaint = Paint();
+  final Paint specularPaint = Paint();
+  final Paint glassShinePaint = Paint();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -139,21 +147,20 @@ class BubbleLevel1dPainter extends CustomPainter {
     final centerX = size.width / 2;
 
     // Draw background fluid tint
-    final bgPaint = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Color(0xFF0F1A12),
-          Color(0xFF060B08),
-          Color(0xFF0C160E),
-        ],
-        stops: [0.0, 0.5, 1.0],
-      ).createShader(rect);
+    bgPaint.shader = const LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color(0xFF0F1A12),
+        Color(0xFF060B08),
+        Color(0xFF0C160E),
+      ],
+      stops: [0.0, 0.5, 1.0],
+    ).createShader(rect);
     canvas.drawRect(rect, bgPaint);
 
     // Draw tube inner wall highlights (3D glass tube look)
-    final wallPaint = Paint()
+    wallPaint
       ..color = Colors.white.withAlpha(20)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
@@ -165,7 +172,7 @@ class BubbleLevel1dPainter extends CustomPainter {
     );
 
     // Draw level guidelines (two lines near center for target alignment)
-    final linePaint = Paint()
+    linePaint
       ..color = (status == LevelStatus.level
           ? AppColors.kLevelGreen.withAlpha(180)
           : AppColors.kChromeMid.withAlpha(100))
@@ -185,7 +192,7 @@ class BubbleLevel1dPainter extends CustomPainter {
     );
 
     // Draw secondary tick marks
-    final tickPaint = Paint()
+    tickPaint
       ..color = AppColors.kChromeDark.withAlpha(100)
       ..strokeWidth = 1.0;
     for (int i = -3; i <= 3; i++) {
@@ -209,31 +216,30 @@ class BubbleLevel1dPainter extends CustomPainter {
     final Color bubbleColor = status == LevelStatus.level
         ? AppColors.kLevelGreen
         : (status == LevelStatus.close
-              ? AppColors.kWarningYellow
-              : const Color(0xFF5AB676));
+            ? AppColors.kWarningYellow
+            : const Color(0xFF5AB676));
 
     final Color bubbleDarkColor = status == LevelStatus.level
         ? const Color(0xFF1E522F)
         : (status == LevelStatus.close
-              ? const Color(0xFF524410)
-              : const Color(0xFF234C32));
+            ? const Color(0xFF524410)
+            : const Color(0xFF234C32));
 
     // Draw bubble capsule
     final RRect bubbleRRect = RRect.fromRectAndRadius(
       bubbleRect,
       const Radius.circular(14),
     );
-    final bubblePaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [const Color(0xFFE6FFED), bubbleColor, bubbleDarkColor],
-        stops: const [0.0, 0.6, 1.0],
-      ).createShader(bubbleRect);
+    bubblePaint.shader = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [const Color(0xFFE6FFED), bubbleColor, bubbleDarkColor],
+      stops: const [0.0, 0.6, 1.0],
+    ).createShader(bubbleRect);
     canvas.drawRRect(bubbleRRect, bubblePaint);
 
     // Draw specular glare highlight inside bubble capsule
-    final specularPaint = Paint()..color = Colors.white.withAlpha(200);
+    specularPaint.color = Colors.white.withAlpha(200);
     final RRect specularRRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(
         bubbleRect.left + 5,
@@ -246,18 +252,17 @@ class BubbleLevel1dPainter extends CustomPainter {
     canvas.drawRRect(specularRRect, specularPaint);
 
     // Draw outer reflections on tube (light reflection spanning across horizontal tube)
-    final glassShinePaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Colors.white.withAlpha(35),
-          Colors.white.withAlpha(0),
-          Colors.white.withAlpha(0),
-          Colors.white.withAlpha(15),
-        ],
-        stops: const [0.0, 0.25, 0.85, 1.0],
-      ).createShader(rect);
+    glassShinePaint.shader = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Colors.white.withAlpha(35),
+        Colors.white.withAlpha(0),
+        Colors.white.withAlpha(0),
+        Colors.white.withAlpha(15),
+      ],
+      stops: const [0.0, 0.25, 0.85, 1.0],
+    ).createShader(rect);
     canvas.drawRect(rect, glassShinePaint);
   }
 

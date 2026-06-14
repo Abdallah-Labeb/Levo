@@ -227,7 +227,7 @@ class ProtractorView extends StatelessWidget {
                               child: TactileButton(
                                 onPressed: () => cubit.toggleSnap(),
                                 isActive: state.snapEnabled,
-                                text: isAr ? "جذب (15°)" : "Snap (15°)",
+                                text: l10n.protractorButtonSnap,
                                 icon: const Icon(Icons.grid_on),
                               ),
                             ),
@@ -236,7 +236,7 @@ class ProtractorView extends StatelessWidget {
                               child: TactileButton(
                                 onPressed: () => cubit.toggleReflex(),
                                 isActive: state.reflexEnabled,
-                                text: isAr ? "زاوية منعكسة" : "Reflex Angle",
+                                text: l10n.protractorButtonReflex,
                                 icon: const Icon(Icons.rotate_right),
                               ),
                             ),

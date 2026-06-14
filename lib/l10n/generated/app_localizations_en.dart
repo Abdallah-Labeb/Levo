@@ -502,4 +502,110 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sensorNameConversionSolver => 'Conversion Solver';
+
+  @override
+  String get commonCancel => 'Cancel';
+
+  @override
+  String get commonAllow => 'Allow';
+
+  @override
+  String get commonGrantAccess => 'Grant Access';
+
+  @override
+  String get permissionPermanentlyDeniedTitle => 'Permission Blocked';
+
+  @override
+  String get permissionMicBodyDialog =>
+      'Levo needs access to your microphone to measure ambient noise levels in decibels.';
+
+  @override
+  String get permissionMicDeniedPermanentlyBody =>
+      'Microphone permission has been permanently denied. Please enable it in system settings to use the Sound Level Meter.';
+
+  @override
+  String get permissionLocationBodyDialog =>
+      'Levo needs access to your location once to compute the local magnetic declination for true north.';
+
+  @override
+  String get permissionLocationDeniedPermanentlyBody =>
+      'Location permission has been permanently denied. Please enable it in system settings to compute True North offsets.';
+
+  @override
+  String get permissionCameraBodyDialog =>
+      'Levo needs access to your camera to estimate ambient light when the physical light sensor is unavailable.';
+
+  @override
+  String get permissionCameraDeniedPermanentlyBody =>
+      'Camera permission has been permanently denied. Please enable it in system settings to use light estimation.';
+
+  @override
+  String get rulerCalibrationBody =>
+      'Place a credit card or sheet edges between Handles A & B, then choose a preset below to calibrate.';
+
+  @override
+  String get rulerCalibrationSuccess => 'Ruler calibrated successfully';
+
+  @override
+  String get protractorButtonSnap => 'Snap (15°)';
+
+  @override
+  String get protractorButtonReflex => 'Reflex Angle';
+
+  @override
+  String get spiritLevelLabelPitch => 'Pitch';
+
+  @override
+  String get spiritLevelLabelRoll => 'Roll';
+
+  @override
+  String get spiritLevelLabelDeviation => 'Deviation';
+
+  @override
+  String get compassLabelHeading => 'Heading';
+
+  @override
+  String get compassLabelCardinal => 'Cardinal';
+
+  @override
+  String get compassLabelLock => 'Lock';
+
+  @override
+  String get compassLabelUnlock => 'Unlock';
+
+  @override
+  String get settingsThemeDarkOnly => '(Dark only)';
+
+  @override
+  String get settingsResetCalibrationTitle => 'Reset Calibration';
+
+  @override
+  String get settingsResetButton => 'Reset';
+
+  @override
+  String get settingsSpiritLevelOffsets => 'Spirit Level Offsets';
+
+  @override
+  String get settingsAppVersion => 'App Version';
+
+  @override
+  String get compassDirections =>
+      'N,NNE,NE,ENE,E,ESE,SE,SSE,S,SSW,SW,WSW,W,WNW,NW,NNW';
+
+  @override
+  String get settingsRulerCalibrationScale => 'Ruler Calibration Scale';
+
+  @override
+  String get settingsResetAllCalibration => 'Reset All Calibration Data';
+
+  @override
+  String get settingsOpenSourceLicenses => 'Open Source Licenses';
+
+  @override
+  String get settingsResetCalibrationConfirm =>
+      'Are you sure you want to clear all stored calibration data?';
+
+  @override
+  String get settingsResetCalibrationSuccess =>
+      'Calibration data reset successfully';
 }

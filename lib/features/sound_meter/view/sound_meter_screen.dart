@@ -53,7 +53,7 @@ class SoundMeterView extends StatelessWidget {
   }
 
   void _requestPermission(BuildContext context, SoundMeterCubit cubit) async {
-    final isAr = Directionality.of(context) == TextDirection.rtl;
+    final l10n = context.l10n;
     final status = await Permission.microphone.status;
 
     if (status.isGranted) {
@@ -66,24 +66,28 @@ class SoundMeterView extends StatelessWidget {
             return AlertDialog(
               backgroundColor: AppColors.kSurface,
               title: Text(
-                isAr ? "إذن الميكروفون" : "Microphone Access",
+                l10n.permissionMicTitle,
                 style: AppTypography.kTitleL,
               ),
               content: Text(
-                isAr
-                    ? "ليفو يحتاج الوصول للميكروفون لقياس شدة الضوضاء بوحدة الديسيبل."
-                    : "Levo needs access to your microphone to measure ambient noise levels in decibels.",
+                l10n.permissionMicBodyDialog,
                 style: AppTypography.kBody,
               ),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    isAr ? "إلغاء" : "Cancel",
-                    style: const TextStyle(color: AppColors.kChromeLight),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.paddingM,
+                    vertical: AppDimensions.paddingS,
                   ),
+                  onPressed: () => Navigator.pop(context),
+                  text: l10n.commonCancel,
                 ),
-                TextButton(
+                const SizedBox(width: AppDimensions.space8),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.paddingM,
+                    vertical: AppDimensions.paddingS,
+                  ),
                   onPressed: () async {
                     Navigator.pop(context);
                     final result = await Permission.microphone.request();
@@ -91,10 +95,7 @@ class SoundMeterView extends StatelessWidget {
                       cubit.setPermissionGranted(true);
                     }
                   },
-                  child: Text(
-                    isAr ? "السماح" : "Allow",
-                    style: const TextStyle(color: AppColors.kYellow),
-                  ),
+                  text: l10n.commonAllow,
                 ),
               ],
             );
@@ -109,32 +110,33 @@ class SoundMeterView extends StatelessWidget {
             return AlertDialog(
               backgroundColor: AppColors.kSurface,
               title: Text(
-                isAr ? "الإذن مرفوض نهائياً" : "Permission Blocked",
+                l10n.permissionPermanentlyDeniedTitle,
                 style: AppTypography.kTitleL,
               ),
               content: Text(
-                isAr
-                    ? "إذن الميكروفون مرفوض بشكل دائم. يرجى تفعيله من إعدادات النظام للبدء في استخدام مقياس الصوت."
-                    : "Microphone permission has been permanently denied. Please enable it in system settings to use the Sound Level Meter.",
+                l10n.permissionMicDeniedPermanentlyBody,
                 style: AppTypography.kBody,
               ),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    isAr ? "إلغاء" : "Cancel",
-                    style: const TextStyle(color: AppColors.kChromeLight),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.paddingM,
+                    vertical: AppDimensions.paddingS,
                   ),
+                  onPressed: () => Navigator.pop(context),
+                  text: l10n.commonCancel,
                 ),
-                TextButton(
+                const SizedBox(width: AppDimensions.space8),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.paddingM,
+                    vertical: AppDimensions.paddingS,
+                  ),
                   onPressed: () async {
                     Navigator.pop(context);
                     await openAppSettings();
                   },
-                  child: Text(
-                    isAr ? "فتح الإعدادات" : "Open Settings",
-                    style: const TextStyle(color: AppColors.kYellow),
-                  ),
+                  text: l10n.commonButtonOpenSettings,
                 ),
               ],
             );
@@ -245,7 +247,7 @@ class SoundMeterView extends StatelessWidget {
                               TactileButton(
                                 onPressed: () =>
                                     _requestPermission(context, cubit),
-                                text: isAr ? "منح الصلاحية" : "Grant Access",
+                                text: l10n.commonGrantAccess,
                                 icon: const Icon(Icons.check),
                               ),
                             ],

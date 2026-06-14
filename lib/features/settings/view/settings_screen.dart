@@ -13,6 +13,8 @@ import 'package:levo/features/settings/bloc/settings_cubit.dart';
 import 'package:levo/features/settings/bloc/settings_state.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 
+import 'package:levo/core/widgets/levo_banner.dart';
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
@@ -23,47 +25,44 @@ class SettingsScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        final isAr = Directionality.of(context) == TextDirection.rtl;
+        final l10n = context.l10n;
         return AlertDialog(
           backgroundColor: AppColors.kSurface,
           title: Text(
-            isAr ? "إعادة ضبط المعايرة" : "Reset Calibration",
+            l10n.settingsResetCalibrationTitle,
             style: AppTypography.kTitleL,
           ),
           content: Text(
-            isAr
-                ? "هل أنت متأكد من رغبتك في مسح كافة قيم المعايرة المخزنة؟"
-                : "Are you sure you want to clear all stored calibration data?",
+            l10n.settingsResetCalibrationConfirm,
             style: AppTypography.kBody,
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(
-                isAr ? "إلغاء" : "Cancel",
-                style: const TextStyle(color: AppColors.kChromeLight),
+            TactileButton(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.paddingM,
+                vertical: AppDimensions.paddingS,
               ),
+              onPressed: () => Navigator.pop(context),
+              text: l10n.commonCancel,
             ),
-            TextButton(
+            const SizedBox(width: AppDimensions.space8),
+            TactileButton(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.paddingM,
+                vertical: AppDimensions.paddingS,
+              ),
               onPressed: () async {
                 await prefs.clearAllCalibration();
                 if (context.mounted) {
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        isAr
-                            ? "تمت إعادة ضبط جميع القيم بنجاح"
-                            : "Calibration data reset successfully",
-                      ),
-                    ),
+                  LevoBanner.show(
+                    context,
+                    message: l10n.settingsResetCalibrationSuccess,
+                    type: LevoBannerType.success,
                   );
                 }
               },
-              child: Text(
-                isAr ? "إعادة ضبط" : "Reset",
-                style: const TextStyle(color: AppColors.kDangerRed),
-              ),
+              text: l10n.settingsResetButton,
             ),
           ],
         );
@@ -151,7 +150,7 @@ class SettingsScreen extends StatelessWidget {
                           style: AppTypography.kBodySmall,
                         ),
                         trailing: Text(
-                          isAr ? "(داكن فقط)" : "(Dark only)",
+                          context.l10n.settingsThemeDarkOnly,
                           style: AppTypography.kCaption.copyWith(
                             color: AppColors.kChromeMid,
                           ),
@@ -261,7 +260,7 @@ class SettingsScreen extends StatelessWidget {
                     children: [
                       ListTile(
                         title: Text(
-                          isAr ? "معايرة ميزان الماء" : "Spirit Level Offsets",
+                          context.l10n.settingsSpiritLevelOffsets,
                           style: AppTypography.kBody,
                         ),
                         subtitle: Text(
@@ -272,9 +271,7 @@ class SettingsScreen extends StatelessWidget {
                       const Divider(color: AppColors.kDivider),
                       ListTile(
                         title: Text(
-                          isAr
-                              ? "مقياس معايرة المسطرة"
-                              : "Ruler Calibration Scale",
+                          context.l10n.settingsRulerCalibrationScale,
                           style: AppTypography.kBody,
                         ),
                         subtitle: Text(
@@ -285,9 +282,7 @@ class SettingsScreen extends StatelessWidget {
                       const Divider(color: AppColors.kDivider),
                       ListTile(
                         title: Text(
-                          isAr
-                              ? "إعادة ضبط جميع المعايرات"
-                              : "Reset All Calibration Data",
+                          context.l10n.settingsResetAllCalibration,
                           style: AppTypography.kBody.copyWith(
                             color: AppColors.kDangerRed,
                           ),
@@ -382,7 +377,7 @@ class SettingsScreen extends StatelessWidget {
                     children: [
                       ListTile(
                         title: Text(
-                          isAr ? "إصدار التطبيق" : "App Version",
+                          context.l10n.settingsAppVersion,
                           style: AppTypography.kBody,
                         ),
                         trailing: Text(
@@ -395,9 +390,7 @@ class SettingsScreen extends StatelessWidget {
                       const Divider(color: AppColors.kDivider),
                       ListTile(
                         title: Text(
-                          isAr
-                              ? "التراخيص مفتوحة المصدر"
-                              : "Open Source Licenses",
+                          context.l10n.settingsOpenSourceLicenses,
                           style: AppTypography.kBody,
                         ),
                         trailing: const Icon(

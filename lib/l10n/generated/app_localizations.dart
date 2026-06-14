@@ -1063,6 +1063,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Conversion Solver'**
   String get sensorNameConversionSolver;
+
+  /// No description provided for @commonCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get commonCancel;
+
+  /// No description provided for @commonAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get commonAllow;
+
+  /// No description provided for @commonGrantAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant Access'**
+  String get commonGrantAccess;
+
+  /// No description provided for @permissionPermanentlyDeniedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Blocked'**
+  String get permissionPermanentlyDeniedTitle;
+
+  /// No description provided for @permissionMicBodyDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Levo needs access to your microphone to measure ambient noise levels in decibels.'**
+  String get permissionMicBodyDialog;
+
+  /// No description provided for @permissionMicDeniedPermanentlyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission has been permanently denied. Please enable it in system settings to use the Sound Level Meter.'**
+  String get permissionMicDeniedPermanentlyBody;
+
+  /// No description provided for @permissionLocationBodyDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Levo needs access to your location once to compute the local magnetic declination for true north.'**
+  String get permissionLocationBodyDialog;
+
+  /// No description provided for @permissionLocationDeniedPermanentlyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission has been permanently denied. Please enable it in system settings to compute True North offsets.'**
+  String get permissionLocationDeniedPermanentlyBody;
+
+  /// No description provided for @permissionCameraBodyDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Levo needs access to your camera to estimate ambient light when the physical light sensor is unavailable.'**
+  String get permissionCameraBodyDialog;
+
+  /// No description provided for @permissionCameraDeniedPermanentlyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission has been permanently denied. Please enable it in system settings to use light estimation.'**
+  String get permissionCameraDeniedPermanentlyBody;
+
+  /// No description provided for @rulerCalibrationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Place a credit card or sheet edges between Handles A & B, then choose a preset below to calibrate.'**
+  String get rulerCalibrationBody;
+
+  /// No description provided for @rulerCalibrationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Ruler calibrated successfully'**
+  String get rulerCalibrationSuccess;
+
+  /// No description provided for @protractorButtonSnap.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap (15°)'**
+  String get protractorButtonSnap;
+
+  /// No description provided for @protractorButtonReflex.
+  ///
+  /// In en, this message translates to:
+  /// **'Reflex Angle'**
+  String get protractorButtonReflex;
+
+  /// No description provided for @spiritLevelLabelPitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Pitch'**
+  String get spiritLevelLabelPitch;
+
+  /// No description provided for @spiritLevelLabelRoll.
+  ///
+  /// In en, this message translates to:
+  /// **'Roll'**
+  String get spiritLevelLabelRoll;
+
+  /// No description provided for @spiritLevelLabelDeviation.
+  ///
+  /// In en, this message translates to:
+  /// **'Deviation'**
+  String get spiritLevelLabelDeviation;
+
+  /// No description provided for @compassLabelHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading'**
+  String get compassLabelHeading;
+
+  /// No description provided for @compassLabelCardinal.
+  ///
+  /// In en, this message translates to:
+  /// **'Cardinal'**
+  String get compassLabelCardinal;
+
+  /// No description provided for @compassLabelLock.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock'**
+  String get compassLabelLock;
+
+  /// No description provided for @compassLabelUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get compassLabelUnlock;
+
+  /// No description provided for @settingsThemeDarkOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'(Dark only)'**
+  String get settingsThemeDarkOnly;
+
+  /// No description provided for @settingsResetCalibrationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Calibration'**
+  String get settingsResetCalibrationTitle;
+
+  /// No description provided for @settingsResetButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get settingsResetButton;
+
+  /// No description provided for @settingsSpiritLevelOffsets.
+  ///
+  /// In en, this message translates to:
+  /// **'Spirit Level Offsets'**
+  String get settingsSpiritLevelOffsets;
+
+  /// No description provided for @settingsAppVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'App Version'**
+  String get settingsAppVersion;
+
+  /// No description provided for @compassDirections.
+  ///
+  /// In en, this message translates to:
+  /// **'N,NNE,NE,ENE,E,ESE,SE,SSE,S,SSW,SW,WSW,W,WNW,NW,NNW'**
+  String get compassDirections;
+
+  /// No description provided for @settingsRulerCalibrationScale.
+  ///
+  /// In en, this message translates to:
+  /// **'Ruler Calibration Scale'**
+  String get settingsRulerCalibrationScale;
+
+  /// No description provided for @settingsResetAllCalibration.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset All Calibration Data'**
+  String get settingsResetAllCalibration;
+
+  /// No description provided for @settingsOpenSourceLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Source Licenses'**
+  String get settingsOpenSourceLicenses;
+
+  /// No description provided for @settingsResetCalibrationConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear all stored calibration data?'**
+  String get settingsResetCalibrationConfirm;
+
+  /// No description provided for @settingsResetCalibrationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibration data reset successfully'**
+  String get settingsResetCalibrationSuccess;
 }
 
 class _AppLocalizationsDelegate

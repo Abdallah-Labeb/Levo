@@ -14,15 +14,17 @@ class SensorAvailabilityCubit extends Cubit<SensorAvailabilityState> {
   Future<void> checkSensors() async {
     emit(state.copyWith(isLoading: true));
 
-    final isAccelAvailable = await _sensorService.checkAccelerometer();
-    final isMagAvailable = await _sensorService.checkMagnetometer();
-    final isLightAvailable = await _sensorService.checkAmbientLight();
+    final results = await Future.wait([
+      _sensorService.checkAccelerometer(),
+      _sensorService.checkMagnetometer(),
+      _sensorService.checkAmbientLight(),
+    ]);
 
     emit(
       SensorAvailabilityState(
-        isAccelerometerAvailable: isAccelAvailable,
-        isMagnetometerAvailable: isMagAvailable,
-        isLightSensorAvailable: isLightAvailable,
+        isAccelerometerAvailable: results[0],
+        isMagnetometerAvailable: results[1],
+        isLightSensorAvailable: results[2],
         isLoading: false,
       ),
     );

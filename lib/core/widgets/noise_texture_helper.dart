@@ -19,18 +19,22 @@ class NoiseTextureHelper {
   static Future<ui.Image> _generateNoise(int width, int height) async {
     final completer = Completer<ui.Image>();
     final size = width * height;
-    final pixels = Uint32List(size);
+    final pixels = Uint8List(size * 4);
     final random = math.Random();
 
     for (int i = 0; i < size; i++) {
       // Small random alpha value (representing 3% to 7% opacity grain)
       final alpha = random.nextInt(10) + 8; // 8 to 17 alpha value (out of 255)
       const grey = 128; // neutral grey grain
-      pixels[i] = (alpha << 24) | (grey << 16) | (grey << 8) | grey;
+      final index = i * 4;
+      pixels[index] = grey;      // Red
+      pixels[index + 1] = grey;  // Green
+      pixels[index + 2] = grey;  // Blue
+      pixels[index + 3] = alpha; // Alpha
     }
 
     ui.decodeImageFromPixels(
-      pixels.buffer.asUint8List(),
+      pixels,
       width,
       height,
       ui.PixelFormat.rgba8888,

@@ -63,7 +63,7 @@ class LightMeterView extends StatelessWidget {
     BuildContext context,
     LightMeterCubit cubit,
   ) async {
-    final isAr = Directionality.of(context) == TextDirection.rtl;
+    final l10n = context.l10n;
     final status = await Permission.camera.status;
 
     if (status.isGranted) {
@@ -76,32 +76,33 @@ class LightMeterView extends StatelessWidget {
             return AlertDialog(
               backgroundColor: AppColors.kSurface,
               title: Text(
-                isAr ? "إذن الكاميرا" : "Camera Access",
+                l10n.permissionCameraTitle,
                 style: AppTypography.kTitleL,
               ),
               content: Text(
-                isAr
-                    ? "ليفو يحتاج الوصول للكاميرا لتقدير شدة الإضاءة عبر مستشعر الكاميرا كبديل."
-                    : "Levo needs access to your camera to estimate ambient light levels using the camera sensor fallback.",
+                l10n.permissionCameraBodyDialog,
                 style: AppTypography.kBody,
               ),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    isAr ? "إلغاء" : "Cancel",
-                    style: const TextStyle(color: AppColors.kChromeLight),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.paddingM,
+                    vertical: AppDimensions.paddingS,
                   ),
+                  onPressed: () => Navigator.pop(context),
+                  text: l10n.commonCancel,
                 ),
-                TextButton(
+                const SizedBox(width: AppDimensions.space8),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.paddingM,
+                    vertical: AppDimensions.paddingS,
+                  ),
                   onPressed: () async {
                     Navigator.pop(context);
                     cubit.requestCameraPermission();
                   },
-                  child: Text(
-                    isAr ? "السماح" : "Allow",
-                    style: const TextStyle(color: AppColors.kYellow),
-                  ),
+                  text: l10n.commonAllow,
                 ),
               ],
             );
@@ -116,32 +117,33 @@ class LightMeterView extends StatelessWidget {
             return AlertDialog(
               backgroundColor: AppColors.kSurface,
               title: Text(
-                isAr ? "الإذن مرفوض نهائياً" : "Permission Blocked",
+                l10n.permissionPermanentlyDeniedTitle,
                 style: AppTypography.kTitleL,
               ),
               content: Text(
-                isAr
-                    ? "إذن الكاميرا مرفوض بشكل دائم. يرجى تفعيله من إعدادات النظام للبدء في استخدام مقياس الإضاءة الاحتياطي."
-                    : "Camera permission has been permanently denied. Please enable it in system settings to use the camera light fallback.",
+                l10n.permissionCameraDeniedPermanentlyBody,
                 style: AppTypography.kBody,
               ),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    isAr ? "إلغاء" : "Cancel",
-                    style: const TextStyle(color: AppColors.kChromeLight),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.paddingM,
+                    vertical: AppDimensions.paddingS,
                   ),
+                  onPressed: () => Navigator.pop(context),
+                  text: l10n.commonCancel,
                 ),
-                TextButton(
+                const SizedBox(width: AppDimensions.space8),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.paddingM,
+                    vertical: AppDimensions.paddingS,
+                  ),
                   onPressed: () async {
                     Navigator.pop(context);
                     await openAppSettings();
                   },
-                  child: Text(
-                    isAr ? "فتح الإعدادات" : "Open Settings",
-                    style: const TextStyle(color: AppColors.kYellow),
-                  ),
+                  text: l10n.commonButtonOpenSettings,
                 ),
               ],
             );
@@ -246,7 +248,7 @@ class LightMeterView extends StatelessWidget {
                               TactileButton(
                                 onPressed: () =>
                                     _requestCameraPermission(context, cubit),
-                                text: isAr ? "منح الصلاحية" : "Grant Access",
+                                text: l10n.commonGrantAccess,
                                 icon: const Icon(Icons.check),
                               ),
                             ],

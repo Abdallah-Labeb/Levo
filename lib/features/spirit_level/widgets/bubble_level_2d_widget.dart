@@ -148,7 +148,7 @@ class _BubbleLevel2dWidgetState extends State<BubbleLevel2dWidget>
 }
 
 class BubbleLevel2dPainter extends CustomPainter {
-  const BubbleLevel2dPainter({
+  BubbleLevel2dPainter({
     required this.x,
     required this.y,
     required this.status,
@@ -158,26 +158,33 @@ class BubbleLevel2dPainter extends CustomPainter {
   final double y;
   final LevelStatus status;
 
+  final Paint bgPaint = Paint();
+  final Paint ringPaint = Paint();
+  final Paint centerTargetPaint = Paint();
+  final Paint bubblePaint = Paint();
+  final Paint specularPaint = Paint();
+  final Paint glassPaint = Paint();
+  final Paint glassBorderPaint = Paint();
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final outerRadius = size.width / 2;
 
     // Draw background fluid container (dark-green tint fluid glass)
-    final bgPaint = Paint()
-      ..shader = const RadialGradient(
-        colors: [Color(0xFF0F1A12), Color(0xFF070B08)],
-      ).createShader(Rect.fromCircle(center: center, radius: outerRadius));
+    bgPaint.shader = const RadialGradient(
+      colors: [Color(0xFF0F1A12), Color(0xFF070B08)],
+    ).createShader(Rect.fromCircle(center: center, radius: outerRadius));
     canvas.drawCircle(center, outerRadius, bgPaint);
 
     // Draw grid rings (concentric target rings)
-    final ringPaint = Paint()
+    ringPaint
       ..color = AppColors.kChromeDark.withAlpha(120)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 
     // Perfect Center Target
-    final centerTargetPaint = Paint()
+    centerTargetPaint
       ..color = (status == LevelStatus.level
           ? AppColors.kLevelGreen.withAlpha(150)
           : AppColors.kChromeMid.withAlpha(80))
@@ -213,29 +220,27 @@ class BubbleLevel2dPainter extends CustomPainter {
     final Color bubbleBaseColor = status == LevelStatus.level
         ? AppColors.kLevelGreen
         : (status == LevelStatus.close
-              ? AppColors.kWarningYellow
-              : const Color(0xFF5AB676));
+            ? AppColors.kWarningYellow
+            : const Color(0xFF5AB676));
 
     final Color bubbleDarkColor = status == LevelStatus.level
         ? const Color(0xFF1E522F)
         : (status == LevelStatus.close
-              ? const Color(0xFF524410)
-              : const Color(0xFF234C32));
+            ? const Color(0xFF524410)
+            : const Color(0xFF234C32));
 
     // Draw the bubble 3D gradient
-    final bubblePaint = Paint()
-      ..shader =
-          RadialGradient(
-            center: const Alignment(-0.25, -0.25), // light source top-left
-            colors: [const Color(0xFFE6FFED), bubbleBaseColor, bubbleDarkColor],
-            stops: const [0.0, 0.65, 1.0],
-          ).createShader(
-            Rect.fromCircle(center: bubbleCenter, radius: bubbleRadius),
-          );
+    bubblePaint.shader = RadialGradient(
+      center: const Alignment(-0.25, -0.25), // light source top-left
+      colors: [const Color(0xFFE6FFED), bubbleBaseColor, bubbleDarkColor],
+      stops: const [0.0, 0.65, 1.0],
+    ).createShader(
+      Rect.fromCircle(center: bubbleCenter, radius: bubbleRadius),
+    );
     canvas.drawCircle(bubbleCenter, bubbleRadius, bubblePaint);
 
     // Draw specular reflection highlight on the bubble
-    final specularPaint = Paint()
+    specularPaint
       ..color = Colors.white.withAlpha(220)
       ..style = PaintingStyle.fill;
     canvas.drawCircle(
@@ -248,15 +253,14 @@ class BubbleLevel2dPainter extends CustomPainter {
     );
 
     // Draw outer glass glare overlay (half-moon shine on top right/left)
-    final glassPaint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [Colors.white.withAlpha(40), Colors.white.withAlpha(0)],
-      ).createShader(Rect.fromCircle(center: center, radius: outerRadius));
+    glassPaint.shader = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [Colors.white.withAlpha(40), Colors.white.withAlpha(0)],
+    ).createShader(Rect.fromCircle(center: center, radius: outerRadius));
     canvas.drawCircle(center, outerRadius, glassPaint);
 
-    final glassBorderPaint = Paint()
+    glassBorderPaint
       ..color = Colors.white.withAlpha(25)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;

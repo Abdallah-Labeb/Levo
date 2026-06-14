@@ -40,48 +40,13 @@ class CompassView extends StatelessWidget {
   }
 
   String _getLocalizedCardinal(BuildContext context, double heading) {
-    final isAr = Directionality.of(context) == TextDirection.rtl;
-
-    // 16 cardinal direction sectors
-    const directionsEn = [
-      'N',
-      'NNE',
-      'NE',
-      'ENE',
-      'E',
-      'ESE',
-      'SE',
-      'SSE',
-      'S',
-      'SSW',
-      'SW',
-      'WSW',
-      'W',
-      'WNW',
-      'NW',
-      'NNW',
-    ];
-    const directionsAr = [
-      'شمال (N)',
-      'شمال-شمال شرقي',
-      'شمال شرقي (NE)',
-      'شرق-شمال شرقي',
-      'شرق (E)',
-      'شرق-جنوب شرقي',
-      'جنوب شرقي (SE)',
-      'جنوب-جنوب شرقي',
-      'جنوب (S)',
-      'جنوب-جنوب غربي',
-      'جنوب غربي (SW)',
-      'غرب-جنوب غربي',
-      'غرب (W)',
-      'غرب-شمال غربي',
-      'شمال غربي (NW)',
-      'شمال-شمال غربي',
-    ];
-
+    final l10n = context.l10n;
+    final directions = l10n.compassDirections.split(',');
     final index = ((heading + 11.25) % 360.0 / 22.5).floor();
-    return isAr ? directionsAr[index] : directionsEn[index];
+    if (index >= 0 && index < directions.length) {
+      return directions[index];
+    }
+    return '';
   }
 
   void _onTrueNorthToggle(
@@ -94,7 +59,7 @@ class CompassView extends StatelessWidget {
       return;
     }
 
-    final isAr = Directionality.of(context) == TextDirection.rtl;
+    final l10n = context.l10n;
 
     // Check location permission status before requesting
     final status = await Permission.locationWhenInUse.status;
@@ -108,24 +73,28 @@ class CompassView extends StatelessWidget {
             return AlertDialog(
               backgroundColor: AppColors.kSurface,
               title: Text(
-                isAr ? "إذن الموقع الجغرافي" : "Location Access",
+                l10n.permissionLocationTitle,
                 style: AppTypography.kTitleL,
               ),
               content: Text(
-                isAr
-                    ? "ليفو يحتاج للوصول لموقعك لمرة واحدة فقط لحساب الانحراف المغناطيسي للقطب الشمالي."
-                    : "Levo needs access to your location once to compute the local magnetic declination for true north.",
+                l10n.permissionLocationBodyDialog,
                 style: AppTypography.kBody,
               ),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    isAr ? "إلغاء" : "Cancel",
-                    style: const TextStyle(color: AppColors.kChromeLight),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.paddingM,
+                    vertical: AppDimensions.paddingS,
                   ),
+                  onPressed: () => Navigator.pop(context),
+                  text: l10n.commonCancel,
                 ),
-                TextButton(
+                const SizedBox(width: AppDimensions.space8),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.paddingM,
+                    vertical: AppDimensions.paddingS,
+                  ),
                   onPressed: () async {
                     Navigator.pop(context);
                     final result = await Permission.locationWhenInUse.request();
@@ -133,10 +102,7 @@ class CompassView extends StatelessWidget {
                       await cubit.enableTrueNorth(true);
                     }
                   },
-                  child: Text(
-                    isAr ? "السماح" : "Allow",
-                    style: const TextStyle(color: AppColors.kYellow),
-                  ),
+                  text: l10n.commonAllow,
                 ),
               ],
             );
@@ -151,32 +117,33 @@ class CompassView extends StatelessWidget {
             return AlertDialog(
               backgroundColor: AppColors.kSurface,
               title: Text(
-                isAr ? "الإذن مرفوض نهائياً" : "Permission Blocked",
+                l10n.permissionPermanentlyDeniedTitle,
                 style: AppTypography.kTitleL,
               ),
               content: Text(
-                isAr
-                    ? "تم رفض إذن الموقع بشكل دائم. يرجى تفعيله من إعدادات النظام للوصول لخدمة الشمال الحقيقي."
-                    : "Location permission has been permanently denied. Please enable it in system settings to compute True North offsets.",
+                l10n.permissionLocationDeniedPermanentlyBody,
                 style: AppTypography.kBody,
               ),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    isAr ? "إلغاء" : "Cancel",
-                    style: const TextStyle(color: AppColors.kChromeLight),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.paddingM,
+                    vertical: AppDimensions.paddingS,
                   ),
+                  onPressed: () => Navigator.pop(context),
+                  text: l10n.commonCancel,
                 ),
-                TextButton(
+                const SizedBox(width: AppDimensions.space8),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.paddingM,
+                    vertical: AppDimensions.paddingS,
+                  ),
                   onPressed: () async {
                     Navigator.pop(context);
                     await openAppSettings();
                   },
-                  child: Text(
-                    isAr ? "فتح الإعدادات" : "Open Settings",
-                    style: const TextStyle(color: AppColors.kYellow),
-                  ),
+                  text: l10n.commonButtonOpenSettings,
                 ),
               ],
             );
@@ -348,7 +315,7 @@ class CompassView extends StatelessWidget {
                           Column(
                             children: [
                               Text(
-                                isAr ? "الاتجاه" : "Heading",
+                                l10n.compassLabelHeading,
                                 style: AppTypography.kCaption.copyWith(
                                   color: AppColors.kTextSecondary,
                                 ),
@@ -362,7 +329,7 @@ class CompassView extends StatelessWidget {
                           Column(
                             children: [
                               Text(
-                                isAr ? "الربع" : "Cardinal",
+                                l10n.compassLabelCardinal,
                                 style: AppTypography.kCaption.copyWith(
                                   color: AppColors.kTextSecondary,
                                 ),
@@ -397,7 +364,7 @@ class CompassView extends StatelessWidget {
                             isActive: state.isLocked,
                             text: state.isLocked
                                 ? l10n.compassLocked
-                                : (isAr ? "قفل" : "Lock"),
+                                : l10n.compassLabelLock,
                             icon: Icon(
                               state.isLocked ? Icons.lock : Icons.lock_open,
                             ),

@@ -507,4 +507,110 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sensorNameConversionSolver => 'محرك الحسابات (Mathematics Engine)';
+
+  @override
+  String get commonCancel => 'إلغاء';
+
+  @override
+  String get commonAllow => 'السماح';
+
+  @override
+  String get commonGrantAccess => 'منح الصلاحية';
+
+  @override
+  String get permissionPermanentlyDeniedTitle => 'الإذن مرفوض نهائياً';
+
+  @override
+  String get permissionMicBodyDialog =>
+      'ليفو يحتاج الوصول للميكروفون لقياس شدة الضوضاء بوحدة الديسيبل.';
+
+  @override
+  String get permissionMicDeniedPermanentlyBody =>
+      'إذن الميكروفون مرفوض بشكل دائم. يرجى تفعيله من إعدادات النظام للبدء في استخدام مقياس الصوت.';
+
+  @override
+  String get permissionLocationBodyDialog =>
+      'ليفو يحتاج للوصول لموقعك لمرة واحدة فقط لحساب الانحراف المغناطيسي للقطب الشمالي.';
+
+  @override
+  String get permissionLocationDeniedPermanentlyBody =>
+      'تم رفض إذن الموقع بشكل دائم. يرجى تفعيله من إعدادات النظام للوصول لخدمة الشمال الحقيقي.';
+
+  @override
+  String get permissionCameraBodyDialog =>
+      'ليفو يحتاج للوصول إلى الكاميرا لتقدير الضوء المحيط عند عدم توفر مستشعر الضوء.';
+
+  @override
+  String get permissionCameraDeniedPermanentlyBody =>
+      'تم رفض إذن الكاميرا بشكل دائم. يرجى تفعيله من إعدادات النظام لاستخدام تقدير الضوء.';
+
+  @override
+  String get rulerCalibrationBody =>
+      'قم بمحاذاة بطاقة الائتمان أو الورقة المرجعية بين المقبضين أ وب، ثم حدد نوع البطاقة لمعايرة دقة المسطرة.';
+
+  @override
+  String get rulerCalibrationSuccess => 'تمت معايرة المسطرة بنجاح';
+
+  @override
+  String get protractorButtonSnap => 'جذب (15°)';
+
+  @override
+  String get protractorButtonReflex => 'زاوية منعكسة';
+
+  @override
+  String get spiritLevelLabelPitch => 'الميل';
+
+  @override
+  String get spiritLevelLabelRoll => 'الدوران';
+
+  @override
+  String get spiritLevelLabelDeviation => 'الانحراف';
+
+  @override
+  String get compassLabelHeading => 'الاتجاه';
+
+  @override
+  String get compassLabelCardinal => 'الربع';
+
+  @override
+  String get compassLabelLock => 'قفل';
+
+  @override
+  String get compassLabelUnlock => 'فتح القفل';
+
+  @override
+  String get settingsThemeDarkOnly => '(داكن فقط)';
+
+  @override
+  String get settingsResetCalibrationTitle => 'إعادة ضبط المعايرة';
+
+  @override
+  String get settingsResetButton => 'إعادة ضبط';
+
+  @override
+  String get settingsSpiritLevelOffsets => 'معايرة ميزان الماء';
+
+  @override
+  String get settingsAppVersion => 'إصدار التطبيق';
+
+  @override
+  String get compassDirections =>
+      'شمال (N),شمال-شمال شرقي,شمال شرقي (NE),شرق-شمال شرقي,شرق (E),شرق-جنوب شرقي,جنوب شرقي (SE),جنوب-جنوب شرقي,جنوب (S),جنوب-جنوب غربي,جنوب غربي (SW),غرب-جنوب غربي,غرب (W),غرب-شمال غربي,شمال غربي (NW),شمال-شمال غربي';
+
+  @override
+  String get settingsRulerCalibrationScale => 'مقياس معايرة المسطرة';
+
+  @override
+  String get settingsResetAllCalibration => 'إعادة ضبط جميع المعايرات';
+
+  @override
+  String get settingsOpenSourceLicenses => 'التراخيص مفتوحة المصدر';
+
+  @override
+  String get settingsResetCalibrationConfirm =>
+      'هل أنت متأكد من رغبتك في مسح كافة قيم المعايرة المخزنة؟';
+
+  @override
+  String get settingsResetCalibrationSuccess =>
+      'تمت إعادة ضبط جميع القيم بنجاح';
 }

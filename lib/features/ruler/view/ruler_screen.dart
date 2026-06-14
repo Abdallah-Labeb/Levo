@@ -77,7 +77,6 @@ class _RulerViewState extends State<RulerView> {
     showDialog(
       context: context,
       builder: (context) {
-        final isAr = Directionality.of(context) == TextDirection.rtl;
         final l10n = context.l10n;
 
         return AlertDialog(
@@ -88,9 +87,7 @@ class _RulerViewState extends State<RulerView> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                isAr
-                    ? "قم بمحاذاة بطاقة الائتمان أو الورقة المرجعية بين المقبضين أ وب، ثم حدد نوع البطاقة لمعايرة دقة المسطرة."
-                    : "Place a credit card or sheet edges between Handles A & B, then choose a preset below to calibrate.",
+                l10n.rulerCalibrationBody,
                 style: AppTypography.kBodySmall.copyWith(
                   color: AppColors.kTextSecondary,
                 ),
@@ -110,9 +107,7 @@ class _RulerViewState extends State<RulerView> {
                   if (context.mounted) {
                     LevoBanner.show(
                       context,
-                      message: isAr
-                          ? "تمت معايرة المسطرة بنجاح"
-                          : "Ruler calibrated successfully",
+                      message: l10n.rulerCalibrationSuccess,
                       type: LevoBannerType.success,
                     );
                   }
@@ -133,9 +128,7 @@ class _RulerViewState extends State<RulerView> {
                   if (context.mounted) {
                     LevoBanner.show(
                       context,
-                      message: isAr
-                          ? "تمت معايرة المسطرة بنجاح"
-                          : "Ruler calibrated successfully",
+                      message: l10n.rulerCalibrationSuccess,
                       type: LevoBannerType.success,
                     );
                   }
@@ -156,9 +149,7 @@ class _RulerViewState extends State<RulerView> {
                   if (context.mounted) {
                     LevoBanner.show(
                       context,
-                      message: isAr
-                          ? "تمت معايرة المسطرة بنجاح"
-                          : "Ruler calibrated successfully",
+                      message: l10n.rulerCalibrationSuccess,
                       type: LevoBannerType.success,
                     );
                   }
@@ -168,12 +159,13 @@ class _RulerViewState extends State<RulerView> {
             ],
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(
-                isAr ? "إلغاء" : "Cancel",
-                style: const TextStyle(color: AppColors.kChromeLight),
+            TactileButton(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.paddingM,
+                vertical: AppDimensions.paddingS,
               ),
+              onPressed: () => Navigator.pop(context),
+              text: l10n.commonCancel,
             ),
           ],
         );
