@@ -135,7 +135,7 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
       if (!_levelPlayed) {
         _levelPlayed = true;
         if (state.soundOn) {
-          _audioPlayer.play(AssetSource('audio/level_beep.mp3')).catchError((
+          _audioPlayer.play(AssetSource('audio/level_beep.wav')).catchError((
             _,
           ) {
             // Ignore asset missing error in simulation/tests
@@ -174,10 +174,11 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
   }
 
   /// Sets the current angle as the relative zero reference.
+  /// state.pitch/roll already have the previous _refOffset subtracted,
+  /// so we accumulate by adding the current displayed value back.
   void setReference() {
-    // Current pitch/roll (including baseline calibration) becomes reference
-    _refPitchOffset = state.pitch + _refPitchOffset;
-    _refRollOffset = state.roll + _refRollOffset;
+    _refPitchOffset += state.pitch;
+    _refRollOffset += state.roll;
   }
 
   /// Resets the relative zero reference to baseline calibration.

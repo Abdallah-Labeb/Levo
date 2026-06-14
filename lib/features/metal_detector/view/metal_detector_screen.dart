@@ -402,14 +402,12 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                         Expanded(
                           child: TactileButton(
                             onPressed: () => cubit.toggleSound(!state.soundOn),
+                            isActive: state.soundOn,
                             text: state.soundOn ? "SOUND ON" : "SOUND MUTED",
                             icon: Icon(
                               state.soundOn
                                   ? Icons.volume_up_outlined
                                   : Icons.volume_off_outlined,
-                              color: state.soundOn
-                                  ? AppColors.kYellow
-                                  : AppColors.kChromeMid,
                             ),
                           ),
                         ),
@@ -420,14 +418,12 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                           child: TactileButton(
                             onPressed: () =>
                                 cubit.toggleHaptic(!state.hapticOn),
+                            isActive: state.hapticOn,
                             text: state.hapticOn ? "HAPTIC ON" : "HAPTIC MUTED",
                             icon: Icon(
                               state.hapticOn
                                   ? Icons.vibration_outlined
                                   : Icons.phone_android_outlined,
-                              color: state.hapticOn
-                                  ? AppColors.kYellow
-                                  : AppColors.kChromeMid,
                             ),
                           ),
                         ),

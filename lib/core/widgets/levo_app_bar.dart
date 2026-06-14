@@ -16,51 +16,52 @@ class LevoAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final isRtl = Directionality.of(context) == TextDirection.rtl;
+    final topPadding = MediaQuery.of(context).padding.top;
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppDimensions.paddingM,
-          vertical: AppDimensions.paddingXS,
-        ),
-        child: MetalPanel(
-          padding: EdgeInsets.zero,
-          height: AppDimensions.appBarHeight,
-          child: Row(
-            children: [
-              const SizedBox(width: AppDimensions.space8),
-              if (Navigator.of(context).canPop() || onBack != null)
-                GestureDetector(
-                  onTap: onBack ?? () => Navigator.of(context).pop(),
-                  child: Container(
-                    width: AppDimensions.space48,
-                    height: AppDimensions.space48,
-                    decoration: const BoxDecoration(shape: BoxShape.circle),
-                    child: Icon(
-                      isRtl ? Icons.chevron_right : Icons.chevron_left,
-                      color: AppColors.kChromeLight,
-                      size: AppDimensions.iconMedium,
-                    ),
+    return Padding(
+      padding: EdgeInsets.only(
+        left: AppDimensions.paddingM,
+        right: AppDimensions.paddingM,
+        top: topPadding + AppDimensions.paddingXS,
+        bottom: AppDimensions.paddingXS,
+      ),
+      child: MetalPanel(
+        padding: EdgeInsets.zero,
+        height: AppDimensions.appBarHeight,
+        child: Row(
+          children: [
+            const SizedBox(width: AppDimensions.space8),
+            if (Navigator.of(context).canPop() || onBack != null)
+              GestureDetector(
+                onTap: onBack ?? () => Navigator.of(context).pop(),
+                child: Container(
+                  width: 40.0,
+                  height: 40.0,
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                  child: Icon(
+                    isRtl ? Icons.chevron_right : Icons.chevron_left,
+                    color: AppColors.kChromeLight,
+                    size: AppDimensions.iconMedium,
                   ),
-                )
-              else
-                const SizedBox(width: AppDimensions.space48),
-              Expanded(
-                child: Text(
-                  title,
-                  style: AppTypography.kTitleXL,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
+              )
+            else
+              const SizedBox(width: 40.0),
+            Expanded(
+              child: Text(
+                title,
+                style: AppTypography.kTitleXL,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              if (actions != null && actions!.isNotEmpty)
-                Row(mainAxisSize: MainAxisSize.min, children: actions!)
-              else
-                const SizedBox(width: AppDimensions.space48),
-              const SizedBox(width: AppDimensions.space8),
-            ],
-          ),
+            ),
+            if (actions != null && actions!.isNotEmpty)
+              Row(mainAxisSize: MainAxisSize.min, children: actions!)
+            else
+              const SizedBox(width: 40.0),
+            const SizedBox(width: AppDimensions.space8),
+          ],
         ),
       ),
     );
@@ -68,5 +69,5 @@ class LevoAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize =>
-      const Size.fromHeight(AppDimensions.appBarHeight + 8.0);
+      const Size.fromHeight(AppDimensions.appBarHeight + 40.0);
 }

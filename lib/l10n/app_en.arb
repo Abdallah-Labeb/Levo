@@ -199,5 +199,11 @@
   "settingsResetCalibrationConfirm": "Are you sure you want to clear all stored calibration data?",
   "settingsResetCalibrationSuccess": "Calibration data reset successfully",
   "protractorVertical": "Vertical",
-  "commonCopySuccess": "Copied to clipboard!"
+  "commonCopySuccess": "Copied to clipboard!",
+  "unitConverterLabelFrom": "CONVERT FROM",
+  "unitConverterLabelTo": "CONVERT TO",
+  "unitConverterFromUnit": "FROM UNIT",
+  "unitConverterToUnit": "TO UNIT",
+  "settingsDefaultRulerUnit": "Default Ruler Unit",
+  "settingsDefaultConverterCategory": "Default Converter Category"
 }

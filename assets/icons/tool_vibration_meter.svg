@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Device body -->
+  <rect x="16" y="10" width="32" height="44" rx="4" ry="4" fill="#1C1C1C" stroke="#555" stroke-width="1.5"/>
+  <!-- Screen area -->
+  <rect x="20" y="16" width="24" height="22" rx="2" ry="2" fill="#050505" stroke="#3A3A3A" stroke-width="1"/>
+  <!-- Seismograph wave -->
+  <polyline points="20,27 23,27 25,22 27,32 29,24 31,30 33,26 35,28 37,20 39,34 41,27 44,27" fill="none" stroke="#4EBA74" stroke-width="1.5"/>
+  <!-- Center baseline -->
+  <line x1="20" y1="27" x2="44" y2="27" stroke="#1A3A28" stroke-width="0.8"/>
+  <!-- Bottom buttons -->
+  <rect x="22" y="44" width="8" height="5" rx="2" fill="#2A2A2A" stroke="#444" stroke-width="0.8"/>
+  <rect x="34" y="44" width="8" height="5" rx="2" fill="#2A2A2A" stroke="#444" stroke-width="0.8"/>
+  <!-- Vibration indicators on sides -->
+  <line x1="12" y1="24" x2="16" y2="24" stroke="#F5C22B" stroke-width="2" opacity="0.8"/>
+  <line x1="12" y1="28" x2="16" y2="28" stroke="#F5C22B" stroke-width="2" opacity="0.5"/>
+  <line x1="12" y1="32" x2="16" y2="32" stroke="#F5C22B" stroke-width="2" opacity="0.3"/>
+  <line x1="48" y1="24" x2="52" y2="24" stroke="#F5C22B" stroke-width="2" opacity="0.8"/>
+  <line x1="48" y1="28" x2="52" y2="28" stroke="#F5C22B" stroke-width="2" opacity="0.5"/>
+  <line x1="48" y1="32" x2="52" y2="32" stroke="#F5C22B" stroke-width="2" opacity="0.3"/>
+</svg>

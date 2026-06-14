@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Device body -->
+  <rect x="6" y="18" width="52" height="28" rx="4" ry="4" fill="#1C1C1C" stroke="#555" stroke-width="1.5"/>
+  <!-- Screen -->
+  <rect x="10" y="22" width="44" height="20" rx="2" ry="2" fill="#050505" stroke="#3A3A3A" stroke-width="1"/>
+  <!-- Slope surface (tilted line) -->
+  <line x1="12" y1="38" x2="52" y2="26" stroke="#888" stroke-width="2"/>
+  <!-- Angle arc -->
+  <path d="M 20 38 A 10 10 0 0 1 28 30" fill="none" stroke="#F5C22B" stroke-width="1.5"/>
+  <!-- Angle label -->
+  <text x="26" y="40" text-anchor="middle" font-family="monospace" font-size="6" fill="#F5C22B">15°</text>
+  <!-- Plumb line (vertical reference) -->
+  <line x1="20" y1="22" x2="20" y2="42" stroke="#4EBA74" stroke-width="1" stroke-dasharray="2,2"/>
+  <!-- Bubble indicator -->
+  <circle cx="38" cy="32" r="4" fill="none" stroke="#4EBA74" stroke-width="1.5"/>
+  <circle cx="38" cy="32" r="2.5" fill="#4EBA74" opacity="0.3"/>
+  <!-- Grade display -->
+  <text x="48" y="34" text-anchor="middle" font-family="monospace" font-size="5" fill="#888">26%</text>
+  <!-- Bottom edge screws -->
+  <circle cx="14" cy="44" r="1.5" fill="#333" stroke="#555" stroke-width="0.5"/>
+  <circle cx="50" cy="44" r="1.5" fill="#333" stroke="#555" stroke-width="0.5"/>
+</svg>

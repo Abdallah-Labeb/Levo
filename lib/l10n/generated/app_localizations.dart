@@ -1267,6 +1267,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copied to clipboard!'**
   String get commonCopySuccess;
+
+  /// No description provided for @unitConverterLabelFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'CONVERT FROM'**
+  String get unitConverterLabelFrom;
+
+  /// No description provided for @unitConverterLabelTo.
+  ///
+  /// In en, this message translates to:
+  /// **'CONVERT TO'**
+  String get unitConverterLabelTo;
+
+  /// No description provided for @unitConverterFromUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'FROM UNIT'**
+  String get unitConverterFromUnit;
+
+  /// No description provided for @unitConverterToUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'TO UNIT'**
+  String get unitConverterToUnit;
 }
 
 class _AppLocalizationsDelegate

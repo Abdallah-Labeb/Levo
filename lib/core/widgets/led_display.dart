@@ -10,7 +10,7 @@ class LedDisplay extends StatelessWidget {
     required this.value,
     this.unit,
     this.isDim = false,
-    this.textStyle = AppTypography.kDisplayL,
+    this.textStyle = AppTypography.kDisplayM,
   });
 
   final String value;
@@ -52,22 +52,26 @@ class LedDisplay extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppDimensions.radiusDisplay),
         boxShadow: boxShadow,
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.baseline,
-        textBaseline: TextBaseline.alphabetic,
-        children: [
-          Text(value, style: textStyle.copyWith(color: displayColor)),
-          if (unit != null) ...[
-            const SizedBox(width: AppDimensions.space4),
-            Text(
-              unit!,
-              style: AppTypography.kUnitLabel.copyWith(
-                color: AppColors.kDisplayGreenDim.withAlpha(204),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(value, style: textStyle.copyWith(color: displayColor)),
+            if (unit != null) ...[
+              const SizedBox(width: AppDimensions.space4),
+              Text(
+                unit!,
+                style: AppTypography.kUnitLabel.copyWith(
+                  fontSize: 16.0,
+                  color: AppColors.kDisplayGreenDim.withAlpha(204),
+                ),
               ),
-            ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

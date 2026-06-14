@@ -15,6 +15,7 @@ import 'package:levo/features/vibration_meter/bloc/vibration_meter_cubit.dart';
 import 'package:levo/features/light_meter/bloc/light_meter_cubit.dart';
 import 'package:levo/features/metal_detector/bloc/metal_detector_cubit.dart';
 import 'package:levo/features/clinometer/bloc/clinometer_cubit.dart';
+import 'package:levo/features/unit_converter/bloc/unit_converter_cubit.dart';
 
 /// Global service locator instance.
 final getIt = GetIt.instance;
@@ -72,5 +73,9 @@ Future<void> setupDependencies() async {
 
   getIt.registerFactory<ClinometerCubit>(
     () => ClinometerCubit(prefs: getIt<PreferencesService>()),
+  );
+
+  getIt.registerFactory<UnitConverterCubit>(
+    () => UnitConverterCubit(prefs: getIt<PreferencesService>()),
   );
 }

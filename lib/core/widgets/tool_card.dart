@@ -89,16 +89,14 @@ class _ToolCardState extends State<ToolCard> {
         scale: _isPressed ? 0.95 : 1.0,
         duration: AppAnimations.buttonPress,
         curve: Curves.easeIn,
-        child: AspectRatio(
-          aspectRatio: AppDimensions.toolCardAspectRatio,
-          child: AnimatedContainer(
-            duration: _isPressed
-                ? AppAnimations.buttonPress
-                : AppAnimations.buttonRelease,
-            curve: Curves.easeOut,
-            decoration: decoration,
-            padding: const EdgeInsets.all(AppDimensions.paddingM),
-            child: Column(
+        child: AnimatedContainer(
+          duration: _isPressed
+              ? AppAnimations.buttonPress
+              : AppAnimations.buttonRelease,
+          curve: Curves.easeOut,
+          decoration: decoration,
+          padding: const EdgeInsets.all(AppDimensions.paddingM),
+          child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -169,7 +167,6 @@ class _ToolCardState extends State<ToolCard> {
                 ),
               ],
             ),
-          ),
         ),
       ),
     );

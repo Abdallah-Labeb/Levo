@@ -614,4 +614,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonCopySuccess => 'Copied to clipboard!';
+
+  @override
+  String get unitConverterLabelFrom => 'CONVERT FROM';
+
+  @override
+  String get unitConverterLabelTo => 'CONVERT TO';
+
+  @override
+  String get unitConverterFromUnit => 'FROM UNIT';
+
+  @override
+  String get unitConverterToUnit => 'TO UNIT';
 }

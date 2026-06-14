@@ -100,7 +100,7 @@ class MetalDetectorCubit extends Cubit<MetalDetectorState> {
 
       // Play beep sound if enabled
       if (state.soundOn) {
-        _audioPlayer.play(AssetSource('audio/level_beep.mp3')).catchError((_) {
+        _audioPlayer.play(AssetSource('audio/level_beep.wav')).catchError((_) {
           // Ignore asset load exceptions in unit tests
           return null;
         });

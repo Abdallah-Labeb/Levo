@@ -73,20 +73,23 @@ class VibrationMeterCubit extends Cubit<VibrationMeterState> {
   }
 
   /// Sets the average of current vibration samples as the zero-reference baseline.
+  /// Replaces (not accumulates) the baseline to prevent drift across multiple calibrations.
   void calibrateBaseline() {
     if (state.samples.isEmpty) return;
 
-    // Average last 15 samples to establish a steady state baseline
+    // Average last 15 samples to establish a steady state baseline.
+    // samples already have the old baseline subtracted, so we add it back
+    // to get the raw offset from gravity, then set that as the new baseline.
     final int samplesToAverage = math.min(15, state.samples.length);
     final List<double> calibrationData = state.samples.sublist(
       state.samples.length - samplesToAverage,
     );
 
-    final double averageOffset =
+    final double averageDisplayed =
         calibrationData.reduce((a, b) => a + b) / samplesToAverage;
 
-    // Add to existing baseline
-    final double newBaseline = state.baseline + averageOffset;
+    // New absolute baseline = old baseline + current displayed average
+    final double newBaseline = state.baseline + averageDisplayed;
 
     emit(
       state.copyWith(

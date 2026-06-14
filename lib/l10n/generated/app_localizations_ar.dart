@@ -619,4 +619,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get commonCopySuccess => 'تم النسخ إلى الحافظة!';
+
+  @override
+  String get unitConverterLabelFrom => 'تحويل من';
+
+  @override
+  String get unitConverterLabelTo => 'تحويل إلى';
+
+  @override
+  String get unitConverterFromUnit => 'الوحدة المصدر';
+
+  @override
+  String get unitConverterToUnit => 'الوحدة الهدف';
 }

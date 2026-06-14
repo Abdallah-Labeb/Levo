@@ -34,8 +34,8 @@ class SoundMeterScreen extends StatelessWidget {
 class SoundMeterView extends StatelessWidget {
   const SoundMeterView({super.key});
 
-  String _formatDb(BuildContext context, double db, double placeholderVal) {
-    if (db == placeholderVal) return "---";
+  String _formatDb(BuildContext context, double db) {
+    if (db == 0.0 || db.isInfinite || db.isNaN) return "---";
     final locale = Localizations.localeOf(context).toString();
     final formatter = NumberFormat("0.0", locale);
     return formatter.format(db);
@@ -289,7 +289,7 @@ class SoundMeterView extends StatelessWidget {
                               maxLabel: "130",
                               size: 260.0,
                               overlayWidget: LedDisplay(
-                                value: _formatDb(context, state.currentDb, 0.0),
+                                value: _formatDb(context, state.currentDb),
                                 unit: l10n.commonUnitDecibel,
                               ),
                             ),
@@ -338,11 +338,7 @@ class SoundMeterView extends StatelessWidget {
                                       height: AppDimensions.space8,
                                     ),
                                     LedDisplay(
-                                      value: _formatDb(
-                                        context,
-                                        state.minDb,
-                                        120.0,
-                                      ),
+                                      value: _formatDb(context, state.minDb),
                                       textStyle: AppTypography.kDisplayS,
                                     ),
                                   ],
@@ -360,11 +356,7 @@ class SoundMeterView extends StatelessWidget {
                                       height: AppDimensions.space8,
                                     ),
                                     LedDisplay(
-                                      value: _formatDb(
-                                        context,
-                                        state.averageDb,
-                                        0.0,
-                                      ),
+                                      value: _formatDb(context, state.averageDb),
                                       textStyle: AppTypography.kDisplayS,
                                     ),
                                   ],
@@ -382,11 +374,7 @@ class SoundMeterView extends StatelessWidget {
                                       height: AppDimensions.space8,
                                     ),
                                     LedDisplay(
-                                      value: _formatDb(
-                                        context,
-                                        state.peakDb,
-                                        0.0,
-                                      ),
+                                      value: _formatDb(context, state.peakDb),
                                       textStyle: AppTypography.kDisplayS,
                                     ),
                                   ],

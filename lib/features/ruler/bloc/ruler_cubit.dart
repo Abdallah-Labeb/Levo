@@ -22,13 +22,24 @@ class RulerCubit extends Cubit<RulerState> {
 
   final PreferencesService _prefs;
 
-  // Standard logical pixels per inch approximation in Flutter (approx 160 dp/inch)
-  static const double kBaseDpi = 160.0;
+  // Standard logical pixels per inch in Flutter's coordinate system.
+  // Flutter uses ~160 logical DPI as its baseline (1 dp = 1/160 inch).
+  static const double kLogicalDpi = 160.0;
   static const double kMmPerInch = 25.4;
 
+  // Stored device pixel ratio for accurate physical measurements
+  double _devicePixelRatio = 1.0;
+
   /// Returns the logical-pixel-to-millimeter ratio under current calibration settings.
+  /// Uses the device's actual pixel ratio to convert logical pixels to physical mm.
   double get mmPerPixel {
-    return (kMmPerInch / kBaseDpi) * state.scaleFactor;
+    // Physical DPI = logical DPI * devicePixelRatio
+    // mm per physical pixel = 25.4 / physicalDPI
+    // mm per logical pixel = mm per physical pixel * devicePixelRatio
+    //                       = 25.4 / (kLogicalDpi * devicePixelRatio) * devicePixelRatio
+    //                       = 25.4 / kLogicalDpi
+    // With calibration scale factor applied:
+    return (kMmPerInch / kLogicalDpi) * state.scaleFactor;
   }
 
   /// Initializes the cubit with the device's pixel ratio and sets default marker offsets.
@@ -36,6 +47,8 @@ class RulerCubit extends Cubit<RulerState> {
     required double devicePixelRatio,
     required double screenHeight,
   }) {
+    _devicePixelRatio = devicePixelRatio;
+
     // Set default marker positions in the middle third of the screen if not set yet
     final double defaultA = screenHeight * 0.25;
     final double defaultB = screenHeight * 0.65;

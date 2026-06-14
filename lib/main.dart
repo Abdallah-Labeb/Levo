@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:levo/app/di/injection.dart';
 import 'package:levo/app/router/app_router.dart';
 import 'package:levo/app/theme/app_theme.dart';
+import 'package:levo/core/ads/ad_service.dart';
 import 'package:levo/features/settings/bloc/settings_cubit.dart';
 import 'package:levo/features/settings/bloc/settings_state.dart';
 import 'package:levo/l10n/generated/app_localizations.dart';
@@ -13,8 +15,20 @@ void main() async {
   // Ensure Flutter engine bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Lock status bar to light icons on dark background
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+    statusBarBrightness: Brightness.dark,
+    systemNavigationBarColor: Color(0xFF111111),
+    systemNavigationBarIconBrightness: Brightness.light,
+  ));
+
   // Initialize service locator and core dependencies
   await setupDependencies();
+
+  // Initialize Mobile Ads SDK (must run after DI setup)
+  await getIt<AdService>().initialize();
 
   // Pregenerate skeuomorphic noise background shader
   await NoiseTextureHelper.pregenerateNoise();

@@ -15,8 +15,25 @@ import 'package:levo/l10n/l10n_extension.dart';
 
 import 'package:levo/core/widgets/levo_banner.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+
+  /// Validates the stored converter category against the actual enum values.
+  /// Falls back to 'length' if the stored value is invalid (e.g. 'temperature').
+  static const _validCategories = [
+    'length', 'area', 'volume', 'mass', 'speed', 'pressure', 'angle',
+  ];
+
+  String _getValidConverterCategory(String stored) {
+    if (_validCategories.contains(stored)) return stored;
+    return 'length';
+  }
 
   void _showResetCalibrationDialog(
     BuildContext context,
@@ -161,9 +178,7 @@ class SettingsScreen extends StatelessWidget {
                     children: [
                       ListTile(
                         title: Text(
-                          isAr
-                              ? "الوحدة الافتراضية للمسطرة"
-                              : "Default Ruler Unit",
+                          context.l10n.settingsDefaultRulerUnit,
                           style: AppTypography.kBody,
                         ),
                         trailing: DropdownButton<String>(
@@ -180,64 +195,53 @@ class SettingsScreen extends StatelessWidget {
                           ],
                           onChanged: (val) async {
                             await prefs.setRulerDefaultUnit(val!);
-                            // Rebuild setting view
-                            settingsCubit.toggleKeepScreenOn(
-                              state.keepScreenOn,
-                            );
+                            setState(() {});
                           },
                         ),
                       ),
                       const Divider(color: AppColors.kDivider),
                       ListTile(
                         title: Text(
-                          isAr
-                              ? "فئة المحول الافتراضية"
-                              : "Default Converter Category",
+                          context.l10n.settingsDefaultConverterCategory,
                           style: AppTypography.kBody,
                         ),
                         trailing: DropdownButton<String>(
-                          value: prefs.converterDefaultCategory,
+                          value: _getValidConverterCategory(prefs.converterDefaultCategory),
                           dropdownColor: AppColors.kSurface,
                           underline: const SizedBox(),
-                          items: const [
+                          items: [
                             DropdownMenuItem(
                               value: 'length',
-                              child: Text("Length"),
+                              child: Text(context.l10n.unitCategoryLength),
                             ),
                             DropdownMenuItem(
                               value: 'area',
-                              child: Text("Area"),
+                              child: Text(context.l10n.unitCategoryArea),
                             ),
                             DropdownMenuItem(
                               value: 'volume',
-                              child: Text("Volume"),
+                              child: Text(context.l10n.unitCategoryVolume),
                             ),
                             DropdownMenuItem(
                               value: 'mass',
-                              child: Text("Mass"),
-                            ),
-                            DropdownMenuItem(
-                              value: 'temperature',
-                              child: Text("Temperature"),
+                              child: Text(context.l10n.unitCategoryMass),
                             ),
                             DropdownMenuItem(
                               value: 'pressure',
-                              child: Text("Pressure"),
+                              child: Text(context.l10n.unitCategoryPressure),
                             ),
                             DropdownMenuItem(
                               value: 'speed',
-                              child: Text("Speed"),
+                              child: Text(context.l10n.unitCategorySpeed),
                             ),
                             DropdownMenuItem(
                               value: 'angle',
-                              child: Text("Angle"),
+                              child: Text(context.l10n.unitCategoryAngle),
                             ),
                           ],
                           onChanged: (val) async {
                             await prefs.setConverterDefaultCategory(val!);
-                            settingsCubit.toggleKeepScreenOn(
-                              state.keepScreenOn,
-                            );
+                            setState(() {});
                           },
                         ),
                       ),

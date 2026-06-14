@@ -78,6 +78,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/audio/
+    - assets/audio/level_beep.wav
 
   fonts:
     - family: BebasNeue

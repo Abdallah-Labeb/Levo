@@ -199,5 +199,11 @@
   "settingsResetCalibrationConfirm": "هل أنت متأكد من رغبتك في مسح كافة قيم المعايرة المخزنة؟",
   "settingsResetCalibrationSuccess": "تمت إعادة ضبط جميع القيم بنجاح",
   "protractorVertical": "عمودي",
-  "commonCopySuccess": "تم النسخ إلى الحافظة!"
+  "commonCopySuccess": "تم النسخ إلى الحافظة!",
+  "unitConverterLabelFrom": "تحويل من",
+  "unitConverterLabelTo": "تحويل إلى",
+  "unitConverterFromUnit": "الوحدة المصدر",
+  "unitConverterToUnit": "الوحدة الهدف",
+  "settingsDefaultRulerUnit": "الوحدة الافتراضية للمسطرة",
+  "settingsDefaultConverterCategory": "فئة المحول الافتراضية"
 }

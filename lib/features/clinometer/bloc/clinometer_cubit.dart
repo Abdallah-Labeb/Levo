@@ -56,14 +56,18 @@ class ClinometerCubit extends Cubit<ClinometerState> {
   void _onAccelerometerEvent(AccelerometerEvent event) {
     if (state.isHeld) return;
 
-    // Pitch: math.atan2(y, sqrt(x² + z²))
+    // Use the SAME axis convention as Spirit Level for consistency:
+    // Pitch: atan2(-x, sqrt(y² + z²)) - tilt around the device's short axis
+    // Roll:  atan2(y, z) - tilt around the device's long axis
     final double rawPitch =
-        math.atan2(event.y, math.sqrt(event.x * event.x + event.z * event.z)) *
-        180.0 /
-        math.pi;
+        math.atan2(
+          -event.x,
+          math.sqrt(event.y * event.y + event.z * event.z),
+        ) *
+        (180.0 / math.pi);
 
-    // Roll: math.atan2(-x, z)
-    final double rawRoll = math.atan2(-event.x, event.z) * 180.0 / math.pi;
+    final double rawRoll =
+        math.atan2(event.y, event.z) * (180.0 / math.pi);
 
     // Apply shared calibration offsets from PreferencesService
     final double calPitch = _prefs.calLevelPitch;

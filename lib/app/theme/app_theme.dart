@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:levo/app/theme/app_colors.dart';
 
 /// Application theme definitions for Levo.
@@ -14,6 +15,19 @@ class AppTheme {
       dividerColor: AppColors.kDivider,
       fontFamily: 'Inter',
       useMaterial3: true,
+
+      // Status bar & navigation bar styling
+      appBarTheme: const AppBarTheme(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+          systemNavigationBarColor: AppColors.kBackground,
+          systemNavigationBarIconBrightness: Brightness.light,
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
 
       // Override default text selection colors for input fields
       textSelectionTheme: const TextSelectionThemeData(

@@ -23,9 +23,10 @@ class CompassCubit extends Cubit<CompassState> {
   double? _lastHeading;
   int _lastTimestamp = 0;
 
-  // Components filters to filter angular jitter across the 0/360 boundary
-  late final LowPassFilter _cosFilter = LowPassFilter(alpha: 0.12);
-  late final LowPassFilter _sinFilter = LowPassFilter(alpha: 0.12);
+  // Components filters to filter angular jitter across the 0/360 boundary.
+  // alpha 0.22 gives responsive yet smooth needle movement.
+  late final LowPassFilter _cosFilter = LowPassFilter(alpha: 0.22);
+  late final LowPassFilter _sinFilter = LowPassFilter(alpha: 0.22);
 
   /// Starts listening to sensor updates and initializes declination if True North is on.
   Future<void> initialize() async {
@@ -165,10 +166,9 @@ class CompassCubit extends Cubit<CompassState> {
       }
     } else {
       emit(state.copyWith(declination: 0.0));
-      // Re-trigger current reading alignment update (instant shift back to raw)
-      if (_lastHeading != null) {
-        emit(state.copyWith(heading: _lastHeading! % 360.0));
-      }
+      // Let the filter continue processing naturally without declination.
+      // No need to force a raw heading - the next sensor event will
+      // compute the correct heading with declination = 0.
     }
   }
 
@@ -190,23 +190,43 @@ class CompassCubit extends Cubit<CompassState> {
     }
   }
 
-  /// Offline WMM Dipole calculation to estimate localized magnetic declination.
+  /// Estimates magnetic declination using a simplified tilted-dipole model.
+  ///
+  /// The previous implementation computed the bearing TO the magnetic pole,
+  /// which is NOT the declination. Declination is the angular difference
+  /// between geographic north and magnetic north at the observer's location.
+  ///
+  /// This uses the tilted-dipole approximation:
+  ///   declination ≈ arctan( sin(lon - poleLon) /
+  ///                  (cos(lat)*tan(poleLat) - sin(lat)*cos(lon - poleLon)) )
+  ///
+  /// Magnetic North Pole ~2024: 86.5°N, 162.9°E (WMM-2020 extrapolated)
   double _estimateDeclination(double lat, double lon) {
     final double latRad = lat * math.pi / 180.0;
-    final double lonRad = lon * math.pi / 180.0;
 
-    // Approximate Magnetic Dipole North Pole coordinates (82.7° N, 114.4° W)
-    const double poleLatRad = 82.7 * math.pi / 180.0;
-    const double poleLonRad = -114.4 * math.pi / 180.0;
+    // Geomagnetic North Pole coordinates (approximate 2024)
+    const double poleLatDeg = 80.7;
+    const double poleLonDeg = -72.7;
+    const double poleLatRad = poleLatDeg * math.pi / 180.0;
+    final double dLonRad = (lon - poleLonDeg) * math.pi / 180.0;
 
-    final double dLon = poleLonRad - lonRad;
-    final double y = math.sin(dLon) * math.cos(poleLatRad);
-    final double x =
-        math.cos(latRad) * math.sin(poleLatRad) -
-        math.sin(latRad) * math.cos(poleLatRad) * math.cos(dLon);
+    // Tilted dipole declination formula
+    final double sinDLon = math.sin(dLonRad);
+    final double cosDLon = math.cos(dLonRad);
+    final double cosLat = math.cos(latRad);
+    final double sinLat = math.sin(latRad);
+    final double tanPoleLat = math.tan(poleLatRad);
 
-    final double declination = math.atan2(y, x) * 180.0 / math.pi;
-    return declination;
+    final double denominator = cosLat * tanPoleLat - sinLat * cosDLon;
+
+    // Avoid division by zero near the poles
+    if (denominator.abs() < 1e-10) return 0.0;
+
+    final double declination =
+        math.atan2(sinDLon, denominator) * 180.0 / math.pi;
+
+    // Clamp to reasonable range
+    return declination.clamp(-90.0, 90.0);
   }
 
   @override

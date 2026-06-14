@@ -21,13 +21,17 @@ class SoundMeterCubit extends Cubit<SoundMeterState> {
   static const double kDangerThresholdDb = 110.0;
 
   /// Checks microphone permissions and begins listening if granted.
+  /// When permission is not granted, we keep isSensorAvailable true
+  /// so the UI shows the permission panel instead of the error view.
   Future<void> initialize() async {
     final status = await Permission.microphone.status;
     if (status.isGranted) {
-      emit(state.copyWith(permissionGranted: true));
+      emit(state.copyWith(permissionGranted: true, isSensorAvailable: true));
       startListening();
     } else {
-      emit(state.copyWith(permissionGranted: false));
+      // Keep isSensorAvailable true - the screen checks permissionGranted
+      // to decide whether to show the permission panel or the meter UI.
+      emit(state.copyWith(permissionGranted: false, isSensorAvailable: true));
     }
   }
 
@@ -47,7 +51,7 @@ class SoundMeterCubit extends Cubit<SoundMeterState> {
         },
         cancelOnError: true,
       );
-      emit(state.copyWith(isSensorAvailable: true));
+      emit(state.copyWith(isSensorAvailable: true, permissionGranted: true));
     } catch (e) {
       emit(
         state.copyWith(
@@ -65,7 +69,10 @@ class SoundMeterCubit extends Cubit<SoundMeterState> {
 
     // Track peak, min, and running averages
     final double peak = math.max(state.peakDb, current);
-    final double min = math.min(state.minDb, current);
+    // minDb starts at infinity so first real reading always wins
+    final double min = state.minDb.isInfinite
+        ? current
+        : math.min(state.minDb, current);
 
     _sampleCount++;
     _sumDb += current;
@@ -99,7 +106,12 @@ class SoundMeterCubit extends Cubit<SoundMeterState> {
     _sampleCount = 0;
     _sumDb = 0.0;
     emit(
-      state.copyWith(currentDb: 0.0, peakDb: 0.0, minDb: 120.0, averageDb: 0.0),
+      state.copyWith(
+        currentDb: 0.0,
+        peakDb: 0.0,
+        minDb: double.infinity,
+        averageDb: 0.0,
+      ),
     );
   }
 

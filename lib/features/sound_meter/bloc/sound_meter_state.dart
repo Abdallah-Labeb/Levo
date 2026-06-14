@@ -6,7 +6,7 @@ class SoundMeterState extends Equatable {
     this.currentDb = 0.0,
     this.peakDb = 0.0,
     this.averageDb = 0.0,
-    this.minDb = 120.0,
+    this.minDb = double.infinity, // infinity = no reading yet
     this.isSensorAvailable = true,
     this.errorMessage,
     this.permissionGranted = false,

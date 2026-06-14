@@ -162,7 +162,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(
-                              "CONVERT FROM (${state.fromUnit})",
+                              "${l10n.unitConverterLabelFrom} (${state.fromUnit})",
                               style: AppTypography.kCaption.copyWith(
                                 color: AppColors.kTextSecondary,
                                 fontSize: 9.0,
@@ -239,7 +239,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Text(
-                              "CONVERT TO (${state.toUnit})",
+                              "${l10n.unitConverterLabelTo} (${state.toUnit})",
                               style: AppTypography.kCaption.copyWith(
                                 color: AppColors.kTextSecondary,
                                 fontSize: 9.0,
@@ -295,7 +295,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "FROM UNIT",
+                                      l10n.unitConverterFromUnit,
                                       style: AppTypography.kCaption.copyWith(
                                         color: AppColors.kTextSecondary,
                                         fontSize: 9.0,
@@ -324,7 +324,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      "TO UNIT",
+                                      l10n.unitConverterToUnit,
                                       style: AppTypography.kCaption.copyWith(
                                         color: AppColors.kTextSecondary,
                                         fontSize: 9.0,
