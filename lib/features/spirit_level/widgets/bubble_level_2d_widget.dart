@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:levo/app/theme/app_animations.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/features/spirit_level/bloc/spirit_level_state.dart';
 
@@ -60,8 +61,8 @@ class _BubbleLevel2dWidgetState extends State<BubbleLevel2dWidget>
     if (dt <= 0) return;
 
     // Spring properties
-    const double stiffness = 120.0;
-    const double damping = 18.0;
+    const double stiffness = 50.0;
+    const double damping = 9.0;
 
     // Target positions mapped from pitch and roll.
     // Let's map a tilt of 6.0 degrees to the maximum edge of the vial.
@@ -117,32 +118,42 @@ class _BubbleLevel2dWidgetState extends State<BubbleLevel2dWidget>
               ? AppColors.kWarningYellow
               : AppColors.kChromeMid);
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      width: 240,
-      height: 240,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.kSurfaceInset,
-        border: Border.all(color: borderColor, width: 2.0),
-        boxShadow: [
-          BoxShadow(color: glowColor, blurRadius: 20.0, spreadRadius: 2.0),
-          const BoxShadow(
-            color: Color(0x99000000),
-            offset: Offset(2, 6),
-            blurRadius: 10.0,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double size = math.min(
+          math.min(constraints.maxWidth, constraints.maxHeight),
+          240.0,
+        );
+        final double innerSize = size - 20.0;
+
+        return AnimatedContainer(
+          duration: AppAnimations.bubbleSnap,
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.kSurfaceInset,
+            border: Border.all(color: borderColor, width: 2.0),
+            boxShadow: [
+              BoxShadow(color: glowColor, blurRadius: size * 0.08, spreadRadius: 2.0),
+              const BoxShadow(
+                color: Color(0x99000000),
+                offset: Offset(2, 6),
+                blurRadius: 10.0,
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Center(
-        child: SizedBox(
-          width: 220,
-          height: 220,
-          child: CustomPaint(
-            painter: BubbleLevel2dPainter(x: _x, y: _y, status: widget.status),
+          child: Center(
+            child: SizedBox(
+              width: innerSize,
+              height: innerSize,
+              child: CustomPaint(
+                painter: BubbleLevel2dPainter(x: _x, y: _y, status: widget.status),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

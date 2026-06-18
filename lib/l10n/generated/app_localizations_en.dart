@@ -622,8 +622,91 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unitConverterLabelTo => 'CONVERT TO';
 
   @override
-  String get unitConverterFromUnit => 'FROM UNIT';
+  String get unitConverterFromUnit => 'From';
 
   @override
-  String get unitConverterToUnit => 'TO UNIT';
+  String get unitConverterToUnit => 'To';
+
+  @override
+  String get settingsDefaultRulerUnit => 'Default Ruler Unit';
+
+  @override
+  String get settingsDefaultConverterCategory => 'Default Converter Category';
+
+  @override
+  String get spiritLevelViscosityLabel => 'Viscosity (Damping)';
+
+  @override
+  String settingsSpiritLevelOffsetsDisplay(Object pitch, Object roll) {
+    return 'Pitch: $pitch° | Roll: $roll°';
+  }
+
+  @override
+  String settingsRulerCalibrationScaleDisplay(Object scale) {
+    return 'Scale: ${scale}x';
+  }
+
+  @override
+  String settingsAppVersionBuildDisplay(Object build, Object version) {
+    return '$version (Build $build)';
+  }
+
+  @override
+  String get calibrationWizardSensorError => 'Error reading sensors';
+
+  @override
+  String get metalDetectorLabelMagneticDelta => 'MAGNETIC DELTA';
+
+  @override
+  String get metalDetectorLabelAmbientBaseline => 'AMBIENT BASELINE';
+
+  @override
+  String get metalDetectorLabelSensitivity => 'SENSITIVITY';
+
+  @override
+  String get metalDetectorSoundOn => 'SOUND ON';
+
+  @override
+  String get metalDetectorSoundMuted => 'SOUND MUTED';
+
+  @override
+  String get metalDetectorHapticOn => 'HAPTIC ON';
+
+  @override
+  String get metalDetectorHapticMuted => 'HAPTIC MUTED';
+
+  @override
+  String metalDetectorSensitivityValue(String value) {
+    return '${value}x';
+  }
+
+  @override
+  String get soundMeterLabelSpl => 'SPL';
+
+  @override
+  String get lightMeterLabelLuxDial => 'LUX';
+
+  @override
+  String get lightMeterUnitEv => 'EV';
+
+  @override
+  String get lightMeterMaxDialLabel => '10K+';
+
+  @override
+  String get lightMeterLabelEv100 => 'EXPOSURE VALUE (EV100)';
+
+  @override
+  String get lightMeterLabelCameraViewport => 'CAMERA VIEWPORT';
+
+  @override
+  String get lightMeterLabelHardwareSensor => 'HARDWARE SENSOR';
+
+  @override
+  String get clinometerLabelSlopeAngle => 'SLOPE ANGLE';
+
+  @override
+  String get clinometerLabelSlopeGrade => 'SLOPE GRADE';
+
+  @override
+  String get rulerCalibrationReset => 'Calibration reset';
 }

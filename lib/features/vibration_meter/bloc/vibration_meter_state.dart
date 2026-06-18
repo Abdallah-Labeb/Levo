@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:levo/core/sensors/sensor_error_type.dart';
 
 /// State representation of the Vibration Meter.
 class VibrationMeterState extends Equatable {
@@ -8,6 +9,7 @@ class VibrationMeterState extends Equatable {
     this.baseline = 0.0,
     this.isSensorAvailable = true,
     this.errorMessage,
+    this.errorType = SensorErrorType.none,
   });
 
   final List<double> samples;
@@ -15,6 +17,7 @@ class VibrationMeterState extends Equatable {
   final double baseline;
   final bool isSensorAvailable;
   final String? errorMessage;
+  final SensorErrorType errorType;
 
   @override
   List<Object?> get props => [
@@ -23,6 +26,7 @@ class VibrationMeterState extends Equatable {
     baseline,
     isSensorAvailable,
     errorMessage,
+    errorType,
   ];
 
   VibrationMeterState copyWith({
@@ -31,6 +35,7 @@ class VibrationMeterState extends Equatable {
     double? baseline,
     bool? isSensorAvailable,
     String? errorMessage,
+    SensorErrorType? errorType,
   }) {
     return VibrationMeterState(
       samples: samples ?? this.samples,
@@ -38,6 +43,7 @@ class VibrationMeterState extends Equatable {
       baseline: baseline ?? this.baseline,
       isSensorAvailable: isSensorAvailable ?? this.isSensorAvailable,
       errorMessage: errorMessage ?? this.errorMessage,
+      errorType: errorType ?? this.errorType,
     );
   }
 }

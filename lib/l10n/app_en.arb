@@ -202,8 +202,36 @@
   "commonCopySuccess": "Copied to clipboard!",
   "unitConverterLabelFrom": "CONVERT FROM",
   "unitConverterLabelTo": "CONVERT TO",
-  "unitConverterFromUnit": "FROM UNIT",
-  "unitConverterToUnit": "TO UNIT",
+  "unitConverterFromUnit": "From",
+  "unitConverterToUnit": "To",
   "settingsDefaultRulerUnit": "Default Ruler Unit",
-  "settingsDefaultConverterCategory": "Default Converter Category"
+  "settingsDefaultConverterCategory": "Default Converter Category",
+  "spiritLevelViscosityLabel": "Viscosity (Damping)",
+  "settingsSpiritLevelOffsetsDisplay": "Pitch: {pitch}° | Roll: {roll}°",
+  "settingsRulerCalibrationScaleDisplay": "Scale: {scale}x",
+  "settingsAppVersionBuildDisplay": "{version} (Build {build})",
+  "calibrationWizardSensorError": "Error reading sensors",
+  "metalDetectorLabelMagneticDelta": "MAGNETIC DELTA",
+  "metalDetectorLabelAmbientBaseline": "AMBIENT BASELINE",
+  "metalDetectorLabelSensitivity": "SENSITIVITY",
+  "metalDetectorSoundOn": "SOUND ON",
+  "metalDetectorSoundMuted": "SOUND MUTED",
+  "metalDetectorHapticOn": "HAPTIC ON",
+  "metalDetectorHapticMuted": "HAPTIC MUTED",
+  "metalDetectorSensitivityValue": "{value}x",
+  "@metalDetectorSensitivityValue": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "soundMeterLabelSpl": "SPL",
+  "lightMeterLabelLuxDial": "LUX",
+  "lightMeterUnitEv": "EV",
+  "lightMeterMaxDialLabel": "10K+",
+  "lightMeterLabelEv100": "EXPOSURE VALUE (EV100)",
+  "lightMeterLabelCameraViewport": "CAMERA VIEWPORT",
+  "lightMeterLabelHardwareSensor": "HARDWARE SENSOR",
+  "clinometerLabelSlopeAngle": "SLOPE ANGLE",
+  "clinometerLabelSlopeGrade": "SLOPE GRADE",
+  "rulerCalibrationReset": "Calibration reset"
 }

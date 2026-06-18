@@ -31,8 +31,8 @@ class SensorErrorView extends StatelessWidget {
               const SizedBox(height: AppDimensions.space8),
               // Warning Icon Bezel Indicator
               Container(
-                width: 64.0,
-                height: 64.0,
+                width: AppDimensions.iconXL,
+                height: AppDimensions.iconXL,
                 decoration: BoxDecoration(
                   color: AppColors.kDisplayBg,
                   shape: BoxShape.circle,
@@ -47,7 +47,7 @@ class SensorErrorView extends StatelessWidget {
                 child: const Icon(
                   Icons.warning_amber_rounded,
                   color: AppColors.kDangerRed,
-                  size: 36.0,
+                  size: AppDimensions.iconL,
                 ),
               ),
               const SizedBox(height: AppDimensions.space24),

@@ -12,6 +12,7 @@ class TactileButton extends StatefulWidget {
     this.text,
     this.icon,
     this.isActive = false,
+    this.mainAxisSize = MainAxisSize.max,
     this.padding = const EdgeInsets.symmetric(
       horizontal: AppDimensions.paddingL,
       vertical: AppDimensions.paddingM,
@@ -22,6 +23,7 @@ class TactileButton extends StatefulWidget {
   final String? text;
   final Widget? icon;
   final bool isActive;
+  final MainAxisSize mainAxisSize;
   final EdgeInsetsGeometry padding;
 
   @override
@@ -94,42 +96,54 @@ class _TactileButtonState extends State<TactileButton> {
         scale: _isPressed ? 0.97 : 1.0,
         duration: AppAnimations.buttonPress,
         curve: Curves.easeOut,
-        child: AnimatedContainer(
-          duration: _isPressed
-              ? AppAnimations.buttonPress
-              : AppAnimations.buttonRelease,
-          curve: Curves.easeOut,
-          padding: widget.padding,
-          decoration: BoxDecoration(
-            gradient: gradient,
-            border: border,
-            borderRadius: BorderRadius.circular(AppDimensions.radiusButton),
-            boxShadow: boxShadow,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (widget.icon != null) ...[
-                Theme(
-                  data: ThemeData(
-                    iconTheme: IconThemeData(
-                      color: contentColor,
-                      size: AppDimensions.iconSmall,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final resolvedMainAxisSize = constraints.hasBoundedWidth
+                ? widget.mainAxisSize
+                : MainAxisSize.min;
+
+            return AnimatedContainer(
+              duration: _isPressed
+                  ? AppAnimations.buttonPress
+                  : AppAnimations.buttonRelease,
+              curve: Curves.easeOut,
+              padding: widget.padding,
+              decoration: BoxDecoration(
+                gradient: gradient,
+                border: border,
+                borderRadius: BorderRadius.circular(AppDimensions.radiusButton),
+                boxShadow: boxShadow,
+              ),
+              child: Row(
+                mainAxisSize: resolvedMainAxisSize,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (widget.icon != null) ...[
+                    Theme(
+                      data: ThemeData(
+                        iconTheme: IconThemeData(
+                          color: contentColor,
+                          size: AppDimensions.iconSmall,
+                        ),
+                      ),
+                      child: widget.icon!,
                     ),
-                  ),
-                  child: widget.icon!,
-                ),
-                if (widget.text != null)
-                  const SizedBox(width: AppDimensions.space8),
-              ],
-              if (widget.text != null)
-                Text(
-                  widget.text!,
-                  style: AppTypography.kButton.copyWith(color: contentColor),
-                ),
-            ],
-          ),
+                    if (widget.text != null)
+                      const SizedBox(width: AppDimensions.space8),
+                  ],
+                  if (widget.text != null)
+                    Flexible(
+                      child: Text(
+                        widget.text!,
+                        style: AppTypography.kButton.copyWith(color: contentColor),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

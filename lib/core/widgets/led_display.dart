@@ -48,7 +48,7 @@ class LedDisplay extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: AppColors.kDisplayBg,
-        border: Border.all(color: const Color(0xFF003310), width: 1.0),
+        border: Border.all(color: AppColors.kDisplayGreenBorder, width: 1.0),
         borderRadius: BorderRadius.circular(AppDimensions.radiusDisplay),
         boxShadow: boxShadow,
       ),
@@ -65,8 +65,8 @@ class LedDisplay extends StatelessWidget {
               Text(
                 unit!,
                 style: AppTypography.kUnitLabel.copyWith(
-                  fontSize: 16.0,
-                  color: AppColors.kDisplayGreenDim.withAlpha(204),
+                  fontSize: AppDimensions.ledUnitFontSize,
+                  color: displayColor,
                 ),
               ),
             ],

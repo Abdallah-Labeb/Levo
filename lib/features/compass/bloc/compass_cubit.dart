@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:levo/app/theme/app_animations.dart';
 import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/core/sensors/low_pass_filter.dart';
+import 'package:levo/core/sensors/sensor_error_type.dart';
 import 'package:levo/features/compass/bloc/compass_state.dart';
 
 /// Cubit managing orientation compass sensor tracking, magnetic interference levels,
@@ -45,6 +47,7 @@ class CompassCubit extends Cubit<CompassState> {
         emit(
           state.copyWith(
             isSensorAvailable: false,
+            errorType: SensorErrorType.missing,
             errorMessage: "Compass sensors are not available on this device",
           ),
         );
@@ -57,6 +60,7 @@ class CompassCubit extends Cubit<CompassState> {
           emit(
             state.copyWith(
               isSensorAvailable: false,
+              errorType: SensorErrorType.unknown,
               errorMessage: "An error occurred reading the compass sensor",
             ),
           );
@@ -66,6 +70,7 @@ class CompassCubit extends Cubit<CompassState> {
       emit(
         state.copyWith(
           isSensorAvailable: false,
+          errorType: SensorErrorType.missing,
           errorMessage: "Failed to initialize compass sensor stream",
         ),
       );
@@ -92,7 +97,7 @@ class CompassCubit extends Cubit<CompassState> {
       if (delta > 30.0) {
         emit(state.copyWith(hasInterference: true));
         _interferenceTimer?.cancel();
-        _interferenceTimer = Timer(const Duration(seconds: 3), () {
+        _interferenceTimer = Timer(AppAnimations.interferenceIndicator, () {
           emit(state.copyWith(hasInterference: false));
         });
       }
@@ -179,7 +184,7 @@ class CompassCubit extends Cubit<CompassState> {
           lastPos ??
           await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.low,
-            timeLimit: const Duration(seconds: 4),
+            timeLimit: AppAnimations.locationTimeout,
           );
 
       final double decl = _estimateDeclination(pos.latitude, pos.longitude);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:levo/app/di/injection.dart';
+import 'package:levo/app/theme/app_animations.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
@@ -49,7 +50,7 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
     super.initState();
     _pulseController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: AppAnimations.metalDetectorPulseDefault,
     )..repeat();
     _showWarningBanner = !_prefs.metalFirstLaunchWarned;
   }
@@ -71,19 +72,19 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
     Duration targetDuration;
     switch (level) {
       case MetalAlertLevel.none:
-        targetDuration = const Duration(milliseconds: 1500);
+        targetDuration = AppAnimations.metalDetectorPulseNone;
         break;
       case MetalAlertLevel.weak:
-        targetDuration = const Duration(milliseconds: 1200);
+        targetDuration = AppAnimations.metalDetectorPulseWeak;
         break;
       case MetalAlertLevel.medium:
-        targetDuration = const Duration(milliseconds: 600);
+        targetDuration = AppAnimations.metalDetectorPulseMedium;
         break;
       case MetalAlertLevel.strong:
-        targetDuration = const Duration(milliseconds: 250);
+        targetDuration = AppAnimations.metalDetectorPulseStrong;
         break;
       case MetalAlertLevel.veryStrong:
-        targetDuration = const Duration(milliseconds: 85);
+        targetDuration = AppAnimations.metalDetectorPulseCritical;
         break;
     }
 
@@ -142,10 +143,12 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
         if (!state.isSensorAvailable) {
           return Scaffold(
             appBar: LevoAppBar(title: l10n.metalDetectorTitle),
-            body: SensorErrorView(
-              sensorName: "Magnetometer",
-              errorTitle: l10n.sensorErrorTitle,
-              errorMessage: state.errorMessage ?? l10n.spiritLevelErrorNoSensor,
+            body: NoiseBackground(
+              child: SensorErrorView(
+                sensorName: l10n.sensorNameMagnetometer,
+                errorTitle: l10n.sensorErrorTitle,
+                errorMessage: state.errorMessage ?? l10n.spiritLevelErrorNoSensor,
+              ),
             ),
           );
         }
@@ -286,10 +289,9 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "MAGNETIC DELTA",
+                                      l10n.metalDetectorLabelMagneticDelta,
                                       style: AppTypography.kCaption.copyWith(
                                         color: AppColors.kTextSecondary,
-                                        fontSize: 9.0,
                                         letterSpacing: 0.5,
                                       ),
                                       textAlign: TextAlign.center,
@@ -321,10 +323,9 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "AMBIENT BASELINE",
+                                      l10n.metalDetectorLabelAmbientBaseline,
                                       style: AppTypography.kCaption.copyWith(
                                         color: AppColors.kTextSecondary,
-                                        fontSize: 9.0,
                                         letterSpacing: 0.5,
                                       ),
                                       textAlign: TextAlign.center,
@@ -351,16 +352,15 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                     MetalPanel(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          vertical: AppDimensions.paddingS,
+                          vertical: AppDimensions.paddingXS,
                           horizontal: AppDimensions.paddingM,
                         ),
                         child: Row(
                           children: [
                             Text(
-                              "SENSITIVITY",
+                              l10n.metalDetectorLabelSensitivity,
                               style: AppTypography.kCaption.copyWith(
                                 color: AppColors.kTextSecondary,
-                                fontSize: 9.0,
                               ),
                             ),
                             Expanded(
@@ -370,7 +370,7 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                                   inactiveTrackColor: AppColors.kSurfaceInset,
                                   thumbColor: AppColors.kChromeLight,
                                   overlayColor: AppColors.kYellow.withAlpha(40),
-                                  trackHeight: 4.0,
+                                  trackHeight: 3.0,
                                 ),
                                 child: Slider(
                                   value: state.sensitivity,
@@ -383,7 +383,10 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                               ),
                             ),
                             Text(
-                              "${state.sensitivity.toStringAsFixed(1)}x",
+                              l10n.metalDetectorSensitivityValue(
+                                NumberFormat('0.0', Localizations.localeOf(context).toString())
+                                    .format(state.sensitivity),
+                              ),
                               style: AppTypography.kCaption.copyWith(
                                 color: AppColors.kYellow,
                                 fontFamily: 'ShareTechMono',
@@ -396,46 +399,40 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                     const SizedBox(height: AppDimensions.space16),
 
                     // 6. Action Toggles & Recalibrate Controls
-                    Row(
+                    Column(
                       children: [
-                        // Toggle Sound
-                        Expanded(
-                          child: TactileButton(
-                            onPressed: () => cubit.toggleSound(!state.soundOn),
-                            isActive: state.soundOn,
-                            text: state.soundOn ? "SOUND ON" : "SOUND MUTED",
-                            icon: Icon(
-                              state.soundOn
-                                  ? Icons.volume_up_outlined
-                                  : Icons.volume_off_outlined,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Toggle Sound — icon only
+                            _IconToggle(
+                              isActive: state.soundOn,
+                              onTap: () => cubit.toggleSound(!state.soundOn),
+                              iconOn: Icons.volume_up_rounded,
+                              iconOff: Icons.volume_off_rounded,
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: AppDimensions.space8),
+                            const SizedBox(width: AppDimensions.space24),
 
-                        // Toggle Haptic
-                        Expanded(
-                          child: TactileButton(
-                            onPressed: () =>
-                                cubit.toggleHaptic(!state.hapticOn),
-                            isActive: state.hapticOn,
-                            text: state.hapticOn ? "HAPTIC ON" : "HAPTIC MUTED",
-                            icon: Icon(
-                              state.hapticOn
-                                  ? Icons.vibration_outlined
-                                  : Icons.phone_android_outlined,
+                            // Toggle Haptic — icon only
+                            _IconToggle(
+                              isActive: state.hapticOn,
+                              onTap: () => cubit.toggleHaptic(!state.hapticOn),
+                              iconOn: Icons.vibration_rounded,
+                              iconOff: Icons.phone_android_outlined,
                             ),
-                          ),
+                          ],
                         ),
-                        const SizedBox(width: AppDimensions.space8),
-
-                        // Recalibrate
-                        Expanded(
-                          child: TactileButton(
-                            onPressed: () => cubit.recalibrate(),
-                            text: l10n.metalDetectorRecalibrate,
-                            icon: const Icon(Icons.refresh),
-                          ),
+                        const SizedBox(height: AppDimensions.space12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TactileButton(
+                                onPressed: () => cubit.recalibrate(),
+                                text: l10n.metalDetectorRecalibrate,
+                                icon: const Icon(Icons.refresh),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -448,6 +445,48 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
           bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
+    );
+  }
+}
+
+// ─── Icon-only toggle button ─────────────────────────────────────────────────
+class _IconToggle extends StatelessWidget {
+  const _IconToggle({
+    required this.isActive,
+    required this.onTap,
+    required this.iconOn,
+    required this.iconOff,
+  });
+
+  final bool isActive;
+  final VoidCallback onTap;
+  final IconData iconOn;
+  final IconData iconOff;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 52,
+        height: 52,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isActive
+              ? AppColors.kYellow.withAlpha(30)
+              : AppColors.kSurfaceInset,
+          border: Border.all(
+            color: isActive ? AppColors.kYellow : AppColors.kBorderHighlight,
+            width: 1.5,
+          ),
+        ),
+        child: Icon(
+          isActive ? iconOn : iconOff,
+          color: isActive ? AppColors.kYellow : AppColors.kChromeMid,
+          size: 26,
+        ),
+      ),
     );
   }
 }

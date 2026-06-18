@@ -79,7 +79,7 @@ class _LevoBannerState extends State<LevoBanner>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: AppAnimations.screenTransition,
     );
     _slideAnimation = Tween<double>(
       begin: -100.0,
@@ -125,11 +125,11 @@ class _LevoBannerState extends State<LevoBanner>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 4.0,
-              height: 40.0,
+              width: AppDimensions.bannerAccentWidth,
+              height: AppDimensions.bannerAccentHeight,
               decoration: BoxDecoration(
                 color: statusColor,
-                borderRadius: BorderRadius.circular(2.0),
+                borderRadius: BorderRadius.circular(AppDimensions.radiusXS),
               ),
             ),
             const SizedBox(width: AppDimensions.space12),
@@ -142,7 +142,7 @@ class _LevoBannerState extends State<LevoBanner>
                     Text(
                       widget.title!,
                       style: AppTypography.kTitleL.copyWith(
-                        fontSize: 16.0,
+                        fontSize: AppDimensions.fontSizeBannerTitle,
                         color: statusColor,
                       ),
                     ),

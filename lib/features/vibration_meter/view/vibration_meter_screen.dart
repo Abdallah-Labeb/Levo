@@ -49,10 +49,12 @@ class VibrationMeterView extends StatelessWidget {
         if (!state.isSensorAvailable) {
           return Scaffold(
             appBar: LevoAppBar(title: l10n.vibrationMeterTitle),
-            body: SensorErrorView(
-              sensorName: "Accelerometer",
-              errorTitle: l10n.sensorErrorTitle,
-              errorMessage: state.errorMessage ?? l10n.spiritLevelErrorNoSensor,
+            body: NoiseBackground(
+              child: SensorErrorView(
+                sensorName: l10n.sensorNameAccelerometer,
+                errorTitle: l10n.sensorErrorTitle,
+                errorMessage: state.errorMessage ?? l10n.spiritLevelErrorNoSensor,
+              ),
             ),
           );
         }
@@ -66,15 +68,7 @@ class VibrationMeterView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // 1. Informational text / description banner
-                    Text(
-                      l10n.vibrationMeterDesc,
-                      style: AppTypography.kBody.copyWith(
-                        color: AppColors.kTextSecondary,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: AppDimensions.space16),
+
 
                     // 2. Seismograph Display Screen (Cathode grid visualization inside a physical frame)
                     Expanded(
@@ -91,7 +85,7 @@ class VibrationMeterView extends StatelessWidget {
                           ),
                           boxShadow: const [
                             BoxShadow(
-                              color: Color(0x7F000000),
+                              color: AppColors.kBorderShadow,
                               offset: Offset(0, 4),
                               blurRadius: 10,
                             ),

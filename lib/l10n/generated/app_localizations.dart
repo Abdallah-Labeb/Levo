@@ -1283,14 +1283,164 @@ abstract class AppLocalizations {
   /// No description provided for @unitConverterFromUnit.
   ///
   /// In en, this message translates to:
-  /// **'FROM UNIT'**
+  /// **'From'**
   String get unitConverterFromUnit;
 
   /// No description provided for @unitConverterToUnit.
   ///
   /// In en, this message translates to:
-  /// **'TO UNIT'**
+  /// **'To'**
   String get unitConverterToUnit;
+
+  /// No description provided for @settingsDefaultRulerUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Ruler Unit'**
+  String get settingsDefaultRulerUnit;
+
+  /// No description provided for @settingsDefaultConverterCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Converter Category'**
+  String get settingsDefaultConverterCategory;
+
+  /// No description provided for @spiritLevelViscosityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Viscosity (Damping)'**
+  String get spiritLevelViscosityLabel;
+
+  /// No description provided for @settingsSpiritLevelOffsetsDisplay.
+  ///
+  /// In en, this message translates to:
+  /// **'Pitch: {pitch}° | Roll: {roll}°'**
+  String settingsSpiritLevelOffsetsDisplay(Object pitch, Object roll);
+
+  /// No description provided for @settingsRulerCalibrationScaleDisplay.
+  ///
+  /// In en, this message translates to:
+  /// **'Scale: {scale}x'**
+  String settingsRulerCalibrationScaleDisplay(Object scale);
+
+  /// No description provided for @settingsAppVersionBuildDisplay.
+  ///
+  /// In en, this message translates to:
+  /// **'{version} (Build {build})'**
+  String settingsAppVersionBuildDisplay(Object build, Object version);
+
+  /// No description provided for @calibrationWizardSensorError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error reading sensors'**
+  String get calibrationWizardSensorError;
+
+  /// No description provided for @metalDetectorLabelMagneticDelta.
+  ///
+  /// In en, this message translates to:
+  /// **'MAGNETIC DELTA'**
+  String get metalDetectorLabelMagneticDelta;
+
+  /// No description provided for @metalDetectorLabelAmbientBaseline.
+  ///
+  /// In en, this message translates to:
+  /// **'AMBIENT BASELINE'**
+  String get metalDetectorLabelAmbientBaseline;
+
+  /// No description provided for @metalDetectorLabelSensitivity.
+  ///
+  /// In en, this message translates to:
+  /// **'SENSITIVITY'**
+  String get metalDetectorLabelSensitivity;
+
+  /// No description provided for @metalDetectorSoundOn.
+  ///
+  /// In en, this message translates to:
+  /// **'SOUND ON'**
+  String get metalDetectorSoundOn;
+
+  /// No description provided for @metalDetectorSoundMuted.
+  ///
+  /// In en, this message translates to:
+  /// **'SOUND MUTED'**
+  String get metalDetectorSoundMuted;
+
+  /// No description provided for @metalDetectorHapticOn.
+  ///
+  /// In en, this message translates to:
+  /// **'HAPTIC ON'**
+  String get metalDetectorHapticOn;
+
+  /// No description provided for @metalDetectorHapticMuted.
+  ///
+  /// In en, this message translates to:
+  /// **'HAPTIC MUTED'**
+  String get metalDetectorHapticMuted;
+
+  /// No description provided for @metalDetectorSensitivityValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}x'**
+  String metalDetectorSensitivityValue(String value);
+
+  /// No description provided for @soundMeterLabelSpl.
+  ///
+  /// In en, this message translates to:
+  /// **'SPL'**
+  String get soundMeterLabelSpl;
+
+  /// No description provided for @lightMeterLabelLuxDial.
+  ///
+  /// In en, this message translates to:
+  /// **'LUX'**
+  String get lightMeterLabelLuxDial;
+
+  /// No description provided for @lightMeterUnitEv.
+  ///
+  /// In en, this message translates to:
+  /// **'EV'**
+  String get lightMeterUnitEv;
+
+  /// No description provided for @lightMeterMaxDialLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'10K+'**
+  String get lightMeterMaxDialLabel;
+
+  /// No description provided for @lightMeterLabelEv100.
+  ///
+  /// In en, this message translates to:
+  /// **'EXPOSURE VALUE (EV100)'**
+  String get lightMeterLabelEv100;
+
+  /// No description provided for @lightMeterLabelCameraViewport.
+  ///
+  /// In en, this message translates to:
+  /// **'CAMERA VIEWPORT'**
+  String get lightMeterLabelCameraViewport;
+
+  /// No description provided for @lightMeterLabelHardwareSensor.
+  ///
+  /// In en, this message translates to:
+  /// **'HARDWARE SENSOR'**
+  String get lightMeterLabelHardwareSensor;
+
+  /// No description provided for @clinometerLabelSlopeAngle.
+  ///
+  /// In en, this message translates to:
+  /// **'SLOPE ANGLE'**
+  String get clinometerLabelSlopeAngle;
+
+  /// No description provided for @clinometerLabelSlopeGrade.
+  ///
+  /// In en, this message translates to:
+  /// **'SLOPE GRADE'**
+  String get clinometerLabelSlopeGrade;
+
+  /// No description provided for @rulerCalibrationReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibration reset'**
+  String get rulerCalibrationReset;
 }
 
 class _AppLocalizationsDelegate

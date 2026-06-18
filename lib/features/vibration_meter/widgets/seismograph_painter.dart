@@ -9,11 +9,11 @@ class SeismographPainter extends CustomPainter {
   final List<double> samples;
   final double peak;
 
-  final Paint bgPaint = Paint();
-  final Paint gridPaint = Paint();
-  final Paint baselinePaint = Paint();
-  final Paint glowPaint = Paint();
-  final Paint linePaint = Paint();
+  static final Paint bgPaint = Paint();
+  static final Paint gridPaint = Paint();
+  static final Paint baselinePaint = Paint();
+  static final Paint glowPaint = Paint();
+  static final Paint linePaint = Paint();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -21,12 +21,12 @@ class SeismographPainter extends CustomPainter {
     final centerY = size.height / 2;
 
     // 1. Draw grid background (black cathode screen)
-    bgPaint.color = const Color(0xFF070B07);
+    bgPaint.color = AppColors.kCathodeBg;
     canvas.drawRect(rect, bgPaint);
 
     // 2. Draw cathode grid lines (neon green matrix grid)
     gridPaint
-      ..color = const Color(0xFF132B13).withAlpha(120)
+      ..color = AppColors.kCathodeGrid.withAlpha(120)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.5;
 

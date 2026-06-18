@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:levo/app/theme/app_colors.dart';
+import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/features/compass/bloc/compass_state.dart';
 
@@ -12,17 +13,19 @@ class CompassPainter extends CustomPainter {
   final double heading;
   final CompassAccuracy accuracy;
 
-  final Paint bezelPaint = Paint();
-  final Paint groovePaint = Paint();
-  final Paint facePaint = Paint();
-  final Paint tickPaint = Paint();
-  final Paint majorTickPaint = Paint();
-  final Paint shadowPaint = Paint();
-  final Paint northPaint = Paint();
-  final Paint southPaint = Paint();
-  final Paint pinShadow = Paint();
-  final Paint pivotPaint = Paint();
-  final Paint capPaint = Paint();
+  static final Paint bezelPaint = Paint();
+  static final Paint groovePaint = Paint();
+  static final Paint facePaint = Paint();
+  static final Paint tickPaint = Paint();
+  static final Paint majorTickPaint = Paint();
+  static final Paint shadowPaint = Paint();
+  static final Paint northPaint = Paint();
+  static final Paint southPaint = Paint();
+  static final Paint pinShadow = Paint();
+  static final Paint pivotPaint = Paint();
+  static final Paint capPaint = Paint();
+
+  static final Map<String, TextPainter> _labelCache = {};
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -38,14 +41,14 @@ class CompassPainter extends CustomPainter {
 
     // Dark bezel inner shadow groove
     groovePaint
-      ..color = const Color(0xFF0F0F0F)
+      ..color = AppColors.kCompassGroove
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
     canvas.drawCircle(center, dialRadius + 1.0, groovePaint);
 
     // 2. Draw dial face (dark carbon/brushed center plate)
     facePaint.shader = const RadialGradient(
-      colors: [Color(0xFF222222), Color(0xFF141414), Color(0xFF0C0C0C)],
+      colors: [AppColors.kCompassFaceStart, AppColors.kCompassFaceMid, AppColors.kCompassFaceEnd],
       stops: [0.0, 0.7, 1.0],
     ).createShader(Rect.fromCircle(center: center, radius: dialRadius));
     canvas.drawCircle(center, dialRadius, facePaint);
@@ -79,34 +82,37 @@ class CompassPainter extends CustomPainter {
       canvas.drawLine(startOffset, endOffset, activePaint);
     }
 
-    // 4. Draw static cardinal plate texts (N, S, E, W)
-    final textPainter = TextPainter(textDirection: TextDirection.ltr);
-
     const cardinalLabels = {0: 'N', 90: 'E', 180: 'S', 270: 'W'};
 
     cardinalLabels.forEach((angle, text) {
       final double angleRad = angle * math.pi / 180.0;
-      final color = text == 'N'
-          ? AppColors.kCompassNorth
-          : AppColors.kTextPrimary;
+      final painter = _labelCache.putIfAbsent(text, () {
+        final color = text == 'N'
+            ? AppColors.kCompassNorth
+            : AppColors.kTextPrimary;
 
-      textPainter.text = TextSpan(
-        text: text,
-        style: AppTypography.kTitleL.copyWith(
-          fontSize: 16.0,
-          color: color,
-          fontWeight: FontWeight.bold,
-        ),
-      );
-      textPainter.layout();
+        final tp = TextPainter(
+          text: TextSpan(
+            text: text,
+            style: AppTypography.kTitleL.copyWith(
+              fontSize: AppDimensions.fontSizeMedium,
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        );
+        tp.layout();
+        return tp;
+      });
 
       // Position along the inner dial circle
       final double radiusFactor = dialRadius - 28.0;
       final targetOffset = Offset(
-        center.dx + radiusFactor * math.sin(angleRad) - textPainter.width / 2,
-        center.dy - radiusFactor * math.cos(angleRad) - textPainter.height / 2,
+        center.dx + radiusFactor * math.sin(angleRad) - painter.width / 2,
+        center.dy - radiusFactor * math.cos(angleRad) - painter.height / 2,
       );
-      textPainter.paint(canvas, targetOffset);
+      painter.paint(canvas, targetOffset);
     });
 
     // 5. Draw rotating needle pointers (North = Red, South = Silver)
@@ -134,9 +140,9 @@ class CompassPainter extends CustomPainter {
     northPaint.shader = const RadialGradient(
       center: Alignment(-0.25, -0.3),
       colors: [
-        Color(0xFFFF8B8B), // highlight
+        AppColors.kCompassNeedleHighlight, // highlight
         AppColors.kCompassNorth,
-        Color(0xFF7D1616), // shade
+        AppColors.kCompassNeedleShadow, // shade
       ],
       stops: [0.0, 0.6, 1.0],
     ).createShader(
@@ -153,7 +159,7 @@ class CompassPainter extends CustomPainter {
     southPaint.shader = const RadialGradient(
       center: Alignment(-0.25, 0.3),
       colors: [
-        Color(0xFFFFFFFF),
+        Colors.white,
         AppColors.kChromeMid,
         AppColors.kChromeDarker,
       ],
@@ -171,7 +177,7 @@ class CompassPainter extends CustomPainter {
 
     pivotPaint.shader = const RadialGradient(
       center: Alignment(-0.3, -0.3),
-      colors: [Color(0xFFFFEA9F), Color(0xFFCCA214), Color(0xFF6B5102)],
+      colors: [AppColors.kCompassPivotHighlight, AppColors.kCompassPivotMid, AppColors.kCompassPivotShadow],
       stops: [0.0, 0.55, 1.0],
     ).createShader(const Rect.fromLTRB(-10, -10, 10, 10));
     canvas.drawCircle(Offset.zero, 10.0, pivotPaint);

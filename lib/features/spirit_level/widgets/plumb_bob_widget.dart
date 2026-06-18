@@ -66,8 +66,8 @@ class _PlumbBobWidgetState extends State<PlumbBobWidget>
     if (dt <= 0) return;
 
     // String angular oscillation physics
-    const double stiffnessAngle = 100.0;
-    const double dampingAngle = 12.0;
+    const double stiffnessAngle = 35.0;
+    const double dampingAngle = 3.5;
 
     // Target angle (in radians) is determined by the negative roll
     final double targetTheta = -widget.roll * math.pi / 180.0;
@@ -78,8 +78,8 @@ class _PlumbBobWidgetState extends State<PlumbBobWidget>
     _theta += _omega * dt;
 
     // Vertical stretch physics (projecting pitch)
-    const double stiffnessY = 80.0;
-    const double dampingY = 10.0;
+    const double stiffnessY = 40.0;
+    const double dampingY = 5.0;
 
     // Pitch tilts forward/backward. Positive pitch pulls the string down.
     final double targetDy = widget.pitch * 1.5;
@@ -105,71 +105,69 @@ class _PlumbBobWidgetState extends State<PlumbBobWidget>
               ? AppColors.kWarningYellow
               : AppColors.kChromeDark);
 
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(AppDimensions.paddingL),
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.kSurfaceInset,
-            border: Border.all(color: AppColors.kBorderHighlight, width: 1.0),
-            borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x55000000),
-                blurRadius: 10,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return Stack(
-                children: [
-                  // Circular alignment crosshair at the resting point
-                  Positioned(
-                    left: constraints.maxWidth / 2 - 25,
-                    bottom: 40 - 25 + 15, // centered around resting bob tip
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: targetBorderColor,
-                          width: 2.0,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: glowColor,
-                            blurRadius: 10,
-                            spreadRadius: 1.0,
-                          ),
-                        ],
+    return Padding(
+      padding: const EdgeInsets.all(AppDimensions.paddingL),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.kSurfaceInset,
+          border: Border.all(color: AppColors.kBorderHighlight, width: 1.0),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x55000000),
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Stack(
+              children: [
+                // Circular alignment crosshair at the resting point
+                Positioned(
+                  left: constraints.maxWidth / 2 - 25,
+                  bottom: 40 - 25 + 15, // centered around resting bob tip
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: targetBorderColor,
+                        width: 2.0,
                       ),
-                      child: Center(
-                        child: Container(
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: targetBorderColor.withAlpha(150),
-                          ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: glowColor,
+                          blurRadius: 10,
+                          spreadRadius: 1.0,
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: targetBorderColor.withAlpha(150),
                         ),
                       ),
                     ),
                   ),
-                  CustomPaint(
-                    size: Size(constraints.maxWidth, constraints.maxHeight),
-                    painter: PlumbBobPainter(
-                      theta: _theta,
-                      dy: _dy,
-                      status: widget.status,
-                    ),
+                ),
+                CustomPaint(
+                  size: Size(constraints.maxWidth, constraints.maxHeight),
+                  painter: PlumbBobPainter(
+                    theta: _theta,
+                    dy: _dy,
+                    status: widget.status,
                   ),
-                ],
-              );
-            },
-          ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

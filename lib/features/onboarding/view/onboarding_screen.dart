@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:levo/app/di/injection.dart';
+import 'package:levo/app/theme/app_animations.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
@@ -31,7 +32,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _onNext() {
     if (_currentPage < 2) {
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
+        duration: AppAnimations.onboardingPageSlide,
         curve: Curves.easeInOut,
       );
     }
@@ -56,7 +57,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               const Spacer(),
               // Horizontal PageView of Onboarding Details
               SizedBox(
-                height: 360.0,
+                height: AppDimensions.onboardingPageHeight,
                 child: PageView(
                   controller: _pageController,
                   onPageChanged: (page) {
@@ -88,15 +89,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 children: List.generate(3, (index) {
                   final isActive = _currentPage == index;
                   return AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                    width: isActive ? 16.0 : 8.0,
-                    height: 8.0,
+                    duration: AppAnimations.onboardingDotResize,
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.onboardingDotMargin,
+                    ),
+                    width: isActive
+                        ? AppDimensions.onboardingDotWidth
+                        : AppDimensions.onboardingDotWidthInactive,
+                    height: AppDimensions.onboardingDotHeight,
                     decoration: BoxDecoration(
                       color: isActive
                           ? AppColors.kYellow
                           : AppColors.kChromeDark,
-                      borderRadius: BorderRadius.circular(4.0),
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.onboardingDotRadius,
+                      ),
                       boxShadow: isActive
                           ? const [
                               BoxShadow(
@@ -156,8 +163,8 @@ class _OnboardingCard extends StatelessWidget {
         children: [
           // Skeuomorphic circular emblem container
           Container(
-            width: 80.0,
-            height: 80.0,
+            width: AppDimensions.onboardingIconCircle,
+            height: AppDimensions.onboardingIconCircle,
             decoration: BoxDecoration(
               color: AppColors.kSurfaceInset,
               shape: BoxShape.circle,
@@ -175,12 +182,18 @@ class _OnboardingCard extends StatelessWidget {
                 ),
               ],
             ),
-            child: Icon(icon, color: AppColors.kYellow, size: 40.0),
+            child: Icon(
+              icon,
+              color: AppColors.kYellow,
+              size: AppDimensions.onboardingIconSize,
+            ),
           ),
           const SizedBox(height: AppDimensions.space24),
           Text(
             title,
-            style: AppTypography.kTitleL.copyWith(fontSize: 22.0),
+            style: AppTypography.kTitleL.copyWith(
+              fontSize: AppDimensions.fontSizeOnboardingTitle,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppDimensions.space12),

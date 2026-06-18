@@ -6,6 +6,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:vibration/vibration.dart';
 import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/core/sensors/low_pass_filter.dart';
+import 'package:levo/core/sensors/sensor_error_type.dart';
 import 'package:levo/features/spirit_level/bloc/spirit_level_state.dart';
 
 /// Cubit managing sensor processing, calibration offsets, and feedback logic for the Spirit Level.
@@ -19,6 +20,7 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
         mode: SpiritLevelMode.values[_prefs.levelModeIndex],
         soundOn: _prefs.levelSoundOn,
         hapticOn: _prefs.levelHapticOn,
+        viscosity: _prefs.levelViscosity,
       ),
     );
   }
@@ -43,8 +45,8 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
   double _refRollOffset = 0.0;
 
   static double _computeAlpha(double viscosity) {
-    // viscosity 0..1 -> alpha 1.0..0.03
-    return 1.0 - (viscosity * 0.97);
+    // viscosity 0..1 -> alpha 1.0..0.15 for more responsive default behavior
+    return 1.0 - (viscosity * 0.85);
   }
 
   /// Configures and begins listening to accelerometer sensors.
@@ -67,7 +69,7 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
               emit(
                 state.copyWith(
                   isSensorAvailable: false,
-                  errorMessage: "Sensor error occurred",
+                  errorType: SensorErrorType.unknown,
                 ),
               );
             },
@@ -76,7 +78,7 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
       emit(
         state.copyWith(
           isSensorAvailable: false,
-          errorMessage: "Accelerometer sensor is not available",
+          errorType: SensorErrorType.missing,
         ),
       );
     }
@@ -85,13 +87,16 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
   void _onSensorEvent(AccelerometerEvent event) {
     if (state.isHeld) return;
 
-    // Pitch: angle relative to x-axis
-    final rawPitch =
-        math.atan2(-event.x, math.sqrt(event.y * event.y + event.z * event.z)) *
-        (180.0 / math.pi);
+    final double gX = event.x;
+    final double gY = event.y;
+    final double gZ = event.z;
 
-    // Roll: angle relative to y-axis/z-axis
-    final rawRoll = math.atan2(event.y, event.z) * (180.0 / math.pi);
+    // Stable coordinate mapping
+    final double normXZ = math.sqrt(gX * gX + gZ * gZ + 1e-9);
+    final double normYZ = math.sqrt(gY * gY + gZ * gZ + 1e-9);
+
+    final rawPitch = math.atan2(gY, normXZ) * (180.0 / math.pi);
+    final rawRoll = math.atan2(-gX, normYZ) * (180.0 / math.pi);
 
     // Filter sensor jitter
     final filteredRawPitch = _pitchFilter.filter(rawPitch);
@@ -200,6 +205,8 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
     final alpha = _computeAlpha(viscosity);
     _pitchFilter.alpha = alpha;
     _rollFilter.alpha = alpha;
+    _prefs.setLevelViscosity(viscosity);
+    emit(state.copyWith(viscosity: viscosity));
   }
 
   /// Toggles sound level beep.

@@ -38,26 +38,6 @@ class ClinometerView extends StatelessWidget {
     final formatter = NumberFormat(format, locale);
     return formatter.format(value);
   }
-
-  String _getDirectionText(BuildContext context, double pitch) {
-    final l10n = context.l10n;
-    if (pitch.abs() < 0.5) return l10n.clinometerDirectionLevel;
-    return pitch > 0
-        ? l10n.clinometerDirectionRight
-        : l10n.clinometerDirectionLeft;
-  }
-
-  String _getClassification(BuildContext context, double percent) {
-    final l10n = context.l10n;
-    final double absPercent = percent.abs();
-    if (absPercent < 0.5) return l10n.clinometerGradeFlat;
-    if (absPercent < 2.0) return l10n.clinometerGradeDrainage;
-    if (absPercent < 5.0) return l10n.clinometerGradePedRamp;
-    if (absPercent < 8.33) return l10n.clinometerGradeAda;
-    if (absPercent < 15.0) return l10n.clinometerGradeSteepRamp;
-    return l10n.clinometerGradeSteepRoad;
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -68,10 +48,12 @@ class ClinometerView extends StatelessWidget {
         if (!state.isSensorAvailable) {
           return Scaffold(
             appBar: LevoAppBar(title: l10n.clinometerTitle),
-            body: SensorErrorView(
-              sensorName: "Accelerometer",
-              errorTitle: l10n.sensorErrorTitle,
-              errorMessage: state.errorMessage ?? l10n.spiritLevelErrorNoSensor,
+            body: NoiseBackground(
+              child: SensorErrorView(
+                sensorName: l10n.sensorNameAccelerometer,
+                errorTitle: l10n.sensorErrorTitle,
+                errorMessage: state.errorMessage ?? l10n.spiritLevelErrorNoSensor,
+              ),
             ),
           );
         }
@@ -85,64 +67,6 @@ class ClinometerView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // 1. Scene description / info banner
-                    Text(
-                      l10n.clinometerDesc,
-                      style: AppTypography.kBody.copyWith(
-                        color: AppColors.kTextSecondary,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: AppDimensions.space12),
-
-                    // 2. Slope Direction & Classification Badges
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppDimensions.paddingM,
-                            vertical: AppDimensions.paddingXS,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.kSurfaceInset,
-                            border: Border.all(color: AppColors.kDivider),
-                            borderRadius: BorderRadius.circular(
-                              AppDimensions.radiusChip,
-                            ),
-                          ),
-                          child: Text(
-                            _getDirectionText(context, state.pitch),
-                            style: AppTypography.kCaption.copyWith(
-                              color: AppColors.kYellow,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: AppDimensions.space8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppDimensions.paddingM,
-                            vertical: AppDimensions.paddingXS,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.kSurfaceInset,
-                            border: Border.all(color: AppColors.kDivider),
-                            borderRadius: BorderRadius.circular(
-                              AppDimensions.radiusChip,
-                            ),
-                          ),
-                          child: Text(
-                            _getClassification(context, state.percentGrade),
-                            style: AppTypography.kCaption.copyWith(
-                              color: AppColors.kLevelGreen,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppDimensions.space12),
 
                     // 3. Slope diagram visualizer
                     Expanded(
@@ -189,17 +113,6 @@ class ClinometerView extends StatelessWidget {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      "SLOPE ANGLE",
-                                      style: AppTypography.kCaption.copyWith(
-                                        color: AppColors.kTextSecondary,
-                                        fontSize: 9.0,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: AppDimensions.space8,
-                                    ),
                                     LedDisplay(
                                       value: _formatVal(
                                         context,
@@ -227,17 +140,6 @@ class ClinometerView extends StatelessWidget {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      "SLOPE GRADE",
-                                      style: AppTypography.kCaption.copyWith(
-                                        color: AppColors.kTextSecondary,
-                                        fontSize: 9.0,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: AppDimensions.space8,
-                                    ),
                                     LedDisplay(
                                       value: _formatVal(
                                         context,

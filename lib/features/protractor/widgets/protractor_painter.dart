@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:levo/app/theme/app_colors.dart';
+import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
 
 /// Custom Painter that renders a physical draftsman protractor.
@@ -17,17 +18,19 @@ class ProtractorPainter extends CustomPainter {
   final double angleB;
   final bool reflexEnabled;
 
-  final Paint bgPaint = Paint();
-  final Paint gridPaint = Paint();
-  final Paint sectorPaint = Paint();
-  final Paint axisPaint = Paint();
-  final Paint tickPaint = Paint();
-  final Paint majorTickPaint = Paint();
-  final Paint armAPaint = Paint();
-  final Paint armBPaint = Paint();
-  final Paint pivotShadow = Paint();
-  final Paint pivotPaint = Paint();
-  final Paint pinCapPaint = Paint();
+  static final Paint bgPaint = Paint();
+  static final Paint gridPaint = Paint();
+  static final Paint sectorPaint = Paint();
+  static final Paint axisPaint = Paint();
+  static final Paint tickPaint = Paint();
+  static final Paint majorTickPaint = Paint();
+  static final Paint armAPaint = Paint();
+  static final Paint armBPaint = Paint();
+  static final Paint pivotShadow = Paint();
+  static final Paint pivotPaint = Paint();
+  static final Paint pinCapPaint = Paint();
+
+  static final Map<int, TextPainter> _labelCache = {};
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -36,12 +39,12 @@ class ProtractorPainter extends CustomPainter {
     final outerRingRadius = dialRadius + 5.0;
 
     // 1. Draw warm drafts-paper warm off-white background fill
-    bgPaint.color = const Color(0xFFF3EFE3);
+    bgPaint.color = AppColors.kPaperBg;
     canvas.drawRect(Rect.fromLTWH(0.0, 0.0, size.width, size.height), bgPaint);
 
     // 2. Draw charcoal graph paper grids (spacing 20.0 logical pixels)
     gridPaint
-      ..color = const Color(0xFFE0D9C8)
+      ..color = AppColors.kPaperGrid
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.5;
 
@@ -87,7 +90,7 @@ class ProtractorPainter extends CustomPainter {
 
     // 4. Draw Protractor Scale circular index rings
     axisPaint
-      ..color = const Color(0xFF6E6759)
+      ..color = AppColors.kDraftingLine
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
     canvas.drawCircle(center, dialRadius, axisPaint);
@@ -95,14 +98,12 @@ class ProtractorPainter extends CustomPainter {
 
     // 5. Draw graduation tick marks around the scale
     tickPaint
-      ..color = const Color(0xFF6E6759)
+      ..color = AppColors.kDraftingLine
       ..strokeWidth = 1.0;
 
     majorTickPaint
-      ..color = const Color(0xFF4A443B)
+      ..color = AppColors.kDraftingText
       ..strokeWidth = 1.5;
-
-    final textPainter = TextPainter(textDirection: TextDirection.ltr);
 
     for (int i = 0; i < 360; i += 1) {
       final double angleRad = i * math.pi / 180.0;
@@ -124,23 +125,29 @@ class ProtractorPainter extends CustomPainter {
 
       // Print angle numbers every 30 degrees
       if (isMajor && i % 30 == 0) {
-        textPainter.text = TextSpan(
-          text: '$i',
-          style: AppTypography.kCaption.copyWith(
-            color: const Color(0xFF6E6759),
-            fontSize: 9.0,
-            fontWeight: FontWeight.bold,
-          ),
-        );
-        textPainter.layout();
+        final painter = _labelCache.putIfAbsent(i, () {
+          final tp = TextPainter(
+            text: TextSpan(
+              text: '$i',
+              style: AppTypography.kCaption.copyWith(
+                color: AppColors.kDraftingLine,
+                fontSize: AppDimensions.fontSizeMicroCaption,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            textDirection: TextDirection.ltr,
+          );
+          tp.layout();
+          return tp;
+        });
 
         // Offset degree labels slightly inside the circular scale ring
         final double labelRadius = dialRadius - 18.0;
         final labelOffset = Offset(
-          center.dx + labelRadius * math.cos(angleRad) - textPainter.width / 2,
-          center.dy + labelRadius * math.sin(angleRad) - textPainter.height / 2,
+          center.dx + labelRadius * math.cos(angleRad) - painter.width / 2,
+          center.dy + labelRadius * math.sin(angleRad) - painter.height / 2,
         );
-        textPainter.paint(canvas, labelOffset);
+        painter.paint(canvas, labelOffset);
       }
     }
 

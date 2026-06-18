@@ -1,7 +1,7 @@
 {
   "@@locale": "ar",
-  "appName": "ليفو",
-  "homeScreenTitle": "ليفو",
+  "appName": "Levo",
+  "homeScreenTitle": "Levo",
   "homeScreenSubtitle": "حقيبة أدوات القياس الاحترافية",
   "spiritLevelTitle": "ميزان الماء",
   "spiritLevelDesc": "ميزان ماء ثنائي وأحادي البعد مع شاقول",
@@ -202,8 +202,36 @@
   "commonCopySuccess": "تم النسخ إلى الحافظة!",
   "unitConverterLabelFrom": "تحويل من",
   "unitConverterLabelTo": "تحويل إلى",
-  "unitConverterFromUnit": "الوحدة المصدر",
-  "unitConverterToUnit": "الوحدة الهدف",
-  "settingsDefaultRulerUnit": "الوحدة الافتراضية للمسطرة",
-  "settingsDefaultConverterCategory": "فئة المحول الافتراضية"
+  "unitConverterFromUnit": "من",
+  "unitConverterToUnit": "إلى",
+  "settingsDefaultRulerUnit": "وحدة المسطرة الافتراضية",
+  "settingsDefaultConverterCategory": "فئة المحول الافتراضية",
+  "spiritLevelViscosityLabel": "اللزوجة (تخميد الحركة)",
+  "settingsSpiritLevelOffsetsDisplay": "الانحدار: {pitch}° | الانحراف: {roll}°",
+  "settingsRulerCalibrationScaleDisplay": "مقياس المعايرة: {scale}x",
+  "settingsAppVersionBuildDisplay": "الإصدار: {version} (البناء {build})",
+  "calibrationWizardSensorError": "خطأ في قراءة الحساسات",
+  "metalDetectorLabelMagneticDelta": "التغير المغناطيسي",
+  "metalDetectorLabelAmbientBaseline": "المستوى المرجعي للمحيط",
+  "metalDetectorLabelSensitivity": "الحساسية",
+  "metalDetectorSoundOn": "الصوت مفعّل",
+  "metalDetectorSoundMuted": "الصوت مكتوم",
+  "metalDetectorHapticOn": "الاهتزاز مفعّل",
+  "metalDetectorHapticMuted": "الاهتزاز مكتوم",
+  "metalDetectorSensitivityValue": "{value}x",
+  "@metalDetectorSensitivityValue": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "soundMeterLabelSpl": "مستوى الصوت (SPL)",
+  "lightMeterLabelLuxDial": "لوكس",
+  "lightMeterUnitEv": "EV",
+  "lightMeterMaxDialLabel": "١٠ آلاف+",
+  "lightMeterLabelEv100": "قيمة التعريض (EV100)",
+  "lightMeterLabelCameraViewport": "شاشة الكاميرا",
+  "lightMeterLabelHardwareSensor": "حساس العتاد",
+  "clinometerLabelSlopeAngle": "زاوية الميل",
+  "clinometerLabelSlopeGrade": "درجة المنحدر",
+  "rulerCalibrationReset": "تمت إعادة ضبط المعايرة"
 }

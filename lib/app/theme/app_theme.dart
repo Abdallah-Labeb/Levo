@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:levo/app/theme/app_colors.dart';
+import 'package:levo/app/theme/app_dimensions.dart';
+import 'package:levo/app/theme/app_typography.dart';
 
 /// Application theme definitions for Levo.
 class AppTheme {
@@ -40,13 +42,13 @@ class AppTheme {
       tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
           color: AppColors.kSurfaceElevated,
-          borderRadius: BorderRadius.circular(4.0),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
           border: Border.all(color: AppColors.kBorderHighlight),
         ),
-        textStyle: const TextStyle(
+        textStyle: TextStyle(
           fontFamily: 'Inter',
           color: AppColors.kTextPrimary,
-          fontSize: 12.0,
+          fontSize: AppTypography.kBodySmall.fontSize,
         ),
       ),
     );

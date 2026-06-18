@@ -3,8 +3,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' hide TextDirection;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:levo/app/di/injection.dart';
+import 'package:levo/core/permissions/permission_service.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
@@ -41,115 +41,13 @@ class LightMeterView extends StatelessWidget {
     return formatter.format(value);
   }
 
-  String _getSceneDescription(BuildContext context, String key) {
-    final l10n = context.l10n;
-    switch (key) {
-      case "lightMeterSceneDark":
-        return l10n.lightMeterSceneDark;
-      case "lightMeterSceneDim":
-        return l10n.lightMeterSceneDim;
-      case "lightMeterSceneNormal":
-        return l10n.lightMeterSceneNormal;
-      case "lightMeterSceneBright":
-        return l10n.lightMeterSceneBright;
-      case "lightMeterSceneSunlight":
-        return l10n.lightMeterSceneSunlight;
-      default:
-        return "";
-    }
-  }
-
   void _requestCameraPermission(
     BuildContext context,
     LightMeterCubit cubit,
   ) async {
-    final l10n = context.l10n;
-    final status = await Permission.camera.status;
-
-    if (status.isGranted) {
-      cubit.checkCameraPermission();
-    } else if (status.isDenied) {
-      if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: AppColors.kSurface,
-              title: Text(
-                l10n.permissionCameraTitle,
-                style: AppTypography.kTitleL,
-              ),
-              content: Text(
-                l10n.permissionCameraBodyDialog,
-                style: AppTypography.kBody,
-              ),
-              actions: [
-                TactileButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.paddingM,
-                    vertical: AppDimensions.paddingS,
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                  text: l10n.commonCancel,
-                ),
-                const SizedBox(width: AppDimensions.space8),
-                TactileButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.paddingM,
-                    vertical: AppDimensions.paddingS,
-                  ),
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    cubit.requestCameraPermission();
-                  },
-                  text: l10n.commonAllow,
-                ),
-              ],
-            );
-          },
-        );
-      }
-    } else if (status.isPermanentlyDenied) {
-      if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: AppColors.kSurface,
-              title: Text(
-                l10n.permissionPermanentlyDeniedTitle,
-                style: AppTypography.kTitleL,
-              ),
-              content: Text(
-                l10n.permissionCameraDeniedPermanentlyBody,
-                style: AppTypography.kBody,
-              ),
-              actions: [
-                TactileButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.paddingM,
-                    vertical: AppDimensions.paddingS,
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                  text: l10n.commonCancel,
-                ),
-                const SizedBox(width: AppDimensions.space8),
-                TactileButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.paddingM,
-                    vertical: AppDimensions.paddingS,
-                  ),
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    await openAppSettings();
-                  },
-                  text: l10n.commonButtonOpenSettings,
-                ),
-              ],
-            );
-          },
-        );
-      }
+    final granted = await getIt<PermissionService>().checkAndRequestCamera(context);
+    if (granted) {
+      await cubit.checkCameraPermission();
     }
   }
 
@@ -253,45 +151,26 @@ class LightMeterView extends StatelessWidget {
                       children: [
                         const SizedBox(height: AppDimensions.space12),
 
-                        // 1. Scene description badge
-                        Center(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppDimensions.paddingM,
-                              vertical: AppDimensions.paddingXS,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.kSurfaceInset,
-                              border: Border.all(color: AppColors.kDivider),
-                              borderRadius: BorderRadius.circular(
-                                AppDimensions.radiusChip,
-                              ),
-                            ),
-                            child: Text(
-                              _getSceneDescription(context, state.scene),
-                              style: AppTypography.kCaption.copyWith(
-                                color: AppColors.kYellow,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-
                         // 2. Analog Dial Gauge & Digital LCD display
                         Expanded(
                           flex: 5,
                           child: Center(
-                            child: AnalogDialWidget(
-                              value: normalizedValue,
-                              zones: dialZones,
-                              title: "LUX",
-                              minLabel: "0",
-                              maxLabel: "10K+",
-                              size: 260.0,
-                              overlayWidget: LedDisplay(
-                                value: _formatVal(context, state.lux, "0.0"),
-                                unit: l10n.commonUnitLux,
-                              ),
+                            child: Builder(
+                              builder: (context) {
+                                final numberFormatter = NumberFormat("0", Localizations.localeOf(context).toString());
+                                return AnalogDialWidget(
+                                  value: normalizedValue,
+                                  zones: dialZones,
+                                  title: l10n.lightMeterLabelLuxDial,
+                                  minLabel: numberFormatter.format(0),
+                                  maxLabel: l10n.lightMeterMaxDialLabel,
+                                  size: 260.0,
+                                  overlayWidget: LedDisplay(
+                                    value: _formatVal(context, state.lux, "0.0"),
+                                    unit: l10n.commonUnitLux,
+                                  ),
+                                );
+                              }
                             ),
                           ),
                         ),
@@ -317,12 +196,11 @@ class LightMeterView extends StatelessWidget {
                                             MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            "EXPOSURE VALUE (EV100)",
+                                            l10n.lightMeterLabelEv100,
                                             style: AppTypography.kCaption
                                                 .copyWith(
                                                   color:
                                                       AppColors.kTextSecondary,
-                                                  fontSize: 9.0,
                                                   letterSpacing: 0.5,
                                                 ),
                                             textAlign: TextAlign.center,
@@ -336,7 +214,7 @@ class LightMeterView extends StatelessWidget {
                                               state.exposureValue,
                                               "0.0",
                                             ),
-                                            unit: "EV",
+                                            unit: l10n.lightMeterUnitEv,
                                             textStyle: AppTypography.kDisplayS,
                                           ),
                                         ],
@@ -359,13 +237,12 @@ class LightMeterView extends StatelessWidget {
                                         children: [
                                           Text(
                                             state.isCameraFallback
-                                                ? "CAMERA VIEWPORT"
-                                                : "HARDWARE SENSOR",
+                                                ? l10n.lightMeterLabelCameraViewport
+                                                : l10n.lightMeterLabelHardwareSensor,
                                             style: AppTypography.kCaption
                                                 .copyWith(
                                                   color:
                                                       AppColors.kTextSecondary,
-                                                  fontSize: 9.0,
                                                   letterSpacing: 0.5,
                                                 ),
                                             textAlign: TextAlign.center,

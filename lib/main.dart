@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:levo/app/di/injection.dart';
 import 'package:levo/app/router/app_router.dart';
 import 'package:levo/app/theme/app_theme.dart';
+import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/core/ads/ad_service.dart';
 import 'package:levo/features/settings/bloc/settings_cubit.dart';
 import 'package:levo/features/settings/bloc/settings_state.dart';
@@ -20,7 +21,7 @@ void main() async {
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
     statusBarBrightness: Brightness.dark,
-    systemNavigationBarColor: Color(0xFF111111),
+    systemNavigationBarColor: AppColors.kBackground,
     systemNavigationBarIconBrightness: Brightness.light,
   ));
 

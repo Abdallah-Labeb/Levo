@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:levo/app/theme/app_colors.dart';
+import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/app/theme/app_animations.dart';
 
@@ -171,6 +172,12 @@ class _DialPainter extends CustomPainter {
 
   static final _tickPaint = Paint()..style = PaintingStyle.stroke;
 
+  static final _zonePaint = Paint();
+
+  static final _highlightPaint = Paint()
+    ..color = const Color(0xAAFFFFFF)
+    ..style = PaintingStyle.fill;
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
@@ -202,13 +209,13 @@ class _DialPainter extends CustomPainter {
       final zoneStart = sweepStartRad + (zone.start * sweepAngleRad);
       final zoneSweep = (zone.end - zone.start) * sweepAngleRad;
 
-      final zonePaint = Paint()
+      _zonePaint
         ..color = zone.color
         ..style = PaintingStyle.stroke
         ..strokeWidth = radius * 0.08
         ..strokeCap = StrokeCap.square;
 
-      canvas.drawArc(arcRect, zoneStart, zoneSweep, false, zonePaint);
+      canvas.drawArc(arcRect, zoneStart, zoneSweep, false, _zonePaint);
     }
 
     // 3. Draw Tick Marks
@@ -289,13 +296,10 @@ class _DialPainter extends CustomPainter {
     canvas.drawCircle(center, capRadius, _centerCapPaint);
 
     // Highlight dot on chrome center cap
-    final highlightPaint = Paint()
-      ..color = const Color(0xAAFFFFFF)
-      ..style = PaintingStyle.fill;
     canvas.drawCircle(
       Offset(center.dx - capRadius * 0.3, center.dy - capRadius * 0.3),
       capRadius * 0.2,
-      highlightPaint,
+      _highlightPaint,
     );
 
     // 6. Draw Min/Max Labels & Title Text
@@ -323,7 +327,7 @@ class _DialPainter extends CustomPainter {
         text: minLabel,
         style: AppTypography.kCaption.copyWith(
           fontFamily: 'ShareTechMono',
-          fontSize: 10.0,
+          fontSize: AppDimensions.fontSizeDialLabel,
           color: AppColors.kChromeMid,
         ),
       ),
@@ -346,7 +350,7 @@ class _DialPainter extends CustomPainter {
         text: maxLabel,
         style: AppTypography.kCaption.copyWith(
           fontFamily: 'ShareTechMono',
-          fontSize: 10.0,
+          fontSize: AppDimensions.fontSizeDialLabel,
           color: AppColors.kChromeMid,
         ),
       ),

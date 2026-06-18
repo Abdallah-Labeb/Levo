@@ -119,7 +119,7 @@ class ProtractorView extends StatelessWidget {
                             ),
                             boxShadow: const [
                               BoxShadow(
-                                color: Colors.black38,
+                                color: AppColors.kShadowMedium,
                                 blurRadius: 6,
                                 offset: Offset(0, 3),
                               ),
@@ -142,6 +142,7 @@ class ProtractorView extends StatelessWidget {
                                       context,
                                       state.measuredAngle,
                                     ),
+                                    textStyle: AppTypography.kDisplayS,
                                   ),
                                 ],
                               ),
@@ -159,6 +160,7 @@ class ProtractorView extends StatelessWidget {
                                       context,
                                       state.measuredAngle,
                                     ),
+                                    textStyle: AppTypography.kDisplayS,
                                   ),
                                 ],
                               ),
@@ -261,10 +263,10 @@ class ProtractorView extends StatelessWidget {
         shape: BoxShape.circle,
         gradient: AppColors.kGradientButtonNormal,
         border: Border.all(color: accentColor, width: 2.0),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x77000000),
-            offset: Offset(0, 3),
+            color: AppColors.kBorderShadow.withAlpha(0x77),
+            offset: const Offset(0, 3),
             blurRadius: 5.0,
           ),
         ],

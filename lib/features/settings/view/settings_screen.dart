@@ -15,17 +15,9 @@ import 'package:levo/l10n/l10n_extension.dart';
 
 import 'package:levo/core/widgets/levo_banner.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-
-  /// Validates the stored converter category against the actual enum values.
-  /// Falls back to 'length' if the stored value is invalid (e.g. 'temperature').
   static const _validCategories = [
     'length', 'area', 'volume', 'mass', 'speed', 'pressure', 'angle',
   ];
@@ -90,7 +82,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final prefs = getIt<PreferencesService>();
-    final isAr = Directionality.of(context) == TextDirection.rtl;
 
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
@@ -103,7 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               padding: const EdgeInsets.all(AppDimensions.paddingM),
               children: [
                 // 1. Appearance Section
-                _buildSectionHeader(context.l10n.settingsSectionAppearance),
+                _buildSectionHeader(context, context.l10n.settingsSectionAppearance),
                 _buildSettingsCard(
                   child: Column(
                     children: [
@@ -112,14 +103,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         title: Text(
                           context.l10n.settingsLanguageLabel,
                           style: AppTypography.kBody,
-                        ),
-                        subtitle: Text(
-                          state.locale?.languageCode == 'ar'
-                              ? context.l10n.settingsLanguageArabic
-                              : (state.locale?.languageCode == 'en'
-                                    ? context.l10n.settingsLanguageEnglish
-                                    : context.l10n.settingsLanguageSystem),
-                          style: AppTypography.kBodySmall,
                         ),
                         trailing: DropdownButton<String>(
                           value: state.locale?.languageCode ?? 'system',
@@ -155,10 +138,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           context.l10n.settingsThemeLabel,
                           style: AppTypography.kBody,
                         ),
-                        subtitle: Text(
-                          context.l10n.settingsThemeDark,
-                          style: AppTypography.kBodySmall,
-                        ),
                         trailing: Text(
                           context.l10n.settingsThemeDarkOnly,
                           style: AppTypography.kCaption.copyWith(
@@ -172,7 +151,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: AppDimensions.space16),
 
                 // 2. Measurement Defaults
-                _buildSectionHeader(context.l10n.settingsSectionDefaults),
+                _buildSectionHeader(context, context.l10n.settingsSectionDefaults),
                 _buildSettingsCard(
                   child: Column(
                     children: [
@@ -182,21 +161,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           style: AppTypography.kBody,
                         ),
                         trailing: DropdownButton<String>(
-                          value: prefs.rulerDefaultUnit,
+                          value: state.rulerDefaultUnit,
                           dropdownColor: AppColors.kSurface,
                           underline: const SizedBox(),
-                          items: const [
-                            DropdownMenuItem(value: 'mm', child: Text("mm")),
-                            DropdownMenuItem(value: 'cm', child: Text("cm")),
+                          items: [
+                            DropdownMenuItem(
+                              value: 'mm',
+                              child: Text(context.l10n.commonUnitMm),
+                            ),
+                            DropdownMenuItem(
+                              value: 'cm',
+                              child: Text(context.l10n.commonUnitCm),
+                            ),
                             DropdownMenuItem(
                               value: 'in',
-                              child: Text("inches"),
+                              child: Text(context.l10n.commonUnitInch),
                             ),
                           ],
-                          onChanged: (val) async {
-                            await prefs.setRulerDefaultUnit(val!);
-                            setState(() {});
-                          },
+                          onChanged: (val) => settingsCubit.setRulerDefaultUnit(val!),
                         ),
                       ),
                       const Divider(color: AppColors.kDivider),
@@ -206,7 +188,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           style: AppTypography.kBody,
                         ),
                         trailing: DropdownButton<String>(
-                          value: _getValidConverterCategory(prefs.converterDefaultCategory),
+                          value: _getValidConverterCategory(state.converterDefaultCategory),
                           dropdownColor: AppColors.kSurface,
                           underline: const SizedBox(),
                           items: [
@@ -239,10 +221,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               child: Text(context.l10n.unitCategoryAngle),
                             ),
                           ],
-                          onChanged: (val) async {
-                            await prefs.setConverterDefaultCategory(val!);
-                            setState(() {});
-                          },
+                          onChanged: (val) => settingsCubit.setConverterDefaultCategory(val!),
                         ),
                       ),
                     ],
@@ -251,32 +230,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: AppDimensions.space16),
 
                 // 3. Sensor & Calibration
-                _buildSectionHeader(context.l10n.settingsSectionSensor),
+                _buildSectionHeader(context, context.l10n.settingsSectionSensor),
                 _buildSettingsCard(
                   child: Column(
                     children: [
-                      ListTile(
-                        title: Text(
-                          context.l10n.settingsSpiritLevelOffsets,
-                          style: AppTypography.kBody,
-                        ),
-                        subtitle: Text(
-                          "Pitch: ${prefs.calLevelPitch.toStringAsFixed(2)}° | Roll: ${prefs.calLevelRoll.toStringAsFixed(2)}°",
-                          style: AppTypography.kBodySmall,
-                        ),
-                      ),
-                      const Divider(color: AppColors.kDivider),
-                      ListTile(
-                        title: Text(
-                          context.l10n.settingsRulerCalibrationScale,
-                          style: AppTypography.kBody,
-                        ),
-                        subtitle: Text(
-                          "Scale: ${prefs.rulerScaleFactor.toStringAsFixed(4)}x",
-                          style: AppTypography.kBodySmall,
-                        ),
-                      ),
-                      const Divider(color: AppColors.kDivider),
                       ListTile(
                         title: Text(
                           context.l10n.settingsResetAllCalibration,
@@ -296,23 +253,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const SizedBox(height: AppDimensions.space16),
 
-                // 4. Display Configuration
-                _buildSectionHeader(context.l10n.settingsSectionDisplay),
-                _buildSettingsCard(
-                  child: SwitchListTile(
-                    title: Text(
-                      context.l10n.settingsKeepScreenOn,
-                      style: AppTypography.kBody,
-                    ),
-                    activeTrackColor: AppColors.kYellow,
-                    value: state.keepScreenOn,
-                    onChanged: (val) => settingsCubit.toggleKeepScreenOn(val),
-                  ),
-                ),
-                const SizedBox(height: AppDimensions.space16),
-
                 // 5. Pro / Ads
-                _buildSectionHeader(context.l10n.settingsSectionPro),
+                _buildSectionHeader(context, context.l10n.settingsSectionPro),
                 _buildSettingsCard(
                   child: Column(
                     children: [
@@ -368,7 +310,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: AppDimensions.space16),
 
                 // 6. About Section
-                _buildSectionHeader(context.l10n.settingsSectionAbout),
+                _buildSectionHeader(context, context.l10n.settingsSectionAbout),
                 _buildSettingsCard(
                   child: Column(
                     children: [
@@ -378,7 +320,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           style: AppTypography.kBody,
                         ),
                         trailing: Text(
-                          "1.0.0 (Build 1)",
+                          context.l10n.settingsAppVersionBuildDisplay(
+                            state.buildNumber.isNotEmpty ? state.buildNumber : "1",
+                            state.appVersion.isNotEmpty ? state.appVersion : "1.0.0",
+                          ),
                           style: AppTypography.kBodySmall.copyWith(
                             color: AppColors.kChromeMid,
                           ),
@@ -397,7 +342,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         onTap: () => showLicensePage(
                           context: context,
                           applicationName: "Levo",
-                          applicationVersion: "1.0.0",
+                          applicationVersion: state.appVersion.isNotEmpty ? state.appVersion : "1.0.0",
                         ),
                       ),
                     ],
@@ -412,14 +357,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(BuildContext context, String title) {
     return Padding(
       padding: const EdgeInsetsDirectional.only(
         start: AppDimensions.paddingS,
         end: AppDimensions.paddingS,
         bottom: AppDimensions.paddingS,
       ),
-      child: Text(title, style: AppTypography.kSectionHeader),
+      child: Text(
+        title,
+        style: AppTypography.kSectionHeader.copyWith(
+          color: AppColors.kBlack,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 

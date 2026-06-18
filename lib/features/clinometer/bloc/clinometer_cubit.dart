@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/core/sensors/low_pass_filter.dart';
+import 'package:levo/core/sensors/sensor_error_type.dart';
 import 'package:levo/features/clinometer/bloc/clinometer_state.dart';
 
 /// Cubit managing clinometer accelerometer feeds, pitch/roll computations,
@@ -38,6 +39,7 @@ class ClinometerCubit extends Cubit<ClinometerState> {
               emit(
                 state.copyWith(
                   isSensorAvailable: false,
+                  errorType: SensorErrorType.unknown,
                   errorMessage: "Error reading accelerometer sensor",
                 ),
               );
@@ -47,6 +49,7 @@ class ClinometerCubit extends Cubit<ClinometerState> {
       emit(
         state.copyWith(
           isSensorAvailable: false,
+          errorType: SensorErrorType.missing,
           errorMessage: "Accelerometer sensor is not available",
         ),
       );

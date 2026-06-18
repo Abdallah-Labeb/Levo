@@ -1,8 +1,9 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' hide TextDirection;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:levo/app/di/injection.dart';
+import 'package:levo/core/permissions/permission_service.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
@@ -49,6 +50,16 @@ class CompassView extends StatelessWidget {
     return '';
   }
 
+  void _requestLocationPermission(
+    BuildContext context,
+    CompassCubit cubit,
+  ) async {
+    final granted = await getIt<PermissionService>().checkAndRequestLocation(context);
+    if (granted) {
+      await cubit.enableTrueNorth(true);
+    }
+  }
+
   void _onTrueNorthToggle(
     BuildContext context,
     CompassCubit cubit,
@@ -59,114 +70,26 @@ class CompassView extends StatelessWidget {
       return;
     }
 
-    final l10n = context.l10n;
-
-    // Check location permission status before requesting
-    final status = await Permission.locationWhenInUse.status;
-    if (status.isGranted) {
-      await cubit.enableTrueNorth(true);
-    } else if (status.isDenied) {
-      if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: AppColors.kSurface,
-              title: Text(
-                l10n.permissionLocationTitle,
-                style: AppTypography.kTitleL,
-              ),
-              content: Text(
-                l10n.permissionLocationBodyDialog,
-                style: AppTypography.kBody,
-              ),
-              actions: [
-                TactileButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.paddingM,
-                    vertical: AppDimensions.paddingS,
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                  text: l10n.commonCancel,
-                ),
-                const SizedBox(width: AppDimensions.space8),
-                TactileButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.paddingM,
-                    vertical: AppDimensions.paddingS,
-                  ),
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    final result = await Permission.locationWhenInUse.request();
-                    if (result.isGranted) {
-                      await cubit.enableTrueNorth(true);
-                    }
-                  },
-                  text: l10n.commonAllow,
-                ),
-              ],
-            );
-          },
-        );
-      }
-    } else if (status.isPermanentlyDenied) {
-      if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: AppColors.kSurface,
-              title: Text(
-                l10n.permissionPermanentlyDeniedTitle,
-                style: AppTypography.kTitleL,
-              ),
-              content: Text(
-                l10n.permissionLocationDeniedPermanentlyBody,
-                style: AppTypography.kBody,
-              ),
-              actions: [
-                TactileButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.paddingM,
-                    vertical: AppDimensions.paddingS,
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                  text: l10n.commonCancel,
-                ),
-                const SizedBox(width: AppDimensions.space8),
-                TactileButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.paddingM,
-                    vertical: AppDimensions.paddingS,
-                  ),
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    await openAppSettings();
-                  },
-                  text: l10n.commonButtonOpenSettings,
-                ),
-              ],
-            );
-          },
-        );
-      }
-    }
+    _requestLocationPermission(context, cubit);
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final cubit = context.read<CompassCubit>();
+    final declinationFormatter = NumberFormat("0.0", Localizations.localeOf(context).toString());
 
     return BlocBuilder<CompassCubit, CompassState>(
       builder: (context, state) {
         if (!state.isSensorAvailable) {
           return Scaffold(
             appBar: LevoAppBar(title: l10n.compassTitle),
-            body: SensorErrorView(
-              sensorName: "Magnetometer",
-              errorTitle: l10n.sensorErrorTitle,
-              errorMessage: state.errorMessage ?? l10n.compassAccuracyLow,
+            body: NoiseBackground(
+              child: SensorErrorView(
+                sensorName: l10n.sensorNameMagnetometer,
+                errorTitle: l10n.sensorErrorTitle,
+                errorMessage: state.errorMessage ?? l10n.compassAccuracyLow,
+              ),
             ),
           );
         }
@@ -254,25 +177,34 @@ class CompassView extends StatelessWidget {
                   // 3. Rotating Compass Rose visualizer
                   Expanded(
                     child: Center(
-                      child: Container(
-                        width: 270,
-                        height: 270,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0x99000000),
-                              offset: Offset(4, 8),
-                              blurRadius: 16,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final double dialSize = math.min(
+                            math.min(constraints.maxWidth, constraints.maxHeight),
+                            AppDimensions.compassDialSize,
+                          );
+
+                          return Container(
+                            width: dialSize,
+                            height: dialSize,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0x99000000),
+                                  offset: Offset(4, 8),
+                                  blurRadius: 16,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: CustomPaint(
-                          painter: CompassPainter(
-                            heading: state.heading,
-                            accuracy: state.accuracy,
-                          ),
-                        ),
+                            child: CustomPaint(
+                              painter: CompassPainter(
+                                heading: state.heading,
+                                accuracy: state.accuracy,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -315,6 +247,7 @@ class CompassView extends StatelessWidget {
                               const SizedBox(height: AppDimensions.space8),
                               LedDisplay(
                                 value: _formatDegree(context, state.heading),
+                                textStyle: AppTypography.kDisplayS,
                               ),
                             ],
                           ),
@@ -332,6 +265,7 @@ class CompassView extends StatelessWidget {
                                   context,
                                   state.heading,
                                 ),
+                                textStyle: AppTypography.kDisplayS,
                               ),
                             ],
                           ),
@@ -355,10 +289,12 @@ class CompassView extends StatelessWidget {
                             onPressed: () => cubit.toggleLock(),
                             isActive: state.isLocked,
                             text: state.isLocked
-                                ? l10n.compassLocked
-                                : l10n.compassLabelLock,
+                                ? l10n.spiritLevelButtonRelease
+                                : l10n.spiritLevelButtonHold,
                             icon: Icon(
-                              state.isLocked ? Icons.lock : Icons.lock_open,
+                              state.isLocked
+                                  ? Icons.play_arrow_outlined
+                                  : Icons.pause_outlined,
                             ),
                           ),
                         ),
@@ -397,7 +333,7 @@ class CompassView extends StatelessWidget {
                           border: Border.all(color: AppColors.kDivider),
                         ),
                         child: Text(
-                          "${l10n.compassDeclinationLabel}: ${state.declination >= 0 ? '+' : ''}${state.declination.toStringAsFixed(1)}°",
+                          "${l10n.compassDeclinationLabel}: ${state.declination > 0 ? '+' : (state.declination < 0 ? '-' : '')}${declinationFormatter.format(state.declination.abs())}°",
                           style: AppTypography.kCaption.copyWith(
                             color: AppColors.kYellow,
                             fontWeight: FontWeight.bold,

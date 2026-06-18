@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:levo/app/di/injection.dart';
+import 'package:levo/app/theme/app_animations.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
@@ -30,7 +31,7 @@ class HomeScreen extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withAlpha(128),
+      barrierColor: AppColors.kBackground.withAlpha(128),
       builder: (context) {
         return Padding(
           padding: const EdgeInsets.all(AppDimensions.paddingM),
@@ -234,11 +235,8 @@ class HomeScreen extends StatelessWidget {
             body: NoiseBackground(
               child: state.isLoading
                   ? Center(
-                      child: Text(
-                        context.l10n.homeScreenInitializingSensors,
-                        style: AppTypography.kDisplayS.copyWith(
-                          color: AppColors.kDisplayGreen,
-                        ),
+                      child: _BlinkingLedLoadingIndicator(
+                        text: context.l10n.homeScreenInitializingSensors,
                       ),
                     )
                   : SingleChildScrollView(
@@ -305,4 +303,49 @@ class _ToolItem {
   final bool isAvailable;
   final String sensorName;
   final String routePath;
+}
+
+class _BlinkingLedLoadingIndicator extends StatefulWidget {
+  const _BlinkingLedLoadingIndicator({required this.text});
+
+  final String text;
+
+  @override
+  State<_BlinkingLedLoadingIndicator> createState() =>
+      _BlinkingLedLoadingIndicatorState();
+}
+
+class _BlinkingLedLoadingIndicatorState extends State<_BlinkingLedLoadingIndicator>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: AppAnimations.blinkingLed,
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: Tween<double>(begin: 0.3, end: 1.0).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      ),
+      child: Text(
+        widget.text,
+        style: AppTypography.kDisplayS.copyWith(
+          color: AppColors.kDisplayGreen,
+        ),
+      ),
+    );
+  }
 }

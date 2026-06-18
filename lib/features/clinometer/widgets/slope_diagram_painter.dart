@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:levo/app/theme/app_colors.dart';
+import 'package:levo/app/theme/app_dimensions.dart';
 
 /// Renders a 2D slope diagram showing horizontal ground line,
 /// a tilted line matching the device's pitch, and the angle arc sector.
@@ -10,6 +11,39 @@ class SlopeDiagramPainter extends CustomPainter {
   /// Pitch angle in degrees
   final double pitch;
 
+  static final Paint bgPaint = Paint()..color = const Color(0xFF070B07);
+  
+  static final Paint gridPaint = Paint()
+    ..color = const Color(0xFF132B13).withAlpha(100)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 0.5;
+
+  static final Paint groundPaint = Paint()
+    ..color = AppColors.kLevelGreen.withAlpha(60)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.0;
+
+  static final Paint lineGlowPaint = Paint()
+    ..color = AppColors.kYellow.withAlpha(90)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 4.0;
+
+  static final Paint linePaint = Paint()
+    ..color = AppColors.kYellow
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 2.0;
+
+  static final Paint pivotPaint = Paint()
+    ..color = AppColors.kYellow
+    ..style = PaintingStyle.fill;
+
+  static final Paint arcPaint = Paint()
+    ..color = AppColors.kYellow.withAlpha(120)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.0;
+
+  static final TextPainter _textPainter = TextPainter(textDirection: TextDirection.ltr);
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
@@ -17,13 +51,7 @@ class SlopeDiagramPainter extends CustomPainter {
     final height = size.height;
 
     // 1. Draw grid background (black cathode layout)
-    final bgPaint = Paint()..color = const Color(0xFF070B07);
     canvas.drawRect(Rect.fromLTWH(0, 0, width, height), bgPaint);
-
-    final gridPaint = Paint()
-      ..color = const Color(0xFF132B13).withAlpha(100)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.5;
 
     // Background matrix grid lines
     for (double y = 0; y < height; y += 20.0) {
@@ -34,10 +62,6 @@ class SlopeDiagramPainter extends CustomPainter {
     }
 
     // 2. Horizontal Reference Ground Line (Dotted / Dim Green)
-    final groundPaint = Paint()
-      ..color = AppColors.kLevelGreen.withAlpha(60)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
     canvas.drawLine(
       Offset(20.0, center.dy),
       Offset(width - 20.0, center.dy),
@@ -61,23 +85,12 @@ class SlopeDiagramPainter extends CustomPainter {
     );
 
     // Glow effect for tilted line
-    final lineGlowPaint = Paint()
-      ..color = AppColors.kYellow.withAlpha(90)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0;
     canvas.drawLine(leftPt, rightPt, lineGlowPaint);
 
     // Solid line
-    final linePaint = Paint()
-      ..color = AppColors.kYellow
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
     canvas.drawLine(leftPt, rightPt, linePaint);
 
     // Pivot center point
-    final pivotPaint = Paint()
-      ..color = AppColors.kYellow
-      ..style = PaintingStyle.fill;
     canvas.drawCircle(center, 4.0, pivotPaint);
 
     // 4. Draw Angle Arc Sector
@@ -87,11 +100,6 @@ class SlopeDiagramPainter extends CustomPainter {
 
       final double startAngle = pitch > 0 ? -pitchRad : 0.0;
       final double sweepAngle = pitch > 0 ? pitchRad : -pitchRad;
-
-      final arcPaint = Paint()
-        ..color = AppColors.kYellow.withAlpha(120)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.0;
 
       canvas.drawArc(arcRect, startAngle, sweepAngle, false, arcPaint);
 
@@ -103,23 +111,21 @@ class SlopeDiagramPainter extends CustomPainter {
         center.dy + textRadius * math.sin(textAngle),
       );
 
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: "${pitch.abs().toStringAsFixed(1)}°",
-          style: const TextStyle(
-            color: AppColors.kYellow,
-            fontSize: 10.0,
-            fontFamily: 'ShareTechMono',
-          ),
+      _textPainter.text = TextSpan(
+        text: "${pitch.abs().toStringAsFixed(1)}°",
+        style: const TextStyle(
+          color: AppColors.kYellow,
+          fontSize: AppDimensions.fontSizeDialLabel,
+          fontFamily: 'ShareTechMono',
         ),
-        textDirection: TextDirection.ltr,
-      )..layout();
+      );
+      _textPainter.layout();
 
-      textPainter.paint(
+      _textPainter.paint(
         canvas,
         Offset(
-          labelOffset.dx - textPainter.width / 2,
-          labelOffset.dy - textPainter.height / 2,
+          labelOffset.dx - _textPainter.width / 2,
+          labelOffset.dy - _textPainter.height / 2,
         ),
       );
     }

@@ -56,38 +56,30 @@ class SkeuomorphicSlider extends StatelessWidget {
             const SizedBox(height: AppDimensions.space8),
             GestureDetector(
               onHorizontalDragUpdate: (details) {
-                final RenderBox renderBox =
-                    context.findRenderObject() as RenderBox;
-                final localPosition = renderBox.globalToLocal(
-                  details.globalPosition,
-                );
+                final double dx = details.localPosition.dx;
                 // Compute position relative to slider width, taking RTL into account
                 double newValue;
                 if (isRtl) {
                   newValue =
-                      (trackWidth - localPosition.dx - thumbWidth / 2) /
+                      (trackWidth - dx - thumbWidth / 2) /
                       maxScrollable;
                 } else {
                   newValue =
-                      (localPosition.dx - thumbWidth / 2) / maxScrollable;
+                      (dx - thumbWidth / 2) / maxScrollable;
                 }
                 newValue = newValue.clamp(0.0, 1.0);
                 onChanged(newValue);
               },
               onTapDown: (details) {
-                final RenderBox renderBox =
-                    context.findRenderObject() as RenderBox;
-                final localPosition = renderBox.globalToLocal(
-                  details.globalPosition,
-                );
+                final double dx = details.localPosition.dx;
                 double newValue;
                 if (isRtl) {
                   newValue =
-                      (trackWidth - localPosition.dx - thumbWidth / 2) /
+                      (trackWidth - dx - thumbWidth / 2) /
                       maxScrollable;
                 } else {
                   newValue =
-                      (localPosition.dx - thumbWidth / 2) / maxScrollable;
+                      (dx - thumbWidth / 2) / maxScrollable;
                 }
                 newValue = newValue.clamp(0.0, 1.0);
                 onChanged(newValue);

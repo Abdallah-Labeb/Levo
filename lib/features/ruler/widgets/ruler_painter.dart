@@ -1,35 +1,32 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:levo/app/theme/app_colors.dart';
+import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/features/ruler/bloc/ruler_state.dart';
 
-/// Custom Painter that renders the physical ruler markings (metric/imperial)
-/// and drag overlays for custom dimensions measurement.
-class RulerPainter extends CustomPainter {
-  RulerPainter({
+/// Renders the static physical ruler markings (metric/imperial) along the left edge.
+/// Only repaints when the active measurement unit or scale factor changes.
+class StaticRulerPainter extends CustomPainter {
+  StaticRulerPainter({
     required this.unit,
     required this.scaleFactor,
-    required this.markerA,
-    required this.markerB,
   });
 
   final RulerUnit unit;
   final double scaleFactor;
-  final double? markerA;
-  final double? markerB;
 
   static const double kBaseDpi = 160.0;
   static const double kMmPerInch = 25.4;
 
-  final Paint tickPaint = Paint();
-  final Paint majorTickPaint = Paint();
-  final Paint selectionPaint = Paint();
-  final Paint dashPaint = Paint();
+  static final Paint tickPaint = Paint();
+  static final Paint majorTickPaint = Paint();
+
+  static final Map<int, TextPainter> _metricLabelCache = {};
+  static final Map<int, TextPainter> _imperialLabelCache = {};
 
   @override
   void paint(Canvas canvas, Size size) {
-    // 1. Draw ruler tick markings along the left edge of the screen
     tickPaint
       ..color = AppColors.kChromeMid.withAlpha(180)
       ..style = PaintingStyle.stroke
@@ -40,15 +37,10 @@ class RulerPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
 
-    final textPainter = TextPainter(textDirection: TextDirection.ltr);
-
     if (unit == RulerUnit.mm || unit == RulerUnit.cm) {
-      // Metric logic (1 tick = 1mm)
-      // mmPerPixel = (25.4 / 160.0) * scaleFactor
       final double mmPerPixel = (kMmPerInch / kBaseDpi) * scaleFactor;
       final double pixelsPerMm = 1.0 / mmPerPixel;
 
-      // Draw ticks from top to bottom
       int mmIndex = 0;
       double y = 0.0;
 
@@ -62,29 +54,31 @@ class RulerPainter extends CustomPainter {
         final double tickLength = isCm ? 24.0 : (isHalfCm ? 15.0 : 8.0);
         final currentPaint = isCm ? majorTickPaint : tickPaint;
 
-        // Draw left-aligned ticks
         canvas.drawLine(Offset(0.0, y), Offset(tickLength, y), currentPaint);
 
-        // Print numbers for centimeters
         if (isCm && mmIndex > 0) {
           final int cmValue = mmIndex ~/ 10;
-          textPainter.text = TextSpan(
-            text: '$cmValue',
-            style: AppTypography.kCaption.copyWith(
-              color: AppColors.kTextSecondary,
-              fontSize: 10.0,
-              fontWeight: FontWeight.bold,
-            ),
-          );
-          textPainter.layout();
-          // Paint CM label next to the major tick
-          textPainter.paint(canvas, Offset(28.0, y - textPainter.height / 2));
+          final painter = _metricLabelCache.putIfAbsent(cmValue, () {
+            final tp = TextPainter(
+              text: TextSpan(
+                text: '$cmValue',
+                style: AppTypography.kCaption.copyWith(
+                  color: AppColors.kTextSecondary,
+                  fontSize: AppDimensions.fontSizeDialLabel,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              textDirection: TextDirection.ltr,
+            );
+            tp.layout();
+            return tp;
+          });
+          painter.paint(canvas, Offset(28.0, y - painter.height / 2));
         }
 
         mmIndex++;
       }
     } else {
-      // Imperial logic (1 tick = 1/16th of an inch)
       final double pixelsPerInch = kBaseDpi * scaleFactor;
       final double pixelsPerSixteenth = pixelsPerInch / 16.0;
 
@@ -108,71 +102,93 @@ class RulerPainter extends CustomPainter {
 
         canvas.drawLine(Offset(0.0, y), Offset(tickLength, y), currentPaint);
 
-        // Print numbers for inches
         if (isInch && sixteenthIndex > 0) {
           final int inchValue = sixteenthIndex ~/ 16;
-          textPainter.text = TextSpan(
-            text: '$inchValue',
-            style: AppTypography.kCaption.copyWith(
-              color: AppColors.kTextSecondary,
-              fontSize: 10.0,
-              fontWeight: FontWeight.bold,
-            ),
-          );
-          textPainter.layout();
-          textPainter.paint(canvas, Offset(28.0, y - textPainter.height / 2));
+          final painter = _imperialLabelCache.putIfAbsent(inchValue, () {
+            final tp = TextPainter(
+              text: TextSpan(
+                text: '$inchValue',
+                style: AppTypography.kCaption.copyWith(
+                  color: AppColors.kTextSecondary,
+                  fontSize: AppDimensions.fontSizeDialLabel,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              textDirection: TextDirection.ltr,
+            );
+            tp.layout();
+            return tp;
+          });
+          painter.paint(canvas, Offset(28.0, y - painter.height / 2));
         }
 
         sixteenthIndex++;
       }
     }
+  }
 
-    // 2. Shade the measurement area between Marker A and Marker B
-    if (markerA != null && markerB != null) {
-      final double top = math.min(markerA!, markerB!);
-      final double bottom = math.max(markerA!, markerB!);
+  @override
+  bool shouldRepaint(covariant StaticRulerPainter oldDelegate) {
+    return oldDelegate.unit != unit || oldDelegate.scaleFactor != scaleFactor;
+  }
+}
 
-      selectionPaint
-        ..color = AppColors.kYellow.withAlpha(20)
-        ..style = PaintingStyle.fill;
+/// Renders the active measurement selection overlay and horizontal guidelines.
+/// Repaints on marker dragging.
+class RulerSelectionPainter extends CustomPainter {
+  RulerSelectionPainter({
+    required this.markerA,
+    required this.markerB,
+  });
 
-      // Fill selection band
-      canvas.drawRect(
-        Rect.fromLTRB(0.0, top, size.width, bottom),
-        selectionPaint,
+  final double markerA;
+  final double markerB;
+
+  static final Paint selectionPaint = Paint();
+  static final Paint dashPaint = Paint();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double top = math.min(markerA, markerB);
+    final double bottom = math.max(markerA, markerB);
+
+    selectionPaint
+      ..color = AppColors.kYellow.withAlpha(20)
+      ..style = PaintingStyle.fill;
+
+    // Fill selection band
+    canvas.drawRect(
+      Rect.fromLTRB(0.0, top, size.width, bottom),
+      selectionPaint,
+    );
+
+    // Draw dashed guideline border inside the selection band
+    dashPaint
+      ..color = AppColors.kYellow.withAlpha(60)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    const double dashWidth = 5.0;
+    const double dashSpace = 4.0;
+
+    double currentX = 0.0;
+    while (currentX < size.width) {
+      canvas.drawLine(
+        Offset(currentX, top),
+        Offset(currentX + dashWidth, top),
+        dashPaint,
       );
-
-      // Draw dashed guideline border inside the selection band
-      dashPaint
-        ..color = AppColors.kYellow.withAlpha(60)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.0;
-
-      const double dashWidth = 5.0;
-      const double dashSpace = 4.0;
-
-      double currentX = 0.0;
-      while (currentX < size.width) {
-        canvas.drawLine(
-          Offset(currentX, top),
-          Offset(currentX + dashWidth, top),
-          dashPaint,
-        );
-        canvas.drawLine(
-          Offset(currentX, bottom),
-          Offset(currentX + dashWidth, bottom),
-          dashPaint,
-        );
-        currentX += dashWidth + dashSpace;
-      }
+      canvas.drawLine(
+        Offset(currentX, bottom),
+        Offset(currentX + dashWidth, bottom),
+        dashPaint,
+      );
+      currentX += dashWidth + dashSpace;
     }
   }
 
   @override
-  bool shouldRepaint(covariant RulerPainter oldDelegate) {
-    return oldDelegate.unit != unit ||
-        oldDelegate.scaleFactor != scaleFactor ||
-        oldDelegate.markerA != markerA ||
-        oldDelegate.markerB != markerB;
+  bool shouldRepaint(covariant RulerSelectionPainter oldDelegate) {
+    return oldDelegate.markerA != markerA || oldDelegate.markerB != markerB;
   }
 }

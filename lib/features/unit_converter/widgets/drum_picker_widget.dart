@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:levo/app/theme/app_animations.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
@@ -47,7 +48,7 @@ class _DrumPickerWidgetState extends State<DrumPickerWidget> {
           _controller.selectedItem != index) {
         _controller.animateToItem(
           index,
-          duration: const Duration(milliseconds: 200),
+          duration: AppAnimations.drumPickerSnap,
           curve: Curves.easeInOut,
         );
       }
@@ -103,7 +104,7 @@ class _DrumPickerWidgetState extends State<DrumPickerWidget> {
                   child: Text(
                     widget.items[index],
                     style: AppTypography.kDisplayS.copyWith(
-                      fontSize: 16.0,
+                      fontSize: AppDimensions.fontSizeMedium,
                       color: isSelected
                           ? AppColors.kYellow
                           : AppColors.kTextSecondary,

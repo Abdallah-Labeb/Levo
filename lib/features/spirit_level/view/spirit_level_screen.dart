@@ -6,12 +6,12 @@ import 'package:levo/app/di/injection.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
-import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
+import 'package:levo/core/sensors/sensor_error_type.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/features/spirit_level/bloc/spirit_level_cubit.dart';
@@ -35,21 +35,8 @@ class SpiritLevelScreen extends StatelessWidget {
   }
 }
 
-class SpiritLevelView extends StatefulWidget {
+class SpiritLevelView extends StatelessWidget {
   const SpiritLevelView({super.key});
-
-  @override
-  State<SpiritLevelView> createState() => _SpiritLevelViewState();
-}
-
-class _SpiritLevelViewState extends State<SpiritLevelView> {
-  late double _viscosity;
-
-  @override
-  void initState() {
-    super.initState();
-    _viscosity = getIt<PreferencesService>().levelViscosity;
-  }
 
   void _showCalibrationWizard(BuildContext context, SpiritLevelCubit cubit) {
     showDialog(
@@ -78,7 +65,6 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isAr = Directionality.of(context) == TextDirection.rtl;
     final cubit = context.read<SpiritLevelCubit>();
 
     return BlocBuilder<SpiritLevelCubit, SpiritLevelState>(
@@ -86,10 +72,14 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
         if (!state.isSensorAvailable) {
           return Scaffold(
             appBar: LevoAppBar(title: l10n.spiritLevelTitle),
-            body: SensorErrorView(
-              sensorName: "Accelerometer",
-              errorTitle: l10n.sensorErrorTitle,
-              errorMessage: state.errorMessage ?? l10n.spiritLevelErrorNoSensor,
+            body: NoiseBackground(
+              child: SensorErrorView(
+                sensorName: l10n.sensorNameAccelerometer,
+                errorTitle: l10n.sensorErrorTitle,
+                errorMessage: state.errorType == SensorErrorType.missing
+                    ? l10n.spiritLevelErrorNoSensor
+                    : l10n.calibrationWizardSensorError,
+              ),
             ),
           );
         }
@@ -138,8 +128,7 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                         Expanded(
                           child: TactileButton(
                             isActive: state.mode == SpiritLevelMode.flat2d,
-                            onPressed: () =>
-                                cubit.setMode(SpiritLevelMode.flat2d),
+                            onPressed: () => cubit.setMode(SpiritLevelMode.flat2d),
                             text: l10n.spiritLevelModeFlat,
                           ),
                         ),
@@ -147,8 +136,7 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                         Expanded(
                           child: TactileButton(
                             isActive: state.mode == SpiritLevelMode.edge1d,
-                            onPressed: () =>
-                                cubit.setMode(SpiritLevelMode.edge1d),
+                            onPressed: () => cubit.setMode(SpiritLevelMode.edge1d),
                             text: l10n.spiritLevelModeEdge,
                           ),
                         ),
@@ -156,8 +144,7 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                         Expanded(
                           child: TactileButton(
                             isActive: state.mode == SpiritLevelMode.plumb,
-                            onPressed: () =>
-                                cubit.setMode(SpiritLevelMode.plumb),
+                            onPressed: () => cubit.setMode(SpiritLevelMode.plumb),
                             text: l10n.spiritLevelModePlumb,
                           ),
                         ),
@@ -165,50 +152,9 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                     ),
                   ),
 
-                  // 2. Center visualizer display
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        visualizer,
-                        if (showGimbalLockWarning)
-                          Positioned(
-                            left: AppDimensions.paddingL,
-                            right: AppDimensions.paddingL,
-                            top: AppDimensions.paddingM,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppDimensions.paddingM,
-                                vertical: AppDimensions.paddingS,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.kDangerRedDim.withAlpha(200),
-                                border: Border.all(
-                                  color: AppColors.kDangerRed,
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                  AppDimensions.radiusChip,
-                                ),
-                              ),
-                              child: Text(
-                                l10n.spiritLevelGimbalLockHint,
-                                style: AppTypography.kCaption.copyWith(
-                                  color: AppColors.kTextPrimary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-
-                  // 3. LED Angle Display coordinates
+                  // 2. High-precision Digital Readout Indicator Panel
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimensions.paddingL,
-                    ),
+                    padding: const EdgeInsets.all(AppDimensions.paddingL),
                     child: Container(
                       padding: const EdgeInsets.all(AppDimensions.paddingM),
                       decoration: BoxDecoration(
@@ -228,103 +174,103 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                           ),
                         ],
                       ),
-                      child: state.mode == SpiritLevelMode.edge1d
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Column(
-                                  children: [
-                                    Text(
-                                      l10n.spiritLevelLabelDeviation,
-                                      style: AppTypography.kCaption.copyWith(
-                                        color: AppColors.kTextSecondary,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: AppDimensions.space8,
-                                    ),
-                                    LedDisplay(
-                                      value: _formatValue(
-                                        context,
-                                        state.roll,
-                                        state.showPercent,
-                                      ),
-                                      unit: state.showPercent
-                                          ? l10n.commonUnitPercent
-                                          : l10n.commonUnitDegrees,
-                                    ),
-                                  ],
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                l10n.spiritLevelLabelPitch,
+                                style: AppTypography.kBodySmall,
+                              ),
+                              const SizedBox(height: AppDimensions.space4),
+                              LedDisplay(
+                                value: _formatValue(
+                                  context,
+                                  state.pitch,
+                                  state.showPercent,
                                 ),
-                              ],
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Column(
-                                  children: [
-                                    Text(
-                                      l10n.spiritLevelLabelPitch,
-                                      style: AppTypography.kCaption.copyWith(
-                                        color: AppColors.kTextSecondary,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: AppDimensions.space8,
-                                    ),
-                                    LedDisplay(
-                                      value: _formatValue(
-                                        context,
-                                        state.pitch,
-                                        state.showPercent,
-                                      ),
-                                      unit: state.showPercent
-                                          ? l10n.commonUnitPercent
-                                          : l10n.commonUnitDegrees,
-                                    ),
-                                  ],
+                                unit: state.showPercent
+                                    ? l10n.commonUnitPercent
+                                    : l10n.commonUnitDegrees,
+                                textStyle: AppTypography.kDisplayS,
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                l10n.spiritLevelLabelRoll,
+                                style: AppTypography.kBodySmall,
+                              ),
+                              const SizedBox(height: AppDimensions.space4),
+                              LedDisplay(
+                                value: _formatValue(
+                                  context,
+                                  state.roll,
+                                  state.showPercent,
                                 ),
-                                Column(
-                                  children: [
-                                    Text(
-                                      l10n.spiritLevelLabelRoll,
-                                      style: AppTypography.kCaption.copyWith(
-                                        color: AppColors.kTextSecondary,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: AppDimensions.space8,
-                                    ),
-                                    LedDisplay(
-                                      value: _formatValue(
-                                        context,
-                                        state.roll,
-                                        state.showPercent,
-                                      ),
-                                      unit: state.showPercent
-                                          ? l10n.commonUnitPercent
-                                          : l10n.commonUnitDegrees,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                unit: state.showPercent
+                                    ? l10n.commonUnitPercent
+                                    : l10n.commonUnitDegrees,
+                                textStyle: AppTypography.kDisplayS,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
 
+                  // 3. Gimbal Lock Warn Alert
+                  if (showGimbalLockWarning)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimensions.paddingL,
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(AppDimensions.paddingS),
+                        decoration: BoxDecoration(
+                          color: AppColors.kWarningYellowDim,
+                          border: Border.all(color: AppColors.kWarningYellow),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusChip,
+                          ),
+                        ),
+                        child: Text(
+                          l10n.spiritLevelGimbalLockHint,
+                          style: AppTypography.kBodySmall.copyWith(
+                            color: AppColors.kWarningYellow,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+
+                  // 4. Physical Bubble Tube Visualizer Component
+                  Expanded(child: visualizer),
+
                   const SizedBox(height: AppDimensions.space12),
 
-                  // 4. Primary Physical Actions Row (Hold, Unit, Calibrate)
+                  // 5. Calibration, Hold and Reference buttons
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppDimensions.paddingL,
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
                           child: TactileButton(
-                            onPressed: () => cubit.toggleHold(),
+                            onPressed: () => _showCalibrationWizard(context, cubit),
+                            text: l10n.spiritLevelButtonCalibrate,
+                            icon: const Icon(Icons.tune),
+                          ),
+                        ),
+                        const SizedBox(width: AppDimensions.space12),
+                        Expanded(
+                          child: TactileButton(
                             isActive: state.isHeld,
+                            onPressed: () => cubit.toggleHold(),
                             text: state.isHeld
                                 ? l10n.spiritLevelButtonRelease
                                 : l10n.spiritLevelButtonHold,
@@ -333,38 +279,17 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: AppDimensions.space8),
-                        Expanded(
-                          child: TactileButton(
-                            onPressed: () => cubit.togglePercent(),
-                            isActive: state.showPercent,
-                            text: state.showPercent
-                                ? l10n.commonUnitDegrees
-                                : l10n.commonUnitPercent,
-                          ),
-                        ),
-                        const SizedBox(width: AppDimensions.space8),
-                        Expanded(
-                          child: TactileButton(
-                            onPressed: () =>
-                                _showCalibrationWizard(context, cubit),
-                            text: l10n.spiritLevelButtonCalibrate,
-                            icon: const Icon(Icons.build),
-                          ),
-                        ),
                       ],
                     ),
                   ),
 
                   const SizedBox(height: AppDimensions.space12),
 
-                  // 5. Zero Reference Operations Row (Set Ref, Reset Ref)
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppDimensions.paddingL,
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(
                           child: TactileButton(
@@ -412,15 +337,9 @@ class _SpiritLevelViewState extends State<SpiritLevelView> {
                         ],
                       ),
                       child: SkeuomorphicSlider(
-                        value: _viscosity,
-                        label: isAr
-                            ? "اللزوجة (تخميد الحركة)"
-                            : "Viscosity (Damping)",
+                        value: state.viscosity,
+                        label: l10n.spiritLevelViscosityLabel,
                         onChanged: (val) {
-                          setState(() {
-                            _viscosity = val;
-                          });
-                          getIt<PreferencesService>().setLevelViscosity(val);
                           cubit.updateViscosity(val);
                         },
                       ),

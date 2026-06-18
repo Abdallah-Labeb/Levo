@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:levo/core/sensors/sensor_error_type.dart';
 
 /// State representation of the Clinometer.
 class ClinometerState extends Equatable {
@@ -9,6 +10,7 @@ class ClinometerState extends Equatable {
     this.isHeld = false,
     this.isSensorAvailable = true,
     this.errorMessage,
+    this.errorType = SensorErrorType.none,
   });
 
   final double pitch;
@@ -17,6 +19,7 @@ class ClinometerState extends Equatable {
   final bool isHeld;
   final bool isSensorAvailable;
   final String? errorMessage;
+  final SensorErrorType errorType;
 
   @override
   List<Object?> get props => [
@@ -26,6 +29,7 @@ class ClinometerState extends Equatable {
     isHeld,
     isSensorAvailable,
     errorMessage,
+    errorType,
   ];
 
   ClinometerState copyWith({
@@ -35,6 +39,7 @@ class ClinometerState extends Equatable {
     bool? isHeld,
     bool? isSensorAvailable,
     String? errorMessage,
+    SensorErrorType? errorType,
   }) {
     return ClinometerState(
       pitch: pitch ?? this.pitch,
@@ -43,6 +48,7 @@ class ClinometerState extends Equatable {
       isHeld: isHeld ?? this.isHeld,
       isSensorAvailable: isSensorAvailable ?? this.isSensorAvailable,
       errorMessage: errorMessage ?? this.errorMessage,
+      errorType: errorType ?? this.errorType,
     );
   }
 }

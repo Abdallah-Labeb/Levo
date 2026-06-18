@@ -50,7 +50,7 @@ void main() {
     test('Initial state reflects defaults', () {
       expect(cubit.state.currentDb, 0.0);
       expect(cubit.state.peakDb, 0.0);
-      expect(cubit.state.minDb, 120.0);
+      expect(cubit.state.minDb, double.infinity);
       expect(cubit.state.averageDb, 0.0);
       expect(cubit.state.permissionGranted, false);
       expect(cubit.state.isSensorAvailable, true);
@@ -84,7 +84,7 @@ void main() {
       cubit.reset();
       expect(cubit.state.currentDb, 0.0);
       expect(cubit.state.peakDb, 0.0);
-      expect(cubit.state.minDb, 120.0);
+      expect(cubit.state.minDb, double.infinity);
       expect(cubit.state.averageDb, 0.0);
     });
   });

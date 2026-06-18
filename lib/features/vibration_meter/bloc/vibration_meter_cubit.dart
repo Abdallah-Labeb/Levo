@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:levo/core/sensors/sensor_error_type.dart';
 import 'package:levo/features/vibration_meter/bloc/vibration_meter_state.dart';
 
 /// Cubit managing seismograph data pipelines, vibration queue limits,
@@ -33,6 +34,7 @@ class VibrationMeterCubit extends Cubit<VibrationMeterState> {
               emit(
                 state.copyWith(
                   isSensorAvailable: false,
+                  errorType: SensorErrorType.unknown,
                   errorMessage: "Error reading accelerometer sensor",
                 ),
               );
@@ -42,6 +44,7 @@ class VibrationMeterCubit extends Cubit<VibrationMeterState> {
       emit(
         state.copyWith(
           isSensorAvailable: false,
+          errorType: SensorErrorType.missing,
           errorMessage: "Accelerometer sensor is not available",
         ),
       );
@@ -61,11 +64,11 @@ class VibrationMeterCubit extends Cubit<VibrationMeterState> {
     double finalVibe = rawVibe - state.baseline;
 
     // Maintain scrolling sample queue
-    final List<double> updatedSamples = List.from(state.samples)
-      ..add(finalVibe);
-    if (updatedSamples.length > kMaxSamples) {
+    final List<double> updatedSamples = List<double>.of(state.samples);
+    if (updatedSamples.length >= kMaxSamples) {
       updatedSamples.removeAt(0);
     }
+    updatedSamples.add(finalVibe);
 
     final double peak = math.max(state.peak, finalVibe.abs());
 

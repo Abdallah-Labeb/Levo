@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:levo/core/sensors/sensor_error_type.dart';
 
 /// Sub-modes of the Spirit Level.
 enum SpiritLevelMode { flat2d, edge1d, plumb }
@@ -19,6 +20,8 @@ class SpiritLevelState extends Equatable {
     this.errorMessage,
     this.soundOn = true,
     this.hapticOn = true,
+    this.viscosity = 0.7,
+    this.errorType = SensorErrorType.none,
   });
 
   final double pitch;
@@ -31,6 +34,8 @@ class SpiritLevelState extends Equatable {
   final String? errorMessage;
   final bool soundOn;
   final bool hapticOn;
+  final double viscosity;
+  final SensorErrorType errorType;
 
   @override
   List<Object?> get props => [
@@ -44,6 +49,8 @@ class SpiritLevelState extends Equatable {
     errorMessage,
     soundOn,
     hapticOn,
+    viscosity,
+    errorType,
   ];
 
   SpiritLevelState copyWith({
@@ -57,6 +64,8 @@ class SpiritLevelState extends Equatable {
     String? errorMessage,
     bool? soundOn,
     bool? hapticOn,
+    double? viscosity,
+    SensorErrorType? errorType,
   }) {
     return SpiritLevelState(
       pitch: pitch ?? this.pitch,
@@ -69,6 +78,8 @@ class SpiritLevelState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       soundOn: soundOn ?? this.soundOn,
       hapticOn: hapticOn ?? this.hapticOn,
+      viscosity: viscosity ?? this.viscosity,
+      errorType: errorType ?? this.errorType,
     );
   }
 }

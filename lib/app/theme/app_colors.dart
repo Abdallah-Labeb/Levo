@@ -50,13 +50,21 @@ class AppColors {
   static const kDisplayAmber = Color(0xFFFF8C00);
   static const kDisplayAmberDim = Color(0xFF2A1500);
   static const kDisplayBg = Color(0xFF050505);
+  static const kDisplayGreenBorder = Color(0xFF003310);
+  static const kDisplayGreenDimFaded = Color(0xE6003310);
+
 
   // Typography Colors
   static const kTextPrimary = Color(0xFFEEEEEE);
-  static const kTextSecondary = Color(0xFF888888);
+  static const kTextSecondary = Color(0xFFFFFFFF);
   static const kTextTertiary = Color(0xFF555555);
   static const kTextOnYellow = Color(0xFF1A1A1A);
   static const kTextOnGreen = Color(0xFF0A2010);
+  static const kBlack = Color(0xFF000000);
+
+  // Shadows
+  static const kShadowDark = Color(0x73000000); // Colors.black45 equivalent
+  static const kShadowMedium = Color(0x61000000); // Colors.black38 equivalent
 
   // Gradients
   static const kGradientBrushedAluminum = LinearGradient(
@@ -104,4 +112,28 @@ class AppColors {
     end: Alignment.bottomCenter,
     colors: [Color(0xFFF5C22B), Color(0xFFC0910F)],
   );
+
+  // Instrument Specific Skeuomorphic Colors
+  static const kCathodeBg = Color(0xFF070B07);
+  static const kCathodeGrid = Color(0xFF132B13);
+  static const kPaperBg = Color(0xFFF3EFE3);
+  static const kPaperGrid = Color(0xFFE0D9C8);
+  static const kDraftingLine = Color(0xFF6E6759);
+  static const kDraftingText = Color(0xFF4A443B);
+
+  static const kPlumbBobBrassHighlight = Color(0xFFFFF0B3);
+  static const kPlumbBobBrassMid = Color(0xFFDFB831);
+  static const kPlumbBobBrassDark = Color(0xFF7A610B);
+  static const kPlumbBobCollar = Color(0xFF665108);
+
+  static const kCompassFaceStart = Color(0xFF222222);
+  static const kCompassFaceMid = Color(0xFF141414);
+  static const kCompassFaceEnd = Color(0xFF0C0C0C);
+  static const kCompassNeedleHighlight = Color(0xFFFF8B8B);
+  static const kCompassNeedleShadow = Color(0xFF7D1616);
+  static const kCompassPivotHighlight = Color(0xFFFFEA9F);
+  static const kCompassPivotMid = Color(0xFFCCA214);
+  static const kCompassPivotShadow = Color(0xFF6B5102);
+  static const kCompassPinCap = Color(0xFFE0DDC5);
+  static const kCompassGroove = Color(0xFF0F0F0F);
 }

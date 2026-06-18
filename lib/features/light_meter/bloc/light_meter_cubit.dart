@@ -14,6 +14,7 @@ class LightMeterCubit extends Cubit<LightMeterState> {
   StreamSubscription<int>? _lightSubscription;
   CameraController? cameraController;
   bool _isProcessingFrame = false;
+  bool _isDisposed = false;
 
   /// Initializes the light sensor stream or fallback.
   Future<void> initialize() async {
@@ -123,8 +124,10 @@ class LightMeterCubit extends Cubit<LightMeterState> {
       );
 
       await cameraController!.initialize();
-      if (cameraController == null) {
-        return; // Prevent async race issues if disposed early
+      if (_isDisposed) {
+        cameraController?.dispose();
+        cameraController = null;
+        return;
       }
 
       emit(state.copyWith(isCameraInitialized: true, errorMessage: null));
@@ -183,6 +186,7 @@ class LightMeterCubit extends Cubit<LightMeterState> {
 
   @override
   Future<void> close() async {
+    _isDisposed = true;
     await _lightSubscription?.cancel();
     if (cameraController != null) {
       if (cameraController!.value.isStreamingImages) {

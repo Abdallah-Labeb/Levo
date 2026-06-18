@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:levo/core/sensors/sensor_error_type.dart';
 
 /// Represents levels of proximity to metallic objects/fields.
 enum MetalAlertLevel { none, weak, medium, strong, veryStrong }
@@ -14,6 +15,7 @@ class MetalDetectorState extends Equatable {
     this.soundOn = true,
     this.hapticOn = true,
     this.errorMessage,
+    this.errorType = SensorErrorType.none,
   });
 
   final double deltaUt;
@@ -24,6 +26,7 @@ class MetalDetectorState extends Equatable {
   final bool soundOn;
   final bool hapticOn;
   final String? errorMessage;
+  final SensorErrorType errorType;
 
   @override
   List<Object?> get props => [
@@ -35,6 +38,7 @@ class MetalDetectorState extends Equatable {
     soundOn,
     hapticOn,
     errorMessage,
+    errorType,
   ];
 
   MetalDetectorState copyWith({
@@ -46,6 +50,7 @@ class MetalDetectorState extends Equatable {
     bool? soundOn,
     bool? hapticOn,
     String? errorMessage,
+    SensorErrorType? errorType,
   }) {
     return MetalDetectorState(
       deltaUt: deltaUt ?? this.deltaUt,
@@ -56,6 +61,7 @@ class MetalDetectorState extends Equatable {
       soundOn: soundOn ?? this.soundOn,
       hapticOn: hapticOn ?? this.hapticOn,
       errorMessage: errorMessage ?? this.errorMessage,
+      errorType: errorType ?? this.errorType,
     );
   }
 }

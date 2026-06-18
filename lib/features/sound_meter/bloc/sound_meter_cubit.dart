@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:noise_meter/noise_meter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vibration/vibration.dart';
+import 'package:levo/core/sensors/sensor_error_type.dart';
 import 'package:levo/features/sound_meter/bloc/sound_meter_state.dart';
 
 /// Cubit managing acoustic decibel monitoring, audio stream lifecycle,
@@ -45,6 +46,7 @@ class SoundMeterCubit extends Cubit<SoundMeterState> {
           emit(
             state.copyWith(
               isSensorAvailable: false,
+              errorType: SensorErrorType.unknown,
               errorMessage: "Error reading audio stream: $error",
             ),
           );
@@ -56,6 +58,7 @@ class SoundMeterCubit extends Cubit<SoundMeterState> {
       emit(
         state.copyWith(
           isSensorAvailable: false,
+          errorType: SensorErrorType.missing,
           errorMessage: "Microphone input is not available",
         ),
       );

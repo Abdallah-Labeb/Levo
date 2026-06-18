@@ -62,15 +62,15 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
           samplingPeriod: SensorInterval.uiInterval,
         ).listen(
           (event) {
-            final double rawPitch =
-                math.atan2(
-                  -event.x,
-                  math.sqrt(event.y * event.y + event.z * event.z),
-                ) *
-                (180.0 / math.pi);
+            final double gX = event.x;
+            final double gY = event.y;
+            final double gZ = event.z;
 
-            final double rawRoll =
-                math.atan2(event.y, event.z) * (180.0 / math.pi);
+            final double normXZ = math.sqrt(gX * gX + gZ * gZ + 1e-9);
+            final double normYZ = math.sqrt(gY * gY + gZ * gZ + 1e-9);
+
+            final double rawPitch = math.atan2(gY, normXZ) * (180.0 / math.pi);
+            final double rawRoll = math.atan2(-gX, normYZ) * (180.0 / math.pi);
 
             _pitchSum += rawPitch;
             _rollSum += rawRoll;
@@ -92,7 +92,7 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
               });
               LevoBanner.show(
                 context,
-                message: "Error reading sensors",
+                message: context.l10n.calibrationWizardSensorError,
                 type: LevoBannerType.error,
               );
             }
@@ -131,7 +131,6 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isAr = Directionality.of(context) == TextDirection.rtl;
 
     return MetalPanel(
       padding: const EdgeInsets.all(AppDimensions.paddingL),
@@ -143,12 +142,16 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(l10n.calibrationWizardTitle, style: AppTypography.kTitleL),
-              IconButton(
-                icon: const Icon(Icons.close, color: AppColors.kChromeLight),
-                onPressed: () {
+              GestureDetector(
+                onTap: () {
                   _accelSub?.cancel();
                   Navigator.pop(context);
                 },
+                child: Container(
+                  padding: const EdgeInsets.all(AppDimensions.paddingS),
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                  child: const Icon(Icons.close, color: AppColors.kChromeLight),
+                ),
               ),
             ],
           ),
@@ -179,12 +182,7 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
                 child: SizedBox(
                   width: 32,
                   height: 32,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      AppColors.kYellow,
-                    ),
-                    strokeWidth: 3,
-                  ),
+                  child: _SpinningSyncIcon(),
                 ),
               ),
             ),
@@ -193,14 +191,22 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 if (_step < 3)
-                  TextButton(
-                    onPressed: () {
+                  GestureDetector(
+                    onTap: () {
                       _accelSub?.cancel();
                       Navigator.pop(context);
                     },
-                    child: Text(
-                      isAr ? "إلغاء" : "Cancel",
-                      style: const TextStyle(color: AppColors.kChromeLight),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimensions.paddingM,
+                        vertical: AppDimensions.paddingS,
+                      ),
+                      child: Text(
+                        l10n.commonCancel,
+                        style: AppTypography.kButton.copyWith(
+                          color: AppColors.kChromeLight,
+                        ),
+                      ),
                     ),
                   ),
                 const SizedBox(width: AppDimensions.space12),
@@ -276,5 +282,44 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
           icon: const Icon(Icons.check),
         );
     }
+  }
+}
+
+class _SpinningSyncIcon extends StatefulWidget {
+  const _SpinningSyncIcon();
+
+  @override
+  State<_SpinningSyncIcon> createState() => _SpinningSyncIconState();
+}
+
+class _SpinningSyncIconState extends State<_SpinningSyncIcon>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RotationTransition(
+      turns: _controller,
+      child: const Icon(
+        Icons.sync,
+        color: AppColors.kYellow,
+        size: 32,
+      ),
+    );
   }
 }

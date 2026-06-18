@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' hide TextDirection;
@@ -9,6 +8,7 @@ import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/levo_banner.dart';
+import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/l10n/l10n_extension.dart';
@@ -79,95 +79,103 @@ class _RulerViewState extends State<RulerView> {
       builder: (context) {
         final l10n = context.l10n;
 
-        return AlertDialog(
-          backgroundColor: AppColors.kSurface,
-          title: Text(l10n.rulerCalibrationTitle, style: AppTypography.kTitleL),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                l10n.rulerCalibrationBody,
-                style: AppTypography.kBodySmall.copyWith(
-                  color: AppColors.kTextSecondary,
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: MetalPanel(
+            padding: const EdgeInsets.all(AppDimensions.paddingL),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(l10n.rulerCalibrationTitle, style: AppTypography.kTitleL),
+                const SizedBox(height: AppDimensions.space12),
+                Text(
+                  l10n.rulerCalibrationBody,
+                  style: AppTypography.kBodySmall.copyWith(
+                    color: AppColors.kTextSecondary,
+                  ),
                 ),
-              ),
-              const SizedBox(height: AppDimensions.space16),
-              // Preset options
-              TactileButton(
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppDimensions.paddingS,
-                ),
-                onPressed: () async {
-                  Navigator.pop(context);
-                  await cubit.calibrate(
-                    referenceMm: 85.6, // credit card width
-                    pixelDistance: currentPixelDistance,
-                  );
-                  if (context.mounted) {
-                    LevoBanner.show(
-                      context,
-                      message: l10n.rulerCalibrationSuccess,
-                      type: LevoBannerType.success,
+                const SizedBox(height: AppDimensions.space16),
+                // Preset options
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppDimensions.paddingS,
+                  ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await cubit.calibrate(
+                      referenceMm: 85.6, // credit card width
+                      pixelDistance: currentPixelDistance,
                     );
-                  }
-                },
-                text: l10n.rulerPresetCreditCard,
-              ),
-              const SizedBox(height: AppDimensions.space8),
-              TactileButton(
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppDimensions.paddingS,
+                    if (context.mounted) {
+                      LevoBanner.show(
+                        context,
+                        message: l10n.rulerCalibrationSuccess,
+                        type: LevoBannerType.success,
+                      );
+                    }
+                  },
+                  text: l10n.rulerPresetCreditCard,
                 ),
-                onPressed: () async {
-                  Navigator.pop(context);
-                  await cubit.calibrate(
-                    referenceMm: 54.0, // ID card width
-                    pixelDistance: currentPixelDistance,
-                  );
-                  if (context.mounted) {
-                    LevoBanner.show(
-                      context,
-                      message: l10n.rulerCalibrationSuccess,
-                      type: LevoBannerType.success,
+                const SizedBox(height: AppDimensions.space8),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppDimensions.paddingS,
+                  ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await cubit.calibrate(
+                      referenceMm: 54.0, // ID card width
+                      pixelDistance: currentPixelDistance,
                     );
-                  }
-                },
-                text: l10n.rulerPresetIdCard,
-              ),
-              const SizedBox(height: AppDimensions.space8),
-              TactileButton(
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppDimensions.paddingS,
+                    if (context.mounted) {
+                      LevoBanner.show(
+                        context,
+                        message: l10n.rulerCalibrationSuccess,
+                        type: LevoBannerType.success,
+                      );
+                    }
+                  },
+                  text: l10n.rulerPresetIdCard,
                 ),
-                onPressed: () async {
-                  Navigator.pop(context);
-                  await cubit.calibrate(
-                    referenceMm: 210.0, // A4 sheet width
-                    pixelDistance: currentPixelDistance,
-                  );
-                  if (context.mounted) {
-                    LevoBanner.show(
-                      context,
-                      message: l10n.rulerCalibrationSuccess,
-                      type: LevoBannerType.success,
+                const SizedBox(height: AppDimensions.space8),
+                TactileButton(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppDimensions.paddingS,
+                  ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await cubit.calibrate(
+                      referenceMm: 210.0, // A4 sheet width
+                      pixelDistance: currentPixelDistance,
                     );
-                  }
-                },
-                text: l10n.rulerPresetA4Width,
-              ),
-            ],
-          ),
-          actions: [
-            TactileButton(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.paddingM,
-                vertical: AppDimensions.paddingS,
-              ),
-              onPressed: () => Navigator.pop(context),
-              text: l10n.commonCancel,
+                    if (context.mounted) {
+                      LevoBanner.show(
+                        context,
+                        message: l10n.rulerCalibrationSuccess,
+                        type: LevoBannerType.success,
+                      );
+                    }
+                  },
+                  text: l10n.rulerPresetA4Width,
+                ),
+                const SizedBox(height: AppDimensions.space16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TactileButton(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimensions.paddingM,
+                        vertical: AppDimensions.paddingS,
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      text: l10n.commonCancel,
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );
@@ -176,7 +184,6 @@ class _RulerViewState extends State<RulerView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final isAr = Directionality.of(context) == TextDirection.rtl;
     final cubit = context.read<RulerCubit>();
 
     return Scaffold(
@@ -187,49 +194,73 @@ class _RulerViewState extends State<RulerView> {
             builder: (context, constraints) {
               // Initialize markers with screen height dimensions once constraints are loaded
               if (!_initialized) {
-                cubit.initialize(
-                  devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
-                  screenHeight: constraints.maxHeight,
-                );
                 _initialized = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  cubit.initialize(
+                    devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
+                    screenHeight: constraints.maxHeight,
+                  );
+                });
               }
 
               return BlocBuilder<RulerCubit, RulerState>(
                 builder: (context, state) {
                   if (state.markerA == null || state.markerB == null) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          AppColors.kYellow,
+                    return Center(
+                      child: Container(
+                        width: 40.0,
+                        height: 40.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.kSurfaceInset,
+                          border: Border.all(color: AppColors.kYellow, width: 2.0),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: AppColors.kYellow,
+                              blurRadius: 10.0,
+                            ),
+                          ],
                         ),
                       ),
                     );
                   }
 
-                  final double a = state.markerA!;
-                  final double b = state.markerB!;
+                  final double rawA = state.markerA!;
+                  final double rawB = state.markerB!;
+
+                  // Clamp markers to screen bounds to avoid invalid coordinates on startup
+                  final double a = rawA.clamp(95.0, rawB - 20.0 > 95.0 ? rawB - 20.0 : 95.0);
+                  final double b = rawB.clamp(a + 20.0, constraints.maxHeight - 145.0 > a + 20.0 ? constraints.maxHeight - 145.0 : a + 20.0);
+
                   final double distancePixels = (b - a).abs();
                   final double distanceMm = distancePixels * cubit.mmPerPixel;
 
                   return Stack(
                     children: [
-                      // 1. Draw ticking scales and selection backgrounds
+                      // 1a. Draw static ticking scales (only repaints when unit/scale changes)
                       Positioned.fill(
                         child: CustomPaint(
-                          painter: RulerPainter(
+                          painter: StaticRulerPainter(
                             unit: state.unit,
                             scaleFactor: state.scaleFactor,
+                          ),
+                        ),
+                      ),
+                      // 1b. Draw dynamic selection overlays (repaints on marker drag)
+                      Positioned.fill(
+                        child: CustomPaint(
+                          painter: RulerSelectionPainter(
                             markerA: a,
                             markerB: b,
                           ),
                         ),
                       ),
 
-                      // 2. Large digital measurement display readout (in center of sheet selection)
+                      // 2. Fixed digital measurement display readout at the top
                       Positioned(
                         left: 45.0,
                         right: 15.0,
-                        top: math.min(a, b) + (distancePixels / 2) - 25.0,
+                        top: AppDimensions.paddingL,
                         child: Center(
                           child: LedDisplay(
                             value: _formatDistance(
@@ -248,9 +279,11 @@ class _RulerViewState extends State<RulerView> {
                         right: 0.0,
                         child: GestureDetector(
                           onVerticalDragUpdate: (details) {
+                            const double minA = 95.0;
+                            final double maxA = b - 20.0;
                             final double newA = (a + details.delta.dy).clamp(
-                              0.0,
-                              constraints.maxHeight,
+                              minA,
+                              maxA > minA ? maxA : minA,
                             );
                             cubit.updateMarkerA(newA);
                           },
@@ -265,9 +298,11 @@ class _RulerViewState extends State<RulerView> {
                         right: 0.0,
                         child: GestureDetector(
                           onVerticalDragUpdate: (details) {
+                            final double minB = a + 20.0;
+                            final double maxB = constraints.maxHeight - 145.0;
                             final double newB = (b + details.delta.dy).clamp(
-                              0.0,
-                              constraints.maxHeight,
+                              minB > maxB ? maxB : minB,
+                              maxB,
                             );
                             cubit.updateMarkerB(newB);
                           },
@@ -292,7 +327,7 @@ class _RulerViewState extends State<RulerView> {
                                     isActive: state.unit == RulerUnit.mm,
                                     onPressed: () =>
                                         cubit.setUnit(RulerUnit.mm),
-                                    text: "mm",
+                                    text: l10n.commonUnitMm,
                                   ),
                                 ),
                                 const SizedBox(width: AppDimensions.space8),
@@ -301,7 +336,7 @@ class _RulerViewState extends State<RulerView> {
                                     isActive: state.unit == RulerUnit.cm,
                                     onPressed: () =>
                                         cubit.setUnit(RulerUnit.cm),
-                                    text: "cm",
+                                    text: l10n.commonUnitCm,
                                   ),
                                 ),
                                 const SizedBox(width: AppDimensions.space8),
@@ -310,7 +345,7 @@ class _RulerViewState extends State<RulerView> {
                                     isActive: state.unit == RulerUnit.inch,
                                     onPressed: () =>
                                         cubit.setUnit(RulerUnit.inch),
-                                    text: "inch",
+                                    text: l10n.commonUnitInch,
                                   ),
                                 ),
                               ],
@@ -337,9 +372,7 @@ class _RulerViewState extends State<RulerView> {
                                       cubit.resetCalibration();
                                       LevoBanner.show(
                                         context,
-                                        message: isAr
-                                            ? "تمت إعادة ضبط المعايرة"
-                                            : "Calibration reset",
+                                        message: l10n.rulerCalibrationReset,
                                         type: LevoBannerType.info,
                                       );
                                     },
@@ -383,7 +416,7 @@ class _RulerViewState extends State<RulerView> {
               borderRadius: BorderRadius.circular(4.0),
               boxShadow: const [
                 BoxShadow(
-                  color: Colors.black45,
+                  color: AppColors.kShadowDark,
                   blurRadius: 3,
                   offset: Offset(0, 1.5),
                 ),
@@ -419,7 +452,7 @@ class _RulerViewState extends State<RulerView> {
                 ),
                 boxShadow: const [
                   BoxShadow(
-                    color: Colors.black38,
+                    color: AppColors.kShadowMedium,
                     blurRadius: 2,
                     offset: Offset(-1, 1),
                   ),

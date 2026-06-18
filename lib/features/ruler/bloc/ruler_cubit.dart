@@ -27,9 +27,6 @@ class RulerCubit extends Cubit<RulerState> {
   static const double kLogicalDpi = 160.0;
   static const double kMmPerInch = 25.4;
 
-  // Stored device pixel ratio for accurate physical measurements
-  double _devicePixelRatio = 1.0;
-
   /// Returns the logical-pixel-to-millimeter ratio under current calibration settings.
   /// Uses the device's actual pixel ratio to convert logical pixels to physical mm.
   double get mmPerPixel {
@@ -47,8 +44,6 @@ class RulerCubit extends Cubit<RulerState> {
     required double devicePixelRatio,
     required double screenHeight,
   }) {
-    _devicePixelRatio = devicePixelRatio;
-
     // Set default marker positions in the middle third of the screen if not set yet
     final double defaultA = screenHeight * 0.25;
     final double defaultB = screenHeight * 0.65;
@@ -57,7 +52,7 @@ class RulerCubit extends Cubit<RulerState> {
       state.copyWith(
         markerA: state.markerA ?? defaultA,
         markerB: state.markerB ?? defaultB,
-        scaleFactor: _prefs.rulerScaleFactor,
+        scaleFactor: state.scaleFactor,
       ),
     );
   }
@@ -93,9 +88,9 @@ class RulerCubit extends Cubit<RulerState> {
   }) async {
     if (pixelDistance <= 0) return;
 
-    // We want: pixelDistance * (kMmPerInch / kBaseDpi) * scaleFactor = referenceMm
-    // Thus: scaleFactor = referenceMm / (pixelDistance * (kMmPerInch / kBaseDpi))
-    const double baseMmPerPixel = kMmPerInch / kBaseDpi;
+    // We want: pixelDistance * (kMmPerInch / kLogicalDpi) * scaleFactor = referenceMm
+    // Thus: scaleFactor = referenceMm / (pixelDistance * (kMmPerInch / kLogicalDpi))
+    const double baseMmPerPixel = kMmPerInch / kLogicalDpi;
     final double calculatedScale =
         referenceMm / (pixelDistance * baseMmPerPixel);
 

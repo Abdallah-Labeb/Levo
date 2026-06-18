@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:levo/core/sensors/sensor_error_type.dart';
 
 /// State representation of the Sound Level Meter.
 class SoundMeterState extends Equatable {
@@ -10,6 +11,7 @@ class SoundMeterState extends Equatable {
     this.isSensorAvailable = true,
     this.errorMessage,
     this.permissionGranted = false,
+    this.errorType = SensorErrorType.none,
   });
 
   final double currentDb;
@@ -19,6 +21,7 @@ class SoundMeterState extends Equatable {
   final bool isSensorAvailable;
   final String? errorMessage;
   final bool permissionGranted;
+  final SensorErrorType errorType;
 
   @override
   List<Object?> get props => [
@@ -29,6 +32,7 @@ class SoundMeterState extends Equatable {
     isSensorAvailable,
     errorMessage,
     permissionGranted,
+    errorType,
   ];
 
   SoundMeterState copyWith({
@@ -39,6 +43,7 @@ class SoundMeterState extends Equatable {
     bool? isSensorAvailable,
     String? errorMessage,
     bool? permissionGranted,
+    SensorErrorType? errorType,
   }) {
     return SoundMeterState(
       currentDb: currentDb ?? this.currentDb,
@@ -48,6 +53,7 @@ class SoundMeterState extends Equatable {
       isSensorAvailable: isSensorAvailable ?? this.isSensorAvailable,
       errorMessage: errorMessage ?? this.errorMessage,
       permissionGranted: permissionGranted ?? this.permissionGranted,
+      errorType: errorType ?? this.errorType,
     );
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/features/settings/bloc/settings_state.dart';
 
@@ -16,9 +17,12 @@ class SettingsCubit extends Cubit<SettingsState> {
               : null,
           keepScreenOn: prefs.keepScreenOn,
           isPro: prefs.isPro,
+          rulerDefaultUnit: prefs.rulerDefaultUnit,
+          converterDefaultCategory: prefs.converterDefaultCategory,
         ),
       ) {
     _initIap();
+    _loadPackageInfo();
   }
 
   final PreferencesService _prefs;
@@ -69,6 +73,30 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> setPro(bool value) async {
     await _prefs.setIsPro(value);
     emit(state.copyWith(isPro: value));
+  }
+
+  Future<void> _loadPackageInfo() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      emit(
+        state.copyWith(
+          appVersion: info.version,
+          buildNumber: info.buildNumber,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(appVersion: '1.0.0', buildNumber: '1'));
+    }
+  }
+
+  Future<void> setRulerDefaultUnit(String unit) async {
+    await _prefs.setRulerDefaultUnit(unit);
+    emit(state.copyWith(rulerDefaultUnit: unit));
+  }
+
+  Future<void> setConverterDefaultCategory(String category) async {
+    await _prefs.setConverterDefaultCategory(category);
+    emit(state.copyWith(converterDefaultCategory: category));
   }
 
   /// Triggers standard in-app purchase flow for lifetime Pro tier.

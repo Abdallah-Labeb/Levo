@@ -27,12 +27,13 @@ class AppTypography {
     letterSpacing: 1.5,
   );
 
-  static final kDisplayS = TextStyle(
+  static const kDisplayS = TextStyle(
     fontFamily: 'ShareTechMono',
     fontSize: 18,
-    color: AppColors.kDisplayGreenDim.withAlpha(230),
+    color: AppColors.kDisplayGreenDimFaded,
     letterSpacing: 1,
   );
+
 
   // Labels (Bebas Neue)
   static const kTitleXL = TextStyle(

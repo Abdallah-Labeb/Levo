@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:vibration/vibration.dart';
+import 'package:levo/core/sensors/sensor_error_type.dart';
 import 'package:levo/features/metal_detector/bloc/metal_detector_state.dart';
 
 /// Cubit managing the Metal Detector sensor pipeline, baseline calibrations,
@@ -35,6 +36,7 @@ class MetalDetectorCubit extends Cubit<MetalDetectorState> {
               emit(
                 state.copyWith(
                   isSensorAvailable: false,
+                  errorType: SensorErrorType.unknown,
                   errorMessage: "Error reading magnetometer sensor",
                 ),
               );
@@ -44,6 +46,7 @@ class MetalDetectorCubit extends Cubit<MetalDetectorState> {
       emit(
         state.copyWith(
           isSensorAvailable: false,
+          errorType: SensorErrorType.missing,
           errorMessage: "Magnetometer sensor is not available on this device",
         ),
       );

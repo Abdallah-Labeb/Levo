@@ -1,5 +1,7 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:levo/app/theme/app_animations.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/features/spirit_level/bloc/spirit_level_state.dart';
@@ -55,8 +57,8 @@ class _BubbleLevel1dWidgetState extends State<BubbleLevel1dWidget>
     if (dt <= 0) return;
 
     // Spring constants
-    const double stiffness = 120.0;
-    const double damping = 18.0;
+    const double stiffness = 50.0;
+    const double damping = 9.0;
 
     // Max angle for deflection = 6.0 degrees
     const double maxAngle = 6.0;
@@ -98,30 +100,36 @@ class _BubbleLevel1dWidgetState extends State<BubbleLevel1dWidget>
               ? AppColors.kWarningYellow
               : AppColors.kChromeMid);
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      width: double.infinity,
-      height: 80,
-      margin: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
-      decoration: BoxDecoration(
-        color: AppColors.kSurfaceInset,
-        border: Border.all(color: borderColor, width: 2.0),
-        borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
-        boxShadow: [
-          BoxShadow(color: glowColor, blurRadius: 15.0, spreadRadius: 1.0),
-          const BoxShadow(
-            color: Color(0x77000000),
-            offset: Offset(0, 4),
-            blurRadius: 8.0,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double height = math.min(80.0, constraints.maxHeight);
+
+        return AnimatedContainer(
+          duration: AppAnimations.bubbleSnap,
+          width: double.infinity,
+          height: height,
+          margin: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingL),
+          decoration: BoxDecoration(
+            color: AppColors.kSurfaceInset,
+            border: Border.all(color: borderColor, width: 2.0),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
+            boxShadow: [
+              BoxShadow(color: glowColor, blurRadius: 15.0, spreadRadius: 1.0),
+              const BoxShadow(
+                color: Color(0x77000000),
+                offset: Offset(0, 4),
+                blurRadius: 8.0,
+              ),
+            ],
           ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppDimensions.radiusPanel - 2),
-        child: CustomPaint(
-          painter: BubbleLevel1dPainter(x: _x, status: widget.status),
-        ),
-      ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(AppDimensions.radiusPanel - 2),
+            child: CustomPaint(
+              painter: BubbleLevel1dPainter(x: _x, status: widget.status),
+            ),
+          ),
+        );
+      },
     );
   }
 }

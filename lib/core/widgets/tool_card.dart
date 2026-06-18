@@ -96,77 +96,53 @@ class _ToolCardState extends State<ToolCard> {
           curve: Curves.easeOut,
           decoration: decoration,
           padding: const EdgeInsets.all(AppDimensions.paddingM),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Spacer(),
-                // Skeuomorphic Tool SVG Icon
-                SvgPicture.asset(
-                  widget.iconPath,
-                  width: AppDimensions.iconTool,
-                  height: AppDimensions.iconTool,
-                  // If SVG fails to render or load, a generic icon can handle error
-                  placeholderBuilder: (context) => Container(
-                    width: AppDimensions.iconTool,
-                    height: AppDimensions.iconTool,
-                    decoration: const BoxDecoration(
-                      color: AppColors.kSurfaceInset,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.construction,
-                      color: AppColors.kChromeMid,
-                      size: AppDimensions.iconMedium,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final double height = constraints.maxHeight;
+              final double iconSize = (height * 0.52).clamp(40.0, 68.0);
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Spacer(),
+                  // Skeuomorphic Tool SVG Icon
+                  SvgPicture.asset(
+                    widget.iconPath,
+                    width: iconSize,
+                    height: iconSize,
+                    fit: BoxFit.contain,
+                    placeholderBuilder: (context) => Container(
+                      width: iconSize,
+                      height: iconSize,
+                      decoration: const BoxDecoration(
+                        color: AppColors.kSurfaceInset,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.construction,
+                        color: AppColors.kChromeMid,
+                        size: iconSize * 0.6,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: AppDimensions.space12),
-                // Tool Title
-                Text(
-                  widget.toolName,
-                  style: AppTypography.kTitleL,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: AppDimensions.space4),
-                // Tool description snippet
-                Expanded(
-                  child: Text(
-                    widget.description,
-                    style: AppTypography.kCaption,
+                  const Spacer(),
+                  // Tool Title
+                  Text(
+                    widget.toolName,
+                    style: height < 130.0 
+                        ? AppTypography.kTitleL.copyWith(fontSize: 13.0)
+                        : (height < 150.0 
+                            ? AppTypography.kTitleL.copyWith(fontSize: 14.0)
+                            : AppTypography.kTitleL),
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                // Sensor availability dot
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      width: AppDimensions.sensorDotSize,
-                      height: AppDimensions.sensorDotSize,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: widget.isSensorAvailable
-                            ? AppColors.kLevelGreen
-                            : AppColors.kDangerRed,
-                        boxShadow: [
-                          BoxShadow(
-                            color: widget.isSensorAvailable
-                                ? AppColors.kLevelGreenGlow
-                                : AppColors.kDangerRedGlow,
-                            blurRadius: 4.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  const SizedBox(height: AppDimensions.space8),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

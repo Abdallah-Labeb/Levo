@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:levo/core/sensors/sensor_error_type.dart';
 
 /// Sensor accuracy status for the compass.
 enum CompassAccuracy { low, medium, high }
@@ -14,6 +15,7 @@ class CompassState extends Equatable {
     this.isSensorAvailable = true,
     this.errorMessage,
     this.hasInterference = false,
+    this.errorType = SensorErrorType.none,
   });
 
   final double heading;
@@ -24,6 +26,7 @@ class CompassState extends Equatable {
   final bool isSensorAvailable;
   final String? errorMessage;
   final bool hasInterference;
+  final SensorErrorType errorType;
 
   @override
   List<Object?> get props => [
@@ -35,6 +38,7 @@ class CompassState extends Equatable {
     isSensorAvailable,
     errorMessage,
     hasInterference,
+    errorType,
   ];
 
   CompassState copyWith({
@@ -46,6 +50,7 @@ class CompassState extends Equatable {
     bool? isSensorAvailable,
     String? errorMessage,
     bool? hasInterference,
+    SensorErrorType? errorType,
   }) {
     return CompassState(
       heading: heading ?? this.heading,
@@ -56,6 +61,7 @@ class CompassState extends Equatable {
       isSensorAvailable: isSensorAvailable ?? this.isSensorAvailable,
       errorMessage: errorMessage ?? this.errorMessage,
       hasInterference: hasInterference ?? this.hasInterference,
+      errorType: errorType ?? this.errorType,
     );
   }
 }

@@ -4,6 +4,8 @@ import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/core/sensors/sensor_availability_service.dart';
 import 'package:levo/core/ads/ad_service.dart';
 
+import 'package:levo/core/permissions/permission_service.dart';
+
 import 'package:levo/features/settings/bloc/settings_cubit.dart';
 import 'package:levo/features/home/bloc/sensor_availability_cubit.dart';
 import 'package:levo/features/spirit_level/bloc/spirit_level_cubit.dart';
@@ -36,10 +38,15 @@ Future<void> setupDependencies() async {
 
   getIt.registerSingleton<AdService>(AdService(getIt<PreferencesService>()));
 
+  getIt.registerLazySingleton<PermissionService>(
+    () => const PermissionService(),
+  );
+
   // Feature Cubits
-  getIt.registerFactory<SettingsCubit>(
+  getIt.registerLazySingleton<SettingsCubit>(
     () => SettingsCubit(prefs: getIt<PreferencesService>()),
   );
+
 
   getIt.registerFactory<SensorAvailabilityCubit>(
     () => SensorAvailabilityCubit(

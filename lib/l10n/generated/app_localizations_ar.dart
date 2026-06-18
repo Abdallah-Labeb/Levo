@@ -9,10 +9,10 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appName => 'ليفو';
+  String get appName => 'Levo';
 
   @override
-  String get homeScreenTitle => 'ليفو';
+  String get homeScreenTitle => 'Levo';
 
   @override
   String get homeScreenSubtitle => 'حقيبة أدوات القياس الاحترافية';
@@ -627,8 +627,91 @@ class AppLocalizationsAr extends AppLocalizations {
   String get unitConverterLabelTo => 'تحويل إلى';
 
   @override
-  String get unitConverterFromUnit => 'الوحدة المصدر';
+  String get unitConverterFromUnit => 'من';
 
   @override
-  String get unitConverterToUnit => 'الوحدة الهدف';
+  String get unitConverterToUnit => 'إلى';
+
+  @override
+  String get settingsDefaultRulerUnit => 'وحدة المسطرة الافتراضية';
+
+  @override
+  String get settingsDefaultConverterCategory => 'فئة المحول الافتراضية';
+
+  @override
+  String get spiritLevelViscosityLabel => 'اللزوجة (تخميد الحركة)';
+
+  @override
+  String settingsSpiritLevelOffsetsDisplay(Object pitch, Object roll) {
+    return 'الانحدار: $pitch° | الانحراف: $roll°';
+  }
+
+  @override
+  String settingsRulerCalibrationScaleDisplay(Object scale) {
+    return 'مقياس المعايرة: ${scale}x';
+  }
+
+  @override
+  String settingsAppVersionBuildDisplay(Object build, Object version) {
+    return 'الإصدار: $version (البناء $build)';
+  }
+
+  @override
+  String get calibrationWizardSensorError => 'خطأ في قراءة الحساسات';
+
+  @override
+  String get metalDetectorLabelMagneticDelta => 'التغير المغناطيسي';
+
+  @override
+  String get metalDetectorLabelAmbientBaseline => 'المستوى المرجعي للمحيط';
+
+  @override
+  String get metalDetectorLabelSensitivity => 'الحساسية';
+
+  @override
+  String get metalDetectorSoundOn => 'الصوت مفعّل';
+
+  @override
+  String get metalDetectorSoundMuted => 'الصوت مكتوم';
+
+  @override
+  String get metalDetectorHapticOn => 'الاهتزاز مفعّل';
+
+  @override
+  String get metalDetectorHapticMuted => 'الاهتزاز مكتوم';
+
+  @override
+  String metalDetectorSensitivityValue(String value) {
+    return '${value}x';
+  }
+
+  @override
+  String get soundMeterLabelSpl => 'مستوى الصوت (SPL)';
+
+  @override
+  String get lightMeterLabelLuxDial => 'لوكس';
+
+  @override
+  String get lightMeterUnitEv => 'EV';
+
+  @override
+  String get lightMeterMaxDialLabel => '١٠ آلاف+';
+
+  @override
+  String get lightMeterLabelEv100 => 'قيمة التعريض (EV100)';
+
+  @override
+  String get lightMeterLabelCameraViewport => 'شاشة الكاميرا';
+
+  @override
+  String get lightMeterLabelHardwareSensor => 'حساس العتاد';
+
+  @override
+  String get clinometerLabelSlopeAngle => 'زاوية الميل';
+
+  @override
+  String get clinometerLabelSlopeGrade => 'درجة المنحدر';
+
+  @override
+  String get rulerCalibrationReset => 'تمت إعادة ضبط المعايرة';
 }

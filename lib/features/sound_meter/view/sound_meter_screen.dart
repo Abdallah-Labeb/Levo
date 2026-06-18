@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' hide TextDirection;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:levo/app/di/injection.dart';
+import 'package:levo/core/permissions/permission_service.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
-import 'package:levo/core/widgets/analog_dial_widget.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_background.dart';
@@ -35,115 +34,15 @@ class SoundMeterView extends StatelessWidget {
   const SoundMeterView({super.key});
 
   String _formatDb(BuildContext context, double db) {
-    if (db == 0.0 || db.isInfinite || db.isNaN) return "---";
+    if (db == 0.0 || db.isInfinite || db.isNaN) return '---';
     final locale = Localizations.localeOf(context).toString();
-    final formatter = NumberFormat("0.0", locale);
-    return formatter.format(db);
-  }
-
-  String _getZoneDescription(BuildContext context, double db) {
-    final l10n = context.l10n;
-    if (db < 40.0) return l10n.soundMeterZoneSilence;
-    if (db < 55.0) return l10n.soundMeterZoneWhisper;
-    if (db < 75.0) return l10n.soundMeterZoneConversation;
-    if (db < 85.0) return l10n.soundMeterZoneTraffic;
-    if (db < 100.0) return l10n.soundMeterZoneLoud;
-    if (db < 110.0) return l10n.soundMeterZoneDangerous;
-    return l10n.soundMeterZoneJet;
+    return NumberFormat('0.0', locale).format(db);
   }
 
   void _requestPermission(BuildContext context, SoundMeterCubit cubit) async {
-    final l10n = context.l10n;
-    final status = await Permission.microphone.status;
-
-    if (status.isGranted) {
-      cubit.setPermissionGranted(true);
-    } else if (status.isDenied) {
-      if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: AppColors.kSurface,
-              title: Text(
-                l10n.permissionMicTitle,
-                style: AppTypography.kTitleL,
-              ),
-              content: Text(
-                l10n.permissionMicBodyDialog,
-                style: AppTypography.kBody,
-              ),
-              actions: [
-                TactileButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.paddingM,
-                    vertical: AppDimensions.paddingS,
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                  text: l10n.commonCancel,
-                ),
-                const SizedBox(width: AppDimensions.space8),
-                TactileButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.paddingM,
-                    vertical: AppDimensions.paddingS,
-                  ),
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    final result = await Permission.microphone.request();
-                    if (result.isGranted) {
-                      cubit.setPermissionGranted(true);
-                    }
-                  },
-                  text: l10n.commonAllow,
-                ),
-              ],
-            );
-          },
-        );
-      }
-    } else if (status.isPermanentlyDenied) {
-      if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: AppColors.kSurface,
-              title: Text(
-                l10n.permissionPermanentlyDeniedTitle,
-                style: AppTypography.kTitleL,
-              ),
-              content: Text(
-                l10n.permissionMicDeniedPermanentlyBody,
-                style: AppTypography.kBody,
-              ),
-              actions: [
-                TactileButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.paddingM,
-                    vertical: AppDimensions.paddingS,
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                  text: l10n.commonCancel,
-                ),
-                const SizedBox(width: AppDimensions.space8),
-                TactileButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.paddingM,
-                    vertical: AppDimensions.paddingS,
-                  ),
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    await openAppSettings();
-                  },
-                  text: l10n.commonButtonOpenSettings,
-                ),
-              ],
-            );
-          },
-        );
-      }
-    }
+    final granted =
+        await getIt<PermissionService>().checkAndRequestMicrophone(context);
+    if (granted) cubit.setPermissionGranted(true);
   }
 
   @override
@@ -156,44 +55,21 @@ class SoundMeterView extends StatelessWidget {
         if (!state.isSensorAvailable) {
           return Scaffold(
             appBar: LevoAppBar(title: l10n.soundMeterTitle),
-            body: SensorErrorView(
-              sensorName: "Microphone",
-              errorTitle: l10n.sensorErrorTitle,
-              errorMessage: state.errorMessage ?? l10n.permissionMicBody,
+            body: NoiseBackground(
+              child: SensorErrorView(
+                sensorName: l10n.sensorNameMicrophone,
+                errorTitle: l10n.sensorErrorTitle,
+                errorMessage: state.errorMessage ?? l10n.permissionMicBody,
+              ),
             ),
           );
         }
 
-        // Determine if we need to show the permission rationale panel
         final bool showPermissionPanel = !state.permissionGranted;
 
-        // Normalize value between 30 dB (0.0) and 130 dB (1.0)
+        // Normalize 30–130 dB → 0.0–1.0
         final double normalizedValue =
             ((state.currentDb - 30.0) / (130.0 - 30.0)).clamp(0.0, 1.0);
-
-        // Define colored dial scale zones matching standard decibel levels
-        final List<DialZone> dialZones = [
-          const DialZone(
-            start: 0.0,
-            end: 0.3,
-            color: AppColors.kLevelGreen,
-          ), // 30-60 dB (Quiet)
-          const DialZone(
-            start: 0.3,
-            end: 0.55,
-            color: AppColors.kWarningYellow,
-          ), // 60-85 dB (Moderate)
-          const DialZone(
-            start: 0.55,
-            end: 0.8,
-            color: AppColors.kOrange,
-          ), // 85-110 dB (Loud)
-          const DialZone(
-            start: 0.8,
-            end: 1.0,
-            color: AppColors.kDangerRed,
-          ), // 110-130 dB (Danger)
-        ];
 
         return Scaffold(
           appBar: LevoAppBar(title: l10n.soundMeterTitle),
@@ -247,73 +123,87 @@ class SoundMeterView extends StatelessWidget {
                         ),
                       ),
                     )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const SizedBox(height: AppDimensions.space12),
+                  : Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppDimensions.paddingL,
+                        AppDimensions.paddingS,
+                        AppDimensions.paddingL,
+                        AppDimensions.paddingL,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // ── Level bar + readout ──────────────────────────
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                // Vertical level bar + dB scale
+                                Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.kSurfaceInset,
+                                      borderRadius: BorderRadius.circular(
+                                          AppDimensions.radiusPanel),
+                                      border: Border.all(
+                                        color: AppColors.kBorderHighlight,
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppDimensions.paddingM,
+                                      vertical: AppDimensions.paddingS,
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        // Level bar segments
+                                        Expanded(
+                                          child: _LevelBar(
+                                              normalizedValue: normalizedValue),
+                                        ),
+                                        const SizedBox(
+                                            width: AppDimensions.space12),
+                                        // dB scale reference labels
+                                        _DbScaleLabels(
+                                          locale:
+                                              Localizations.localeOf(context)
+                                                  .toString(),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: AppDimensions.space16),
 
-                        // 1. Decibel classification badge
-                        Center(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppDimensions.paddingM,
-                              vertical: AppDimensions.paddingXS,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.kSurfaceInset,
-                              border: Border.all(color: AppColors.kDivider),
-                              borderRadius: BorderRadius.circular(
-                                AppDimensions.radiusChip,
-                              ),
-                            ),
-                            child: Text(
-                              _getZoneDescription(context, state.currentDb),
-                              style: AppTypography.kCaption.copyWith(
-                                color: state.currentDb >= 110.0
-                                    ? AppColors.kDangerRed
-                                    : AppColors.kYellow,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                // Right-side info column
+                                Expanded(
+                                  flex: 2,
+                                  child: Center(
+                                    child: LedDisplay(
+                                      value: _formatDb(context, state.currentDb),
+                                      unit: l10n.commonUnitDecibel,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
+                          const SizedBox(height: AppDimensions.space16),
 
-                        // 2. Analog Dial Gauge
-                        Expanded(
-                          child: Center(
-                            child: AnalogDialWidget(
-                              value: normalizedValue,
-                              zones: dialZones,
-                              title: "SPL",
-                              minLabel: "30",
-                              maxLabel: "130",
-                              size: 260.0,
-                              overlayWidget: LedDisplay(
-                                value: _formatDb(context, state.currentDb),
-                                unit: l10n.commonUnitDecibel,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        // 3. Peak / Average / Min LEDs readout grid
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppDimensions.paddingL,
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.all(
-                              AppDimensions.paddingM,
-                            ),
+                          // ── Peak / Avg / Min row ─────────────────────────
+                          Container(
+                            padding: const EdgeInsets.all(AppDimensions.paddingM),
                             decoration: BoxDecoration(
                               gradient: AppColors.kGradientBrushedAluminum,
                               border: Border.all(
                                 color: AppColors.kBorderHighlight,
                                 width: 1.0,
                               ),
-                              borderRadius: BorderRadius.circular(
-                                AppDimensions.radiusPanel,
-                              ),
+                              borderRadius:
+                                  BorderRadius.circular(AppDimensions.radiusPanel),
                               boxShadow: const [
                                 BoxShadow(
                                   color: Color(0x33000000),
@@ -325,87 +215,139 @@ class SoundMeterView extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                // Min DB
-                                Column(
-                                  children: [
-                                    Text(
-                                      l10n.soundMeterMin,
-                                      style: AppTypography.kCaption.copyWith(
-                                        color: AppColors.kTextSecondary,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: AppDimensions.space8,
-                                    ),
-                                    LedDisplay(
-                                      value: _formatDb(context, state.minDb),
-                                      textStyle: AppTypography.kDisplayS,
-                                    ),
-                                  ],
+                                _StatCell(
+                                  label: l10n.soundMeterMin,
+                                  value: _formatDb(context, state.minDb),
                                 ),
-                                // Average DB
-                                Column(
-                                  children: [
-                                    Text(
-                                      l10n.soundMeterAverage,
-                                      style: AppTypography.kCaption.copyWith(
-                                        color: AppColors.kTextSecondary,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: AppDimensions.space8,
-                                    ),
-                                    LedDisplay(
-                                      value: _formatDb(context, state.averageDb),
-                                      textStyle: AppTypography.kDisplayS,
-                                    ),
-                                  ],
+                                _StatCell(
+                                  label: l10n.soundMeterAverage,
+                                  value: _formatDb(context, state.averageDb),
                                 ),
-                                // Peak DB
-                                Column(
-                                  children: [
-                                    Text(
-                                      l10n.soundMeterPeak,
-                                      style: AppTypography.kCaption.copyWith(
-                                        color: AppColors.kTextSecondary,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: AppDimensions.space8,
-                                    ),
-                                    LedDisplay(
-                                      value: _formatDb(context, state.peakDb),
-                                      textStyle: AppTypography.kDisplayS,
-                                    ),
-                                  ],
+                                _StatCell(
+                                  label: l10n.soundMeterPeak,
+                                  value: _formatDb(context, state.peakDb),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-
-                        const SizedBox(height: AppDimensions.space16),
-
-                        // 4. Control buttons (Reset statistics)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppDimensions.paddingL,
-                          ),
-                          child: TactileButton(
-                            onPressed: () => cubit.reset(),
-                            text: l10n.commonButtonReset,
-                            icon: const Icon(Icons.refresh),
-                          ),
-                        ),
-
-                        const SizedBox(height: AppDimensions.space24),
-                      ],
+                          const SizedBox(height: AppDimensions.space8),
+                        ],
+                      ),
                     ),
             ),
           ),
           bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
+    );
+  }
+}
+
+// ─── Vertical segmented level bar ──────────────────────────────────────────
+class _LevelBar extends StatelessWidget {
+  const _LevelBar({required this.normalizedValue});
+
+  final double normalizedValue;
+
+  static const int _segments = 24;
+
+  Color _segmentColor(int index) {
+    final fraction = index / _segments;
+    if (fraction < 0.50) return AppColors.kLevelGreen;
+    if (fraction < 0.72) return AppColors.kWarningYellow;
+    if (fraction < 0.87) return AppColors.kOrange;
+    return AppColors.kDangerRed;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final int activeCount =
+        (normalizedValue * _segments).round().clamp(0, _segments);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const double gap = 3.0;
+        final double segH =
+            (constraints.maxHeight - gap * (_segments - 1)) / _segments;
+
+        final List<Widget> bars = List.generate(_segments, (i) {
+          // index 0 = bottom segment (lowest dB), _segments-1 = top (highest)
+          final isActive = i < activeCount;
+          final color = _segmentColor(i);
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 60),
+            height: segH,
+            decoration: BoxDecoration(
+              color: isActive ? color : color.withAlpha(28),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          );
+        });
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: bars.reversed
+              .expand((w) => [
+                    w,
+                    const SizedBox(height: gap),
+                  ])
+              .toList()
+            ..removeLast(), // remove trailing gap
+        );
+      },
+    );
+  }
+}
+
+// ─── dB scale labels ────────────────────────────────────────────────────────
+class _DbScaleLabels extends StatelessWidget {
+  const _DbScaleLabels({required this.locale});
+  final String locale;
+
+  @override
+  Widget build(BuildContext context) {
+    final fmt = NumberFormat('0', locale);
+    // Linear steps matching the vertical level height mapping:
+    // 130 (100%), 105 (75%), 80 (50%), 55 (25%), 30 (0%)
+    const labels = [130, 105, 80, 55, 30];
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: labels
+          .map(
+            (v) => Text(
+              fmt.format(v),
+              style: AppTypography.kCaption.copyWith(
+                color: AppColors.kTextSecondary,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+// ─── Stat cell (Min / Avg / Peak) ───────────────────────────────────────────
+class _StatCell extends StatelessWidget {
+  const _StatCell({required this.label, required this.value});
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: AppTypography.kCaption.copyWith(
+            color: AppColors.kTextSecondary,
+          ),
+        ),
+        const SizedBox(height: AppDimensions.space8),
+        LedDisplay(value: value, textStyle: AppTypography.kDisplayS),
+      ],
     );
   }
 }
