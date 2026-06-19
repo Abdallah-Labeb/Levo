@@ -10,13 +10,17 @@ import 'package:levo/features/sound_meter/bloc/sound_meter_state.dart';
 /// Cubit managing acoustic decibel monitoring, audio stream lifecycle,
 /// moving average computations, and high-noise threshold feedback triggers.
 class SoundMeterCubit extends Cubit<SoundMeterState> {
-  SoundMeterCubit() : super(const SoundMeterState());
+  SoundMeterCubit() : super(const SoundMeterState()) {
+    Vibration.hasVibrator().then((val) => _hasVibrator = val);
+  }
 
   StreamSubscription<NoiseReading>? _noiseSub;
   late final NoiseMeter _noiseMeter = NoiseMeter();
 
   int _sampleCount = 0;
   double _sumDb = 0.0;
+  bool _hasVibrator = false;
+  int _lastFeedbackTime = 0;
 
   // Threshold above which we trigger haptic dangerous noise alarms (e.g. 110 dB)
   static const double kDangerThresholdDb = 110.0;
@@ -97,11 +101,13 @@ class SoundMeterCubit extends Cubit<SoundMeterState> {
   }
 
   void _triggerHapticAlert() {
-    Vibration.hasVibrator().then((hasVibe) {
-      if (hasVibe == true) {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    if (now - _lastFeedbackTime >= 1500) {
+      _lastFeedbackTime = now;
+      if (_hasVibrator) {
         Vibration.vibrate(duration: 200);
       }
-    });
+    }
   }
 
   /// Resets all statistics (peak, min, average).

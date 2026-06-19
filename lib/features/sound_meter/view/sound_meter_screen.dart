@@ -35,8 +35,7 @@ class SoundMeterView extends StatelessWidget {
 
   String _formatDb(BuildContext context, double db) {
     if (db == 0.0 || db.isInfinite || db.isNaN) return '---';
-    final locale = Localizations.localeOf(context).toString();
-    return NumberFormat('0.0', locale).format(db);
+    return NumberFormat('0.0', 'en').format(db);
   }
 
   void _requestPermission(BuildContext context, SoundMeterCubit cubit) async {
@@ -300,7 +299,7 @@ class _DbScaleLabels extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fmt = NumberFormat('0', locale);
+    final fmt = NumberFormat('0', 'en');
     // Linear steps matching the vertical level height mapping:
     // 130 (100%), 105 (75%), 80 (50%), 55 (25%), 30 (0%)
     const labels = [130, 105, 80, 55, 30];

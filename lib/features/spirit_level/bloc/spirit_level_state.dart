@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:levo/core/sensors/sensor_error_type.dart';
 
 /// Sub-modes of the Spirit Level.
-enum SpiritLevelMode { flat2d, edge1d, plumb }
+enum SpiritLevelMode { flat2d, edge1d }
 
 /// Proximity status of being level.
 enum LevelStatus { level, close, off }
@@ -20,7 +20,7 @@ class SpiritLevelState extends Equatable {
     this.errorMessage,
     this.soundOn = true,
     this.hapticOn = true,
-    this.viscosity = 0.7,
+    this.viscosity = 0.5,
     this.errorType = SensorErrorType.none,
   });
 

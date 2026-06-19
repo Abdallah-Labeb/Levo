@@ -23,6 +23,8 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
         viscosity: _prefs.levelViscosity,
       ),
     );
+    // Cache whether device has haptic feedback support
+    Vibration.hasVibrator().then((val) => _hasVibrator = val);
   }
 
   final PreferencesService _prefs;
@@ -39,14 +41,19 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
 
   // Audio/Haptic state tracking to prevent overlapping triggers
   bool _levelPlayed = false;
+  bool _hasVibrator = false;
+  int _lastFeedbackTime = 0;
 
   // Relative reference offsets (for zero-referencing)
   double _refPitchOffset = 0.0;
   double _refRollOffset = 0.0;
 
   static double _computeAlpha(double viscosity) {
-    // viscosity 0..1 -> alpha 1.0..0.15 for more responsive default behavior
-    return 1.0 - (viscosity * 0.85);
+    // Steep power-4 curve for a very obvious, physical viscosity change.
+    // viscosity = 0.0 -> alpha = 1.0  (instant, water-thin response)
+    // viscosity = 0.5 -> alpha ~0.065 (noticeably sluggish)
+    // viscosity = 1.0 -> alpha = 0.005 (extreme honey/syrup drag, ~8s settle time)
+    return math.pow(1.0 - viscosity, 4.0) * 0.995 + 0.005;
   }
 
   /// Configures and begins listening to accelerometer sensors.
@@ -138,21 +145,21 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
   void _triggerFeedbackIfNeeded(LevelStatus status) {
     if (status == LevelStatus.level) {
       if (!_levelPlayed) {
-        _levelPlayed = true;
-        if (state.soundOn) {
-          _audioPlayer.play(AssetSource('audio/level_beep.wav')).catchError((
-            _,
-          ) {
-            // Ignore asset missing error in simulation/tests
-            return null;
-          });
-        }
-        if (state.hapticOn) {
-          Vibration.hasVibrator().then((hasVibe) {
-            if (hasVibe == true) {
-              Vibration.vibrate(duration: 80);
-            }
-          });
+        final now = DateTime.now().millisecondsSinceEpoch;
+        if (now - _lastFeedbackTime >= 1500) {
+          _levelPlayed = true;
+          _lastFeedbackTime = now;
+          if (state.soundOn) {
+            _audioPlayer.play(AssetSource('audio/level_beep.wav')).catchError((
+              _,
+            ) {
+              // Ignore asset missing error in simulation/tests
+              return null;
+            });
+          }
+          if (state.hapticOn && _hasVibrator) {
+            Vibration.vibrate(duration: 80);
+          }
         }
       }
     } else {
@@ -170,7 +177,7 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
     emit(state.copyWith(showPercent: !state.showPercent));
   }
 
-  /// Sets the tool sub-mode (2D surface, 1D edge, plumb bob).
+  /// Sets the tool sub-mode (2D surface or 1D edge).
   void setMode(SpiritLevelMode mode) {
     _prefs.setLevelModeIndex(mode.index);
     _refPitchOffset = 0.0;

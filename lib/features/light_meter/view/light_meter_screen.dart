@@ -36,8 +36,7 @@ class LightMeterView extends StatelessWidget {
   const LightMeterView({super.key});
 
   String _formatVal(BuildContext context, double value, String format) {
-    final locale = Localizations.localeOf(context).toString();
-    final formatter = NumberFormat(format, locale);
+    final formatter = NumberFormat(format, 'en');
     return formatter.format(value);
   }
 
@@ -157,7 +156,7 @@ class LightMeterView extends StatelessWidget {
                           child: Center(
                             child: Builder(
                               builder: (context) {
-                                final numberFormatter = NumberFormat("0", Localizations.localeOf(context).toString());
+                                final numberFormatter = NumberFormat("0", "en");
                                 
                                 Color activeColor = AppColors.kLevelGreen;
                                 for (final zone in dialZones) {

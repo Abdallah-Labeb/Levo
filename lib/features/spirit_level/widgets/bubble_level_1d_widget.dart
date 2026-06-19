@@ -102,7 +102,7 @@ class _BubbleLevel1dWidgetState extends State<BubbleLevel1dWidget>
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final double height = math.min(80.0, constraints.maxHeight);
+        final double height = math.min(50.0, constraints.maxHeight);
 
         return AnimatedContainer(
           duration: AppAnimations.bubbleSnap,
@@ -112,7 +112,7 @@ class _BubbleLevel1dWidgetState extends State<BubbleLevel1dWidget>
           decoration: BoxDecoration(
             color: AppColors.kSurfaceInset,
             border: Border.all(color: borderColor, width: 2.0),
-            borderRadius: BorderRadius.circular(AppDimensions.radiusPanel),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusDisplay),
             boxShadow: [
               BoxShadow(color: glowColor, blurRadius: 15.0, spreadRadius: 1.0),
               const BoxShadow(
@@ -123,7 +123,7 @@ class _BubbleLevel1dWidgetState extends State<BubbleLevel1dWidget>
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppDimensions.radiusPanel - 2),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusDisplay - 2),
             child: CustomPaint(
               painter: BubbleLevel1dPainter(x: _x, status: widget.status),
             ),
@@ -140,79 +140,112 @@ class BubbleLevel1dPainter extends CustomPainter {
   final double x;
   final LevelStatus status;
 
-  final Paint bgPaint = Paint();
-  final Paint wallPaint = Paint();
-  final Paint linePaint = Paint();
-  final Paint tickPaint = Paint();
-  final Paint bubblePaint = Paint();
-  final Paint specularPaint = Paint();
-  final Paint glassShinePaint = Paint();
+  // Pre-allocated Paint objects to avoid memory allocations inside paint()
+  final Paint _bgPaint = Paint();
+  final Paint _wallPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.0;
+  final Paint _linePaint = Paint()..strokeWidth = 2.0;
+  final Paint _lineHighlightPaint = Paint()..strokeWidth = 0.8;
+  final Paint _tickPaint = Paint()..strokeWidth = 1.0;
+  final Paint _bubbleBorderPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.5;
+  final Paint _bubbleOuterBorderPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.0;
+  final Paint _bubbleInnerReflectPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 0.8;
+  final Paint _bubbleFillPaint = Paint();
+  final Paint _bubbleSpecularPaint = Paint();
+  final Paint _bubbleSecondaryGlintPaint = Paint();
+  final Paint _glassShinePaint = Paint();
+  final Paint _capPaint = Paint();
+  final Paint _capRightPaint = Paint();
+  final Paint _dividerShadowPaint = Paint();
+  final Paint _dividerShadowRightPaint = Paint();
+  final Paint _edgeHighlightPaint = Paint()..strokeWidth = 1.0;
+  final Paint _screwPaint = Paint();
+  final Paint _screwSlotPaint = Paint()..strokeWidth = 1.0;
 
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
     final centerY = size.height / 2;
     final centerX = size.width / 2;
+    const double capWidth = 28.0; // Option 1B: Wider aluminum end caps
 
-    // Draw background fluid tint
-    bgPaint.shader = const LinearGradient(
+    // 1. Draw glowing neon-lime background fluid tint
+    _bgPaint.shader = const LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Color(0xFF0F1A12),
-        Color(0xFF060B08),
-        Color(0xFF0C160E),
+        AppColors.kVialFluidTop,
+        AppColors.kVialFluidUpperMid,
+        AppColors.kVialFluidMid,
+        AppColors.kVialFluidLowerMid,
+        AppColors.kVialFluidBottom,
       ],
-      stops: [0.0, 0.5, 1.0],
+      stops: [0.0, 0.15, 0.5, 0.85, 1.0],
     ).createShader(rect);
-    canvas.drawRect(rect, bgPaint);
+    canvas.drawRect(rect, _bgPaint);
 
-    // Draw tube inner wall highlights (3D glass tube look)
-    wallPaint
-      ..color = Colors.white.withAlpha(20)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-    canvas.drawLine(const Offset(0, 5), Offset(size.width, 5), wallPaint);
+    // 2. Draw tube inner wall highlights (3D glass tube look)
+    _wallPaint.color = AppColors.kVialRefractionLight;
+    canvas.drawLine(const Offset(capWidth, 5), Offset(size.width - capWidth, 5), _wallPaint);
     canvas.drawLine(
-      Offset(0, size.height - 5),
-      Offset(size.width, size.height - 5),
-      wallPaint,
+      Offset(capWidth, size.height - 5),
+      Offset(size.width - capWidth, size.height - 5),
+      _wallPaint,
     );
 
-    // Draw level guidelines (two lines near center for target alignment)
-    linePaint
-      ..color = (status == LevelStatus.level
-          ? AppColors.kLevelGreen.withAlpha(180)
-          : AppColors.kChromeMid.withAlpha(100))
-      ..strokeWidth = 2.0;
+    // 3. Draw level guidelines (Option 1B: Black guidelines matching bubble width exactly)
+    const double targetWidth = 52.0; // Matches bubble width exactly
+    _linePaint.color = AppColors.kBlack;
+    _lineHighlightPaint.color = AppColors.kVialRefractionLight;
 
-    // Center zone markings (e.g. 20 pixels apart)
-    const double targetWidth = 35.0;
+    // Left Guideline
+    final double leftGuideX = centerX - targetWidth / 2;
     canvas.drawLine(
-      Offset(centerX - targetWidth / 2, 4),
-      Offset(centerX - targetWidth / 2, size.height - 4),
-      linePaint,
+      Offset(leftGuideX, 4),
+      Offset(leftGuideX, size.height - 4),
+      _linePaint,
     );
     canvas.drawLine(
-      Offset(centerX + targetWidth / 2, 4),
-      Offset(centerX + targetWidth / 2, size.height - 4),
-      linePaint,
+      Offset(leftGuideX - 1.0, 4),
+      Offset(leftGuideX - 1.0, size.height - 4),
+      _lineHighlightPaint,
     );
 
-    // Draw secondary tick marks
-    tickPaint
-      ..color = AppColors.kChromeDark.withAlpha(100)
-      ..strokeWidth = 1.0;
+    // Right Guideline
+    final double rightGuideX = centerX + targetWidth / 2;
+    canvas.drawLine(
+      Offset(rightGuideX, 4),
+      Offset(rightGuideX, size.height - 4),
+      _linePaint,
+    );
+    canvas.drawLine(
+      Offset(rightGuideX - 1.0, 4),
+      Offset(rightGuideX - 1.0, size.height - 4),
+      _lineHighlightPaint,
+    );
+
+    // 4. Draw secondary tick marks
+    _tickPaint.color = AppColors.kVialRefractionDark.withAlpha(40);
     for (int i = -3; i <= 3; i++) {
       if (i == 0) continue;
       final double dx = centerX + i * 50.0;
-      canvas.drawLine(Offset(dx, 8), Offset(dx, size.height - 8), tickPaint);
+      // Skip drawing if ticks fall inside/behind the metal end caps
+      if (dx < capWidth + 5.0 || dx > size.width - capWidth - 5.0) continue;
+      canvas.drawLine(Offset(dx, 8), Offset(dx, size.height - 8), _tickPaint);
     }
 
-    // Calculate bubble position
-    const double bubbleWidth = 45.0;
-    const double bubbleHeight = 28.0;
-    final double maxMovement = (size.width - bubbleWidth - 20) / 2;
+    // 5. Calculate bubble position restricting it to within the liquid chamber
+    const double bubbleWidth = 52.0; // Option 1B: Slightly wider bubble
+    const double bubbleHeight = 32.0;
+    final double liquidWidth = size.width - (capWidth * 2);
+    final double maxMovement = (liquidWidth - bubbleWidth - 8.0) / 2;
     final double bubbleCenterX = centerX + x * maxMovement;
     final Rect bubbleRect = Rect.fromCenter(
       center: Offset(bubbleCenterX, centerY),
@@ -220,58 +253,174 @@ class BubbleLevel1dPainter extends CustomPainter {
       height: bubbleHeight,
     );
 
-    // Determine bubble color
-    final Color bubbleColor = status == LevelStatus.level
-        ? AppColors.kLevelGreen
-        : (status == LevelStatus.close
-            ? AppColors.kWarningYellow
-            : const Color(0xFF5AB676));
-
-    final Color bubbleDarkColor = status == LevelStatus.level
-        ? const Color(0xFF1E522F)
-        : (status == LevelStatus.close
-            ? const Color(0xFF524410)
-            : const Color(0xFF234C32));
-
-    // Draw bubble capsule
     final RRect bubbleRRect = RRect.fromRectAndRadius(
       bubbleRect,
-      const Radius.circular(14),
+      const Radius.circular(16.0),
     );
-    bubblePaint.shader = LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: [const Color(0xFFE6FFED), bubbleColor, bubbleDarkColor],
-      stops: const [0.0, 0.6, 1.0],
-    ).createShader(bubbleRect);
-    canvas.drawRRect(bubbleRRect, bubblePaint);
 
-    // Draw specular glare highlight inside bubble capsule
-    specularPaint.color = Colors.white.withAlpha(200);
+    // Draw bubble clear/transparent air center
+    _bubbleFillPaint.shader = RadialGradient(
+      center: const Alignment(0.0, -0.3),
+      radius: 0.85,
+      colors: [
+        Colors.white.withAlpha(160),
+        Colors.white.withAlpha(15),
+        Colors.transparent,
+      ],
+      stops: const [0.0, 0.55, 1.0],
+    ).createShader(bubbleRect);
+    canvas.drawRRect(bubbleRRect, _bubbleFillPaint);
+
+    // Draw bubble double boundary (Option 1B: Outer dark border + inner dark border)
+    _bubbleOuterBorderPaint.color = AppColors.kVialRefractionDark.withAlpha(200);
+    canvas.drawRRect(bubbleRRect, _bubbleOuterBorderPaint);
+
+    final RRect innerRRect = RRect.fromRectAndRadius(
+      bubbleRect.deflate(1.2),
+      const Radius.circular(14.8),
+    );
+    _bubbleBorderPaint.color = AppColors.kVialRefractionDark.withAlpha(150);
+    canvas.drawRRect(innerRRect, _bubbleBorderPaint);
+
+    // Draw secondary inner soft light highlight on the border
+    _bubbleInnerReflectPaint.color = AppColors.kVialRefractionLight;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        bubbleRect.deflate(2.2),
+        const Radius.circular(13.8),
+      ),
+      _bubbleInnerReflectPaint,
+    );
+
+    // Draw primary white glint reflection on top edge of bubble
+    _bubbleSpecularPaint.color = Colors.white.withAlpha(220);
     final RRect specularRRect = RRect.fromRectAndRadius(
       Rect.fromLTWH(
-        bubbleRect.left + 5,
-        bubbleRect.top + 3,
-        bubbleWidth - 10,
-        4,
+        bubbleRect.left + 8.0,
+        bubbleRect.top + 3.0,
+        bubbleWidth - 16.0,
+        4.0,
       ),
-      const Radius.circular(2),
+      const Radius.circular(2.0),
     );
-    canvas.drawRRect(specularRRect, specularPaint);
+    canvas.drawRRect(specularRRect, _bubbleSpecularPaint);
 
-    // Draw outer reflections on tube (light reflection spanning across horizontal tube)
-    glassShinePaint.shader = LinearGradient(
+    // Draw secondary lower soft glint
+    _bubbleSecondaryGlintPaint.color = Colors.white.withAlpha(90);
+    final RRect secondaryGlintRRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        bubbleRect.left + 12.0,
+        bubbleRect.bottom - 6.0,
+        bubbleWidth - 24.0,
+        2.0,
+      ),
+      const Radius.circular(1.0),
+    );
+    canvas.drawRRect(secondaryGlintRRect, _bubbleSecondaryGlintPaint);
+
+    // 6. Draw outer specular reflections on horizontal glass tube
+    _glassShinePaint.shader = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Colors.white.withAlpha(35),
+        Colors.white.withAlpha(45),
         Colors.white.withAlpha(0),
         Colors.white.withAlpha(0),
-        Colors.white.withAlpha(15),
+        Colors.white.withAlpha(20),
       ],
-      stops: const [0.0, 0.25, 0.85, 1.0],
+      stops: const [0.0, 0.2, 0.85, 1.0],
     ).createShader(rect);
-    canvas.drawRect(rect, glassShinePaint);
+    canvas.drawRect(rect, _glassShinePaint);
+
+    // 7. Draw brushed-metal end-caps
+    final Rect leftCapRect = Rect.fromLTWH(0, 0, capWidth, size.height);
+    final Rect rightCapRect = Rect.fromLTWH(size.width - capWidth, 0, capWidth, size.height);
+
+    _capPaint.shader = const LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: [
+        AppColors.kVialMetalCapStart,
+        AppColors.kVialMetalCapMid1,
+        AppColors.kVialMetalCapMid2,
+        AppColors.kVialMetalCapMid3,
+        AppColors.kVialMetalCapEnd,
+      ],
+      stops: [0.0, 0.25, 0.5, 0.75, 1.0],
+    ).createShader(leftCapRect);
+
+    _capRightPaint.shader = const LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: [
+        AppColors.kVialMetalCapStart,
+        AppColors.kVialMetalCapMid1,
+        AppColors.kVialMetalCapMid2,
+        AppColors.kVialMetalCapMid3,
+        AppColors.kVialMetalCapEnd,
+      ],
+      stops: [0.0, 0.25, 0.5, 0.75, 1.0],
+    ).createShader(rightCapRect);
+
+    canvas.drawRect(leftCapRect, _capPaint);
+    canvas.drawRect(rightCapRect, _capRightPaint);
+
+    // Option 1B: Draw mounting screws in the metal cap brackets
+    const double leftScrewX = 14.0;
+    final double rightScrewX = size.width - 14.0;
+
+    final Rect leftScrewRect = Rect.fromCircle(center: Offset(leftScrewX, centerY), radius: 3.5);
+    _screwPaint.shader = const RadialGradient(
+      colors: [AppColors.kChromeLight, AppColors.kChromeDark],
+    ).createShader(leftScrewRect);
+    canvas.drawCircle(Offset(leftScrewX, centerY), 3.5, _screwPaint);
+
+    final Rect rightScrewRect = Rect.fromCircle(center: Offset(rightScrewX, centerY), radius: 3.5);
+    _screwPaint.shader = const RadialGradient(
+      colors: [AppColors.kChromeLight, AppColors.kChromeDark],
+    ).createShader(rightScrewRect);
+    canvas.drawCircle(Offset(rightScrewX, centerY), 3.5, _screwPaint);
+
+    // Screw slots
+    _screwSlotPaint.color = AppColors.kChromeDarker;
+    canvas.drawLine(
+      Offset(leftScrewX - 2.0, centerY - 2.0),
+      Offset(leftScrewX + 2.0, centerY + 2.0),
+      _screwSlotPaint,
+    );
+    canvas.drawLine(
+      Offset(rightScrewX - 2.0, centerY - 2.0),
+      Offset(rightScrewX + 2.0, centerY + 2.0),
+      _screwSlotPaint,
+    );
+
+    // Draw shadow divider on cap inner edges to provide 3D depth overlay
+    final Rect leftShadowRect = Rect.fromLTWH(capWidth, 0, 4.0, size.height);
+    _dividerShadowPaint.shader = const LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: [
+        Color(0xB4000000),
+        Color(0x00000000),
+      ],
+    ).createShader(leftShadowRect);
+    canvas.drawRect(leftShadowRect, _dividerShadowPaint);
+
+    final Rect rightShadowRect = Rect.fromLTWH(size.width - capWidth - 4.0, 0, 4.0, size.height);
+    _dividerShadowRightPaint.shader = const LinearGradient(
+      begin: Alignment.centerRight,
+      end: Alignment.centerLeft,
+      colors: [
+        Color(0xB4000000),
+        Color(0x00000000),
+      ],
+    ).createShader(rightShadowRect);
+    canvas.drawRect(rightShadowRect, _dividerShadowRightPaint);
+
+    // Draw inner edge highlights at the metal-to-liquid boundary
+    _edgeHighlightPaint.color = const Color(0x82FFFFFF);
+    canvas.drawLine(const Offset(capWidth, 0), Offset(capWidth, size.height), _edgeHighlightPaint);
+    canvas.drawLine(Offset(size.width - capWidth, 0), Offset(size.width - capWidth, size.height), _edgeHighlightPaint);
   }
 
   @override

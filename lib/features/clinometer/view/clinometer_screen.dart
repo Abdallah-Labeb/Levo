@@ -33,8 +33,7 @@ class ClinometerView extends StatelessWidget {
   const ClinometerView({super.key});
 
   String _formatVal(BuildContext context, double value, String format) {
-    final locale = Localizations.localeOf(context).toString();
-    final formatter = NumberFormat(format, locale);
+    final formatter = NumberFormat(format, 'en');
     return formatter.format(value);
   }
   @override

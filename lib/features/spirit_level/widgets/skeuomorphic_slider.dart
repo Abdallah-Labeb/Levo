@@ -21,8 +21,7 @@ class SkeuomorphicSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isRtl = Directionality.of(context) == TextDirection.rtl;
-    final locale = Localizations.localeOf(context).toString();
-    final percentageFormatter = NumberFormat("0", locale);
+    final percentageFormatter = NumberFormat("0", "en");
 
     return LayoutBuilder(
       builder: (context, constraints) {

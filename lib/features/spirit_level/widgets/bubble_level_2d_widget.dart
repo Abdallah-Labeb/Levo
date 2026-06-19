@@ -169,113 +169,124 @@ class BubbleLevel2dPainter extends CustomPainter {
   final double y;
   final LevelStatus status;
 
-  final Paint bgPaint = Paint();
-  final Paint ringPaint = Paint();
-  final Paint centerTargetPaint = Paint();
-  final Paint bubblePaint = Paint();
-  final Paint specularPaint = Paint();
-  final Paint glassPaint = Paint();
-  final Paint glassBorderPaint = Paint();
+  // Pre-allocated Paint objects to avoid memory allocations inside paint()
+  final Paint _bgPaint = Paint();
+  final Paint _ringPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.0;
+  final Paint _centerTargetPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.8;
+  final Paint _bubbleFillPaint = Paint();
+  final Paint _bubbleOuterBorderPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.5;
+  final Paint _bubbleBorderPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.0;
+  final Paint _bubbleInnerReflectPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 0.8;
+  final Paint _bubbleSpecularPaint = Paint();
+  final Paint _glassShinePaint = Paint();
+  final Paint _glassBorderPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.5;
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final outerRadius = size.width / 2;
+    final Rect boundaryRect = Rect.fromCircle(center: center, radius: outerRadius);
 
-    // Draw background fluid container (dark-green tint fluid glass)
-    bgPaint.shader = const RadialGradient(
-      colors: [Color(0xFF0F1A12), Color(0xFF070B08)],
-    ).createShader(Rect.fromCircle(center: center, radius: outerRadius));
-    canvas.drawCircle(center, outerRadius, bgPaint);
+    // 1. Draw background fluid container (Option 3A: Glowing neon-lime fluid)
+    _bgPaint.shader = const RadialGradient(
+      colors: [
+        AppColors.kVialFluidMid,
+        AppColors.kVialFluidLowerMid,
+        AppColors.kVialFluidBottom,
+      ],
+      stops: [0.0, 0.6, 1.0],
+    ).createShader(boundaryRect);
+    canvas.drawCircle(center, outerRadius, _bgPaint);
 
-    // Draw grid rings (concentric target rings)
-    ringPaint
-      ..color = AppColors.kChromeDark.withAlpha(120)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
+    // 2. Draw grid rings (Option 3A: Black concentric target rings)
+    _ringPaint.color = AppColors.kBlack.withAlpha(90);
+    _centerTargetPaint.color = AppColors.kBlack.withAlpha(200);
 
-    // Perfect Center Target
-    centerTargetPaint
-      ..color = (status == LevelStatus.level
-          ? AppColors.kLevelGreen.withAlpha(150)
-          : AppColors.kChromeMid.withAlpha(80))
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+    canvas.drawCircle(center, 25.0, _centerTargetPaint); // Center target ring (matches bubble radius)
+    canvas.drawCircle(center, 50.0, _ringPaint);         // 2.5-deg ring
+    canvas.drawCircle(center, 90.0, _ringPaint);         // 5-deg ring
 
-    canvas.drawCircle(center, 20.0, centerTargetPaint); // 1-deg ring
-    canvas.drawCircle(center, 50.0, ringPaint); // 2.5-deg ring
-    canvas.drawCircle(center, 90.0, ringPaint); // 5-deg ring
-
-    // Draw crosshair lines
+    // 3. Draw black crosshair lines
     canvas.drawLine(
-      Offset(center.dx - outerRadius + 10, center.dy),
-      Offset(center.dx + outerRadius - 10, center.dy),
-      ringPaint,
+      Offset(center.dx - outerRadius + 10.0, center.dy),
+      Offset(center.dx + outerRadius - 10.0, center.dy),
+      _ringPaint,
     );
     canvas.drawLine(
-      Offset(center.dx, center.dy - outerRadius + 10),
-      Offset(center.dx, center.dy + outerRadius - 10),
-      ringPaint,
+      Offset(center.dx, center.dy - outerRadius + 10.0),
+      Offset(center.dx, center.dy + outerRadius - 10.0),
+      _ringPaint,
     );
 
-    // Calculate bubble position
-    // Bubble max translation distance: outer radius minus bubble radius minus wall buffer
+    // 4. Calculate bubble position
     const double bubbleRadius = 25.0;
     final double maxMovement = outerRadius - bubbleRadius - 8.0;
     final Offset bubbleCenter = Offset(
       center.dx + x * maxMovement,
       center.dy + y * maxMovement,
     );
+    final Rect bubbleRect = Rect.fromCircle(center: bubbleCenter, radius: bubbleRadius);
 
-    // Determine bubble colors based on level status
-    final Color bubbleBaseColor = status == LevelStatus.level
-        ? AppColors.kLevelGreen
-        : (status == LevelStatus.close
-            ? AppColors.kWarningYellow
-            : const Color(0xFF5AB676));
+    // Draw bubble clear/transparent air center
+    _bubbleFillPaint.shader = RadialGradient(
+      center: const Alignment(-0.25, -0.25),
+      radius: 0.85,
+      colors: [
+        Colors.white.withAlpha(150),
+        Colors.white.withAlpha(15),
+        Colors.transparent,
+      ],
+      stops: const [0.0, 0.55, 1.0],
+    ).createShader(bubbleRect);
+    canvas.drawCircle(bubbleCenter, bubbleRadius, _bubbleFillPaint);
 
-    final Color bubbleDarkColor = status == LevelStatus.level
-        ? const Color(0xFF1E522F)
-        : (status == LevelStatus.close
-            ? const Color(0xFF524410)
-            : const Color(0xFF234C32));
+    // Draw bubble double boundary (Option 3A: Outer dark border + inner dark border)
+    _bubbleOuterBorderPaint.color = AppColors.kVialRefractionDark.withAlpha(200);
+    canvas.drawCircle(bubbleCenter, bubbleRadius, _bubbleOuterBorderPaint);
 
-    // Draw the bubble 3D gradient
-    bubblePaint.shader = RadialGradient(
-      center: const Alignment(-0.25, -0.25), // light source top-left
-      colors: [const Color(0xFFE6FFED), bubbleBaseColor, bubbleDarkColor],
-      stops: const [0.0, 0.65, 1.0],
-    ).createShader(
-      Rect.fromCircle(center: bubbleCenter, radius: bubbleRadius),
-    );
-    canvas.drawCircle(bubbleCenter, bubbleRadius, bubblePaint);
+    _bubbleBorderPaint.color = AppColors.kVialRefractionDark.withAlpha(140);
+    canvas.drawCircle(bubbleCenter, bubbleRadius - 1.2, _bubbleBorderPaint);
 
-    // Draw specular reflection highlight on the bubble
-    specularPaint
-      ..color = Colors.white.withAlpha(220)
-      ..style = PaintingStyle.fill;
+    // Draw secondary inner soft light highlight on the border
+    _bubbleInnerReflectPaint.color = AppColors.kVialRefractionLight;
+    canvas.drawCircle(bubbleCenter, bubbleRadius - 2.2, _bubbleInnerReflectPaint);
+
+    // Draw primary white glint reflection on top-left of bubble
+    _bubbleSpecularPaint.color = Colors.white.withAlpha(220);
     canvas.drawCircle(
       Offset(
         bubbleCenter.dx - bubbleRadius * 0.3,
         bubbleCenter.dy - bubbleRadius * 0.3,
       ),
       bubbleRadius * 0.2,
-      specularPaint,
+      _bubbleSpecularPaint,
     );
 
-    // Draw outer glass glare overlay (half-moon shine on top right/left)
-    glassPaint.shader = LinearGradient(
+    // 5. Draw outer glass glare overlay
+    _glassShinePaint.shader = const LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [Colors.white.withAlpha(40), Colors.white.withAlpha(0)],
-    ).createShader(Rect.fromCircle(center: center, radius: outerRadius));
-    canvas.drawCircle(center, outerRadius, glassPaint);
+      colors: [
+        Color(0x2DFFFFFF),
+        Color(0x00FFFFFF),
+      ],
+    ).createShader(boundaryRect);
+    canvas.drawCircle(center, outerRadius, _glassShinePaint);
 
-    glassBorderPaint
-      ..color = Colors.white.withAlpha(25)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
-    canvas.drawCircle(center, outerRadius - 1.0, glassBorderPaint);
+    _glassBorderPaint.color = const Color(0x19FFFFFF);
+    canvas.drawCircle(center, outerRadius - 1.0, _glassBorderPaint);
   }
 
   @override

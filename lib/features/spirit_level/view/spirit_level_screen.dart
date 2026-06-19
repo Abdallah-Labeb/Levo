@@ -18,7 +18,7 @@ import 'package:levo/features/spirit_level/bloc/spirit_level_cubit.dart';
 import 'package:levo/features/spirit_level/bloc/spirit_level_state.dart';
 import 'package:levo/features/spirit_level/widgets/bubble_level_2d_widget.dart';
 import 'package:levo/features/spirit_level/widgets/bubble_level_1d_widget.dart';
-import 'package:levo/features/spirit_level/widgets/plumb_bob_widget.dart';
+
 import 'package:levo/features/spirit_level/widgets/calibration_wizard.dart';
 import 'package:levo/features/spirit_level/widgets/skeuomorphic_slider.dart';
 
@@ -52,13 +52,12 @@ class SpiritLevelView extends StatelessWidget {
   }
 
   String _formatValue(BuildContext context, double value, bool isPercent) {
-    final locale = Localizations.localeOf(context).toString();
     double displayVal = value;
     if (isPercent) {
       // Convert degree angle to percent grade: tan(angle_rad) * 100
       displayVal = math.tan(value * math.pi / 180.0) * 100.0;
     }
-    final formatter = NumberFormat("0.0", locale);
+    final formatter = NumberFormat("0.0", "en");
     return formatter.format(displayVal);
   }
 
@@ -84,9 +83,7 @@ class SpiritLevelView extends StatelessWidget {
           );
         }
 
-        // Gimbal lock warning check: pitch tilt angle exceeding 80 degrees
-        final bool showGimbalLockWarning =
-            state.mode != SpiritLevelMode.plumb && state.pitch.abs() > 80.0;
+        final bool showGimbalLockWarning = state.pitch.abs() > 80.0;
 
         Widget visualizer;
         if (state.mode == SpiritLevelMode.flat2d) {
@@ -97,15 +94,9 @@ class SpiritLevelView extends StatelessWidget {
               status: state.status,
             ),
           );
-        } else if (state.mode == SpiritLevelMode.edge1d) {
+        } else {
           visualizer = Center(
             child: BubbleLevel1dWidget(roll: state.roll, status: state.status),
-          );
-        } else {
-          visualizer = PlumbBobWidget(
-            pitch: state.pitch,
-            roll: state.roll,
-            status: state.status,
           );
         }
 
@@ -118,7 +109,7 @@ class SpiritLevelView extends StatelessWidget {
                 children: [
                   const SizedBox(height: AppDimensions.space12),
 
-                  // 1. Sub-mode Segmented control selectors (2D surface, 1D edge, plumb bob)
+                   // 1. Sub-mode Segmented control selectors (2D surface, 1D edge)
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppDimensions.paddingL,
@@ -138,14 +129,6 @@ class SpiritLevelView extends StatelessWidget {
                             isActive: state.mode == SpiritLevelMode.edge1d,
                             onPressed: () => cubit.setMode(SpiritLevelMode.edge1d),
                             text: l10n.spiritLevelModeEdge,
-                          ),
-                        ),
-                        const SizedBox(width: AppDimensions.space8),
-                        Expanded(
-                          child: TactileButton(
-                            isActive: state.mode == SpiritLevelMode.plumb,
-                            onPressed: () => cubit.setMode(SpiritLevelMode.plumb),
-                            text: l10n.spiritLevelModePlumb,
                           ),
                         ),
                       ],

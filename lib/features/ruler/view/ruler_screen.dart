@@ -45,7 +45,6 @@ class _RulerViewState extends State<RulerView> {
     double distanceMm,
     RulerUnit unit,
   ) {
-    final locale = Localizations.localeOf(context).toString();
     double value = distanceMm;
     String unitStr = '';
     int decimals = 1;
@@ -65,7 +64,7 @@ class _RulerViewState extends State<RulerView> {
     }
 
     final pattern = "0.${'0' * decimals}";
-    final formatter = NumberFormat(pattern, locale);
+    final formatter = NumberFormat(pattern, 'en');
     return "${formatter.format(value)} $unitStr";
   }
 

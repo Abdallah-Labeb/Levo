@@ -35,8 +35,7 @@ class CompassView extends StatelessWidget {
   const CompassView({super.key});
 
   String _formatDegree(BuildContext context, double heading) {
-    final locale = Localizations.localeOf(context).toString();
-    final formatter = NumberFormat("0", locale);
+    final formatter = NumberFormat("0", "en");
     return "${formatter.format(heading)}°";
   }
 
@@ -77,7 +76,7 @@ class CompassView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final cubit = context.read<CompassCubit>();
-    final declinationFormatter = NumberFormat("0.0", Localizations.localeOf(context).toString());
+    final declinationFormatter = NumberFormat("0.0", "en");
 
     return BlocBuilder<CompassCubit, CompassState>(
       builder: (context, state) {

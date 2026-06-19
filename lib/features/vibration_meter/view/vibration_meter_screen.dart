@@ -33,8 +33,7 @@ class VibrationMeterView extends StatelessWidget {
   const VibrationMeterView({super.key});
 
   String _formatVal(BuildContext context, double val) {
-    final locale = Localizations.localeOf(context).toString();
-    final formatter = NumberFormat("0.00", locale);
+    final formatter = NumberFormat("0.00", "en");
     return formatter.format(val);
   }
 

@@ -85,7 +85,6 @@ class _UnitConverterViewState extends State<UnitConverterView> {
   }
 
   String _formatScientific(BuildContext context, double val) {
-    final locale = Localizations.localeOf(context).toString();
     final formatterEn = NumberFormat("0.###E0", "en_US");
     final formattedEn = formatterEn.format(val); // e.g. "1.234E5"
     final parts = formattedEn.split('E');
@@ -98,7 +97,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
         cleanExponent = cleanExponent.substring(1);
       }
       final parsedMantissa = double.tryParse(mantissa) ?? 0.0;
-      final formattedMantissa = NumberFormat("0.###", locale).format(parsedMantissa);
+      final formattedMantissa = NumberFormat("0.###", "en").format(parsedMantissa);
       // Use LTR embedding to prevent RTL reversal, base '10' always English
       return "\u202A$formattedMantissa \u00d7 10^$cleanExponent\u202C";
     }
@@ -107,7 +106,6 @@ class _UnitConverterViewState extends State<UnitConverterView> {
 
   String _formatDouble(BuildContext context, double val, {double maxWidth = double.infinity, TextStyle? style}) {
     if (val == 0.0) return "0";
-    final locale = Localizations.localeOf(context).toString();
 
     // If the number is extremely small, use scientific notation
     if (val.abs() > 0 && val.abs() < 1e-4) {
@@ -115,7 +113,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
     }
 
     // Try normal representation with full precision
-    final normalFormatter = NumberFormat("0.##########", locale);
+    final normalFormatter = NumberFormat("0.##########", "en");
     final normalText = normalFormatter.format(val);
 
     if (style == null || _doesTextFit(normalText, style, maxWidth)) {

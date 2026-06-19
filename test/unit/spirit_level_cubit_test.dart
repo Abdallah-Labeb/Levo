@@ -88,9 +88,9 @@ void main() {
       expect(cubit.state.mode, SpiritLevelMode.edge1d);
       expect(prefs.levelModeIndex, SpiritLevelMode.edge1d.index);
 
-      cubit.setMode(SpiritLevelMode.plumb);
-      expect(cubit.state.mode, SpiritLevelMode.plumb);
-      expect(prefs.levelModeIndex, SpiritLevelMode.plumb.index);
+      cubit.setMode(SpiritLevelMode.flat2d);
+      expect(cubit.state.mode, SpiritLevelMode.flat2d);
+      expect(prefs.levelModeIndex, SpiritLevelMode.flat2d.index);
     });
 
     test(

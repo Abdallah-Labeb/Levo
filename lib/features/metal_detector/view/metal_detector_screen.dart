@@ -97,8 +97,7 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
   }
 
   String _formatUt(BuildContext context, double value) {
-    final locale = Localizations.localeOf(context).toString();
-    final formatter = NumberFormat("0.0", locale);
+    final formatter = NumberFormat("0.0", "en");
     return formatter.format(value);
   }
 
@@ -334,7 +333,7 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                             ),
                             Text(
                               l10n.metalDetectorSensitivityValue(
-                                NumberFormat('0.0', Localizations.localeOf(context).toString())
+                                NumberFormat('0.0', 'en')
                                     .format(state.sensitivity),
                               ),
                               style: AppTypography.kCaption.copyWith(

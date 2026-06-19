@@ -21,7 +21,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get spiritLevelTitle => 'ميزان الماء';
 
   @override
-  String get spiritLevelDesc => 'ميزان ماء ثنائي وأحادي البعد مع شاقول';
+  String get spiritLevelDesc => 'ميزان ماء ثنائي وأحادي البعد';
 
   @override
   String get compassTitle => 'البوصلة';
@@ -124,9 +124,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get spiritLevelModeEdge => 'حافة 1D';
-
-  @override
-  String get spiritLevelModePlumb => 'شاقول';
 
   @override
   String get spiritLevelButtonCalibrate => 'معايرة';

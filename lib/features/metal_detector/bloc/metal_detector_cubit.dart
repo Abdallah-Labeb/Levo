@@ -10,12 +10,15 @@ import 'package:levo/features/metal_detector/bloc/metal_detector_state.dart';
 /// Cubit managing the Metal Detector sensor pipeline, baseline calibrations,
 /// sensitivity factors, and alert levels with pulsing sound and vibration triggers.
 class MetalDetectorCubit extends Cubit<MetalDetectorState> {
-  MetalDetectorCubit() : super(const MetalDetectorState());
+  MetalDetectorCubit() : super(const MetalDetectorState()) {
+    Vibration.hasVibrator().then((val) => _hasVibrator = val);
+  }
 
   StreamSubscription<MagnetometerEvent>? _sensorSub;
   late final AudioPlayer _audioPlayer = AudioPlayer();
 
   bool _isBaselineSet = false;
+  bool _hasVibrator = false;
   int _lastFeedbackTime = 0;
 
   /// Initializes the sensor stream.
@@ -93,7 +96,12 @@ class MetalDetectorCubit extends Cubit<MetalDetectorState> {
   }
 
   void _triggerPulsedFeedback(MetalAlertLevel level) {
-    if (level == MetalAlertLevel.none) return;
+    if (level == MetalAlertLevel.none) {
+      if (state.hapticOn && _hasVibrator) {
+        Vibration.cancel();
+      }
+      return;
+    }
 
     final int now = DateTime.now().millisecondsSinceEpoch;
     final int interval = _getFeedbackInterval(level);
@@ -110,13 +118,9 @@ class MetalDetectorCubit extends Cubit<MetalDetectorState> {
       }
 
       // Play haptic vibration if enabled
-      if (state.hapticOn) {
+      if (state.hapticOn && _hasVibrator) {
         final int vibeDuration = _getVibrationDuration(level);
-        Vibration.hasVibrator().then((hasVibe) {
-          if (hasVibe == true) {
-            Vibration.vibrate(duration: vibeDuration);
-          }
-        });
+        Vibration.vibrate(duration: vibeDuration);
       }
     }
   }
@@ -126,13 +130,13 @@ class MetalDetectorCubit extends Cubit<MetalDetectorState> {
       case MetalAlertLevel.none:
         return 999999;
       case MetalAlertLevel.weak:
-        return 1200;
+        return 1500;
       case MetalAlertLevel.medium:
-        return 600;
+        return 800;
       case MetalAlertLevel.strong:
-        return 250;
+        return 400;
       case MetalAlertLevel.veryStrong:
-        return 85;
+        return 200;
     }
   }
 

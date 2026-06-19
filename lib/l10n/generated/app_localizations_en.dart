@@ -21,7 +21,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spiritLevelTitle => 'Spirit Level';
 
   @override
-  String get spiritLevelDesc => '2D/1D bubble level and plumb bob';
+  String get spiritLevelDesc => '2D/1D bubble level';
 
   @override
   String get compassTitle => 'Compass';
@@ -124,9 +124,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spiritLevelModeEdge => '1D Edge';
-
-  @override
-  String get spiritLevelModePlumb => 'Plumb Bob';
 
   @override
   String get spiritLevelButtonCalibrate => 'Calibrate';

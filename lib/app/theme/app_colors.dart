@@ -121,10 +121,21 @@ class AppColors {
   static const kDraftingLine = Color(0xFF6E6759);
   static const kDraftingText = Color(0xFF4A443B);
 
-  static const kPlumbBobBrassHighlight = Color(0xFFFFF0B3);
-  static const kPlumbBobBrassMid = Color(0xFFDFB831);
-  static const kPlumbBobBrassDark = Color(0xFF7A610B);
-  static const kPlumbBobCollar = Color(0xFF665108);
+
+  // 1D Level Fluid & Vial Colors
+  static const kVialFluidTop = Color(0xFF8CAF00);
+  static const kVialFluidUpperMid = Color(0xFFC8FF00);
+  static const kVialFluidMid = Color(0xFFD4FF00);
+  static const kVialFluidLowerMid = Color(0xFFADFF2F);
+  static const kVialFluidBottom = Color(0xFF6B8E00);
+  static const kVialRefractionDark = Color(0x99000000);
+  static const kVialRefractionLight = Color(0x4DFFFFFF);
+  static const kVialMetalCapStart = Color(0xFF4A4A4A);
+  static const kVialMetalCapMid1 = Color(0xFF9E9E9E);
+  static const kVialMetalCapMid2 = Color(0xFFE0E0E0);
+  static const kVialMetalCapMid3 = Color(0xFF757575);
+  static const kVialMetalCapEnd = Color(0xFF3E3E3E);
+
 
   static const kCompassFaceStart = Color(0xFF222222);
   static const kCompassFaceMid = Color(0xFF141414);

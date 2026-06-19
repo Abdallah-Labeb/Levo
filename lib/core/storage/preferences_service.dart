@@ -66,7 +66,7 @@ class PreferencesService {
   Future<void> setCalLevelRoll(double value) =>
       _prefs.setDouble(_kCalLevelRoll, value);
 
-  double get levelViscosity => _prefs.getDouble(_kLevelViscosity) ?? 0.7;
+  double get levelViscosity => _prefs.getDouble(_kLevelViscosity) ?? 0.5;
   Future<void> setLevelViscosity(double value) =>
       _prefs.setDouble(_kLevelViscosity, value);
 

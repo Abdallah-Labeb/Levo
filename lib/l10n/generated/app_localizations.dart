@@ -125,7 +125,7 @@ abstract class AppLocalizations {
   /// No description provided for @spiritLevelDesc.
   ///
   /// In en, this message translates to:
-  /// **'2D/1D bubble level and plumb bob'**
+  /// **'2D/1D bubble level'**
   String get spiritLevelDesc;
 
   /// No description provided for @compassTitle.
@@ -331,12 +331,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'1D Edge'**
   String get spiritLevelModeEdge;
-
-  /// No description provided for @spiritLevelModePlumb.
-  ///
-  /// In en, this message translates to:
-  /// **'Plumb Bob'**
-  String get spiritLevelModePlumb;
 
   /// No description provided for @spiritLevelButtonCalibrate.
   ///

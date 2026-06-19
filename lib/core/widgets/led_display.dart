@@ -34,11 +34,9 @@ class LedDisplay extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: Colors.black, // Dark black screen background
-        border: const Border(
-          top: BorderSide(color: Color(0xFF0D0E10), width: 1.5),
-          left: BorderSide(color: Color(0xFF0D0E10), width: 1.5),
-          bottom: BorderSide(color: Color(0xFF2E3137), width: 1.0),
-          right: BorderSide(color: Color(0xFF2E3137), width: 1.0),
+        border: Border.all(
+          color: const Color(0xFF1E2126), // Uniform slot edge border
+          width: 1.0,
         ),
         borderRadius: BorderRadius.circular(4.0), // Rounded corners for slot
         boxShadow: const [
@@ -51,24 +49,24 @@ class LedDisplay extends StatelessWidget {
       ),
       child: FittedBox(
         fit: BoxFit.scaleDown,
-        alignment: Alignment.centerLeft,
+        alignment: Alignment.center,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (label != null && label!.isNotEmpty) ...[
               Text(
                 label!.toUpperCase(),
                 style: AppTypography.kSectionHeader.copyWith(
-                  fontSize: 9.0,
-                  color: AppColors.kChromeMid,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.0,
+                  fontSize: 11.0,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.2,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 4.0),
+              const SizedBox(height: 6.0),
             ],
             Directionality(
               textDirection: TextDirection.ltr,

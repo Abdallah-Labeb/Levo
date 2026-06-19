@@ -33,20 +33,18 @@ class ProtractorView extends StatelessWidget {
   const ProtractorView({super.key});
 
   String _formatAngle(BuildContext context, double angle) {
-    final locale = Localizations.localeOf(context).toString();
-    final formatter = NumberFormat("0.0", locale);
+    final formatter = NumberFormat("0.0", "en");
     return "${formatter.format(angle)}°";
   }
 
   String _formatSlope(BuildContext context, double angle) {
-    final locale = Localizations.localeOf(context).toString();
     // tangent of angle (tangent behaves poorly close to 90 degrees)
     if ((angle - 90.0).abs() < 1.0) {
       return context.l10n.protractorVertical;
     }
 
     final double slope = math.tan(angle * math.pi / 180.0);
-    final formatter = NumberFormat("0.0", locale);
+    final formatter = NumberFormat("0.0", "en");
     return "${formatter.format(slope * 100.0)}%";
   }
 
