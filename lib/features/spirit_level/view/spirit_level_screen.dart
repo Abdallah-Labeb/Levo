@@ -154,71 +154,42 @@ class SpiritLevelView extends StatelessWidget {
 
                   // 2. High-precision Digital Readout Indicator Panel
                   Padding(
-                    padding: const EdgeInsets.all(AppDimensions.paddingL),
-                    child: Container(
-                      padding: const EdgeInsets.all(AppDimensions.paddingM),
-                      decoration: BoxDecoration(
-                        gradient: AppColors.kGradientBrushedAluminum,
-                        border: Border.all(
-                          color: AppColors.kBorderHighlight,
-                          width: 1.0,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.paddingL,
+                      vertical: AppDimensions.paddingM,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: LedDisplay(
+                            value: _formatValue(
+                              context,
+                              state.pitch,
+                              state.showPercent,
+                            ),
+                            unit: state.showPercent
+                                ? l10n.commonUnitPercent
+                                : l10n.commonUnitDegrees,
+                            textStyle: AppTypography.kDisplayS,
+                            label: l10n.spiritLevelLabelPitch,
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(
-                          AppDimensions.radiusPanel,
+                        const SizedBox(width: AppDimensions.space12),
+                        Expanded(
+                          child: LedDisplay(
+                            value: _formatValue(
+                              context,
+                              state.roll,
+                              state.showPercent,
+                            ),
+                            unit: state.showPercent
+                                ? l10n.commonUnitPercent
+                                : l10n.commonUnitDegrees,
+                            textStyle: AppTypography.kDisplayS,
+                            label: l10n.spiritLevelLabelRoll,
+                          ),
                         ),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x33000000),
-                            offset: Offset(0, 4),
-                            blurRadius: 8,
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
-                            children: [
-                              Text(
-                                l10n.spiritLevelLabelPitch,
-                                style: AppTypography.kBodySmall,
-                              ),
-                              const SizedBox(height: AppDimensions.space4),
-                              LedDisplay(
-                                value: _formatValue(
-                                  context,
-                                  state.pitch,
-                                  state.showPercent,
-                                ),
-                                unit: state.showPercent
-                                    ? l10n.commonUnitPercent
-                                    : l10n.commonUnitDegrees,
-                                textStyle: AppTypography.kDisplayS,
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                l10n.spiritLevelLabelRoll,
-                                style: AppTypography.kBodySmall,
-                              ),
-                              const SizedBox(height: AppDimensions.space4),
-                              LedDisplay(
-                                value: _formatValue(
-                                  context,
-                                  state.roll,
-                                  state.showPercent,
-                                ),
-                                unit: state.showPercent
-                                    ? l10n.commonUnitPercent
-                                    : l10n.commonUnitDegrees,
-                                textStyle: AppTypography.kDisplayS,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
                   ),
 

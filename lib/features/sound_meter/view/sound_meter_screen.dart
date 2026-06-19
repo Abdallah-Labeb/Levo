@@ -185,6 +185,7 @@ class SoundMeterView extends StatelessWidget {
                                     child: LedDisplay(
                                       value: _formatDb(context, state.currentDb),
                                       unit: l10n.commonUnitDecibel,
+                                      label: l10n.soundMeterTitle,
                                     ),
                                   ),
                                 ),
@@ -194,38 +195,31 @@ class SoundMeterView extends StatelessWidget {
                           const SizedBox(height: AppDimensions.space16),
 
                           // ── Peak / Avg / Min row ─────────────────────────
-                          Container(
-                            padding: const EdgeInsets.all(AppDimensions.paddingM),
-                            decoration: BoxDecoration(
-                              gradient: AppColors.kGradientBrushedAluminum,
-                              border: Border.all(
-                                color: AppColors.kBorderHighlight,
-                                width: 1.0,
-                              ),
-                              borderRadius:
-                                  BorderRadius.circular(AppDimensions.radiusPanel),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Color(0x33000000),
-                                  offset: Offset(0, 4),
-                                  blurRadius: 8,
-                                ),
-                              ],
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppDimensions.paddingL,
                             ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                _StatCell(
-                                  label: l10n.soundMeterMin,
-                                  value: _formatDb(context, state.minDb),
+                                Expanded(
+                                  child: _StatCell(
+                                    label: l10n.soundMeterMin,
+                                    value: _formatDb(context, state.minDb),
+                                  ),
                                 ),
-                                _StatCell(
-                                  label: l10n.soundMeterAverage,
-                                  value: _formatDb(context, state.averageDb),
+                                const SizedBox(width: AppDimensions.space8),
+                                Expanded(
+                                  child: _StatCell(
+                                    label: l10n.soundMeterAverage,
+                                    value: _formatDb(context, state.averageDb),
+                                  ),
                                 ),
-                                _StatCell(
-                                  label: l10n.soundMeterPeak,
-                                  value: _formatDb(context, state.peakDb),
+                                const SizedBox(width: AppDimensions.space8),
+                                Expanded(
+                                  child: _StatCell(
+                                    label: l10n.soundMeterPeak,
+                                    value: _formatDb(context, state.peakDb),
+                                  ),
                                 ),
                               ],
                             ),
@@ -337,17 +331,10 @@ class _StatCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: AppTypography.kCaption.copyWith(
-            color: AppColors.kTextSecondary,
-          ),
-        ),
-        const SizedBox(height: AppDimensions.space8),
-        LedDisplay(value: value, textStyle: AppTypography.kDisplayS),
-      ],
+    return LedDisplay(
+      value: value,
+      textStyle: AppTypography.kDisplayS,
+      label: label,
     );
   }
 }

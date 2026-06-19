@@ -103,69 +103,30 @@ class ProtractorView extends StatelessWidget {
                         top: AppDimensions.paddingM,
                         left: AppDimensions.paddingL,
                         right: AppDimensions.paddingL,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppDimensions.paddingM,
-                            vertical: AppDimensions.paddingS,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: AppColors.kGradientBrushedAluminum,
-                            border: Border.all(
-                              color: AppColors.kBorderHighlight,
-                              width: 1.0,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: LedDisplay(
+                                value: _formatAngle(
+                                  context,
+                                  state.measuredAngle,
+                                ),
+                                textStyle: AppTypography.kDisplayS,
+                                label: l10n.protractorLabelAngle,
+                              ),
                             ),
-                            borderRadius: BorderRadius.circular(
-                              AppDimensions.radiusPanel,
+                            const SizedBox(width: AppDimensions.space12),
+                            Expanded(
+                              child: LedDisplay(
+                                value: _formatSlope(
+                                  context,
+                                  state.measuredAngle,
+                                ),
+                                textStyle: AppTypography.kDisplayS,
+                                label: l10n.protractorLabelSlopeGrade,
+                              ),
                             ),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: AppColors.kShadowMedium,
-                                blurRadius: 6,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    l10n.protractorLabelAngle,
-                                    style: AppTypography.kCaption.copyWith(
-                                      color: AppColors.kTextSecondary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: AppDimensions.space8),
-                                  LedDisplay(
-                                    value: _formatAngle(
-                                      context,
-                                      state.measuredAngle,
-                                    ),
-                                    textStyle: AppTypography.kDisplayS,
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    l10n.protractorLabelSlopeGrade,
-                                    style: AppTypography.kCaption.copyWith(
-                                      color: AppColors.kTextSecondary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: AppDimensions.space8),
-                                  LedDisplay(
-                                    value: _formatSlope(
-                                      context,
-                                      state.measuredAngle,
-                                    ),
-                                    textStyle: AppTypography.kDisplayS,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                          ],
                         ),
                       ),
 

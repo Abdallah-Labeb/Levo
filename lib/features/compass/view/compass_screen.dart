@@ -213,64 +213,29 @@ class CompassView extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppDimensions.paddingL,
+                      vertical: AppDimensions.paddingM,
                     ),
-                    child: Container(
-                      padding: const EdgeInsets.all(AppDimensions.paddingM),
-                      decoration: BoxDecoration(
-                        gradient: AppColors.kGradientBrushedAluminum,
-                        border: Border.all(
-                          color: AppColors.kBorderHighlight,
-                          width: 1.0,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: LedDisplay(
+                            value: _formatDegree(context, state.heading),
+                            textStyle: AppTypography.kDisplayS,
+                            label: l10n.compassLabelHeading,
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(
-                          AppDimensions.radiusPanel,
+                        const SizedBox(width: AppDimensions.space12),
+                        Expanded(
+                          child: LedDisplay(
+                            value: _getLocalizedCardinal(
+                              context,
+                              state.heading,
+                            ),
+                            textStyle: AppTypography.kDisplayS,
+                            label: l10n.compassLabelCardinal,
+                          ),
                         ),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x33000000),
-                            offset: Offset(0, 4),
-                            blurRadius: 8,
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
-                            children: [
-                              Text(
-                                l10n.compassLabelHeading,
-                                style: AppTypography.kCaption.copyWith(
-                                  color: AppColors.kTextSecondary,
-                                ),
-                              ),
-                              const SizedBox(height: AppDimensions.space8),
-                              LedDisplay(
-                                value: _formatDegree(context, state.heading),
-                                textStyle: AppTypography.kDisplayS,
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                l10n.compassLabelCardinal,
-                                style: AppTypography.kCaption.copyWith(
-                                  color: AppColors.kTextSecondary,
-                                ),
-                              ),
-                              const SizedBox(height: AppDimensions.space8),
-                              LedDisplay(
-                                value: _getLocalizedCardinal(
-                                  context,
-                                  state.heading,
-                                ),
-                                textStyle: AppTypography.kDisplayS,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
                   ),
 

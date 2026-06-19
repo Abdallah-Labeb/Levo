@@ -272,75 +272,25 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                     ),
                     const SizedBox(height: AppDimensions.space12),
 
-                    // 4. LCD Panel displaying delta microtesla and baseline info
                     Expanded(
                       flex: 2,
                       child: Row(
                         children: [
-                          // Magnetic Delta
                           Expanded(
-                            child: MetalPanel(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: AppDimensions.paddingM,
-                                  horizontal: AppDimensions.paddingS,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      l10n.metalDetectorLabelMagneticDelta,
-                                      style: AppTypography.kCaption.copyWith(
-                                        color: AppColors.kTextSecondary,
-                                        letterSpacing: 0.5,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const SizedBox(
-                                      height: AppDimensions.space8,
-                                    ),
-                                    LedDisplay(
-                                      value: _formatUt(context, state.deltaUt),
-                                      unit: l10n.commonUnitMicrotesla,
-                                      textStyle: AppTypography.kDisplayS,
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            child: LedDisplay(
+                              value: _formatUt(context, state.deltaUt),
+                              unit: l10n.commonUnitMicrotesla,
+                              textStyle: AppTypography.kDisplayS,
+                              label: l10n.metalDetectorLabelMagneticDelta,
                             ),
                           ),
                           const SizedBox(width: AppDimensions.space12),
-
-                          // Ambient Baseline
                           Expanded(
-                            child: MetalPanel(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: AppDimensions.paddingM,
-                                  horizontal: AppDimensions.paddingS,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      l10n.metalDetectorLabelAmbientBaseline,
-                                      style: AppTypography.kCaption.copyWith(
-                                        color: AppColors.kTextSecondary,
-                                        letterSpacing: 0.5,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const SizedBox(
-                                      height: AppDimensions.space8,
-                                    ),
-                                    LedDisplay(
-                                      value: _formatUt(context, state.baseline),
-                                      unit: l10n.commonUnitMicrotesla,
-                                      textStyle: AppTypography.kDisplayS,
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            child: LedDisplay(
+                              value: _formatUt(context, state.baseline),
+                              unit: l10n.commonUnitMicrotesla,
+                              textStyle: AppTypography.kDisplayS,
+                              label: l10n.metalDetectorLabelAmbientBaseline,
                             ),
                           ),
                         ],

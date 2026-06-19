@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مقياس تصميم شاشات عرض الأرقام - Levo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg-dark: #0f1011;
+            --color-metal-light: #d1d5db;
+            --color-metal-mid: #6b7280;
+            --color-metal-dark: #374151;
+            --color-led-green: #39FF14;
+            --color-led-green-dim: #1e6f0b;
+            --color-led-orange: #FF5F1F;
+            --color-led-blue: #00D2FF;
+        }
+
+        body {
+            background-color: var(--color-bg-dark);
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Brushed metal texture simulation */
+        .brushed-panel {
+            background: linear-gradient(145deg, #1f2022, #161719);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #2d2f34;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 900px;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+            margin-top: 0;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        p.desc {
+            color: #9ca3af;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .option-card {
+            background: #191b1d;
+            border: 1px solid #282a2e;
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .option-card:hover {
+            border-color: #4b5563;
+            transform: translateY(-2px);
+        }
+
+        .option-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #f3f4f6;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .option-desc {
+            font-size: 0.9rem;
+            color: #9ca3af;
+            text-align: center;
+            margin-bottom: 24px;
+            height: 40px;
+        }
+
+        /* --- PREVIEW CONTAINER (SKEUOMORPHIC BASE) --- */
+        .preview-area {
+            background: radial-gradient(circle at 50% 50%, #2a2c30, #18191c);
+            border: 2px solid #141517;
+            border-radius: 8px;
+            width: 100%;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
+            margin-bottom: 20px;
+        }
+
+        /* --- OPTION 1: CURRENT STYLED DISPLAY (With Outer Frames) --- */
+        .outer-label-1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 14px;
+            color: var(--color-metal-light);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .led-box-style1 {
+            background-color: #050b05;
+            border: 1px solid #224411;
+            border-radius: 6px;
+            padding: 10px 20px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.9), 0 0 10px rgba(57,255,20,0.15);
+            display: flex;
+            align-items: baseline;
+        }
+        .led-text-style1 {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 28px;
+            color: var(--color-led-green);
+            text-shadow: 0 0 8px rgba(57,255,20,0.6);
+        }
+        .led-unit-style1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 16px;
+            color: var(--color-led-green);
+            margin-right: 6px;
+        }
+
+        /* --- OPTION 2: INTEGRATED FLAT DISPLAY (No Outer Borders, Simple & Flat) --- */
+        .led-box-style2 {
+            background-color: #090a0c;
+            border-radius: 8px;
+            padding: 12px 24px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 180px;
+            position: relative;
+        }
+        .led-label-style2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 11px;
+            color: #4b5563;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
+        }
+        .led-content-style2 {
+            display: flex;
+            align-items: baseline;
+        }
+        .led-text-style2 {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 26px;
+            color: var(--color-led-green);
+            text-shadow: 0 0 6px rgba(57,255,20,0.4);
+        }
+        .led-unit-style2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 14px;
+            color: var(--color-led-green);
+            margin-right: 6px;
+        }
+
+        /* --- OPTION 3: THE SKEUOMORPHIC INSET SLOT (Glow & Seamless Integration) --- */
+        .led-box-style3 {
+            background-color: #000000;
+            border-radius: 4px;
+            padding: 8px 16px;
+            border-bottom: 1px solid #33363a;
+            border-right: 1px solid #33363a;
+            border-top: 1px solid #0f1011;
+            border-left: 1px solid #0f1011;
+            display: flex;
+            flex-direction: column;
+            min-width: 190px;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.9);
+            position: relative;
+        }
+        .led-label-style3 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 9px;
+            color: #993333; /* Dark warning red label inside */
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 2px;
+            text-align: right;
+            opacity: 0.7;
+        }
+        .led-content-style3 {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+        .led-text-style3 {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 32px;
+            color: var(--color-led-orange);
+            text-shadow: 0 0 10px rgba(255,95,31,0.6);
+            letter-spacing: 1px;
+        }
+        .led-unit-style3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 16px;
+            color: var(--color-led-orange);
+            text-shadow: 0 0 10px rgba(255,95,31,0.6);
+        }
+
+        /* --- OPTION 4: DIGITAL COCKPIT INSTRUMENT (Premium & Highly Skeuomorphic) --- */
+        .led-box-style4 {
+            background: linear-gradient(180deg, #111315, #08090a);
+            border: 1px solid #1f2226;
+            border-radius: 4px;
+            padding: 10px 14px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            min-width: 170px;
+        }
+        .led-label-style4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 12px;
+            color: var(--color-led-blue);
+            letter-spacing: 2px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+            border-bottom: 1px dashed rgba(0,210,255,0.2);
+            padding-bottom: 2px;
+        }
+        .led-content-style4 {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+        .led-text-style4 {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 28px;
+            color: var(--color-led-blue);
+            text-shadow: 0 0 8px rgba(0,210,255,0.5);
+        }
+        .led-unit-style4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 16px;
+            color: var(--color-led-blue);
+            text-shadow: 0 0 8px rgba(0,210,255,0.5);
+        }
+
+        /* Action buttons */
+        .select-btn {
+            background: linear-gradient(180deg, #374151, #1f2937);
+            border: 1px solid #4b5563;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            width: 100%;
+        }
+
+        .select-btn:hover {
+            background: linear-gradient(180deg, #4b5563, #374151);
+            border-color: #6b7280;
+        }
+
+        .select-btn.recommended {
+            background: linear-gradient(180deg, #10b981, #047857);
+            border-color: #059669;
+        }
+
+        .select-btn.recommended:hover {
+            background: linear-gradient(180deg, #34d399, #059669);
+            border-color: #10b981;
+        }
+    </style>
+</head>
+<body>
+    <div class="brushed-panel">
+        <h1>إعادة تصميم شاشات عرض الأرقام (Levo Design Options)</h1>
+        <p class="desc">تجد أدناه الخيارات المقترحة لتبسيط شاشات الأرقام وإزالة الإطارات الخارجية الكبيرة، مع دمج المسمى (Label) داخل نفس شاشة القراءة الرقمية لجعل التصميم أرقى وأكثر بساطة ومطابقة لمعايير الأجهزة الاحترافية.</p>
+        
+        <div class="options-grid">
+            <!-- Option 1: Current Style -->
+            <div class="option-card">
+                <div class="option-title">الخيار 1: التصميم الحالي (للمقارنة)</div>
+                <div class="option-desc">يحتوي على إطار خارجي بارز، والمسمى يقع خارج الشاشة بالأعلى.</div>
+                <div class="preview-area">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <span class="outer-label-1">قيمة الصوت SPL</span>
+                        <div class="led-box-style1">
+                            <span class="led-text-style1">64.5</span>
+                            <span class="led-unit-style1">DB</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="select-btn" onclick="alert('شكراً لتقييمك! هذا هو الخيار الحالي وسنقوم بتحديثه بناءً على رغبتك.')">مقارنة بالتصميم الحالي</button>
+            </div>
+
+            <!-- Option 2: Integrated Flat (Simple) -->
+            <div class="option-card">
+                <div class="option-title">الخيار 2: الشاشة المدمجة المسطحة</div>
+                <div class="option-desc">إطار أنحف جداً مسطح، والمسمى مدمج بالأعلى بلون باهت ومنسق داخل الشاشة.</div>
+                <div class="preview-area">
+                    <div class="led-box-style2">
+                        <span class="led-label-style2">قيمة الصوت SPL</span>
+                        <div class="led-content-style2">
+                            <span class="led-text-style2">64.5</span>
+                            <span class="led-unit-style2">DB</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="select-btn" onclick="alert('لقد اخترت الخيار 2 (الشاشة المدمجة المسطحة).')">اختر هذا التصميم</button>
+            </div>
+
+            <!-- Option 3: Seamless Inset Slot (Recommended) -->
+            <div class="option-card">
+                <div class="option-title">الخيار 3: الشق المدمج الغائر (موصى به)</div>
+                <div class="option-desc">بدون إطارات على الإطلاق، عبارة عن شق محفور في المعدن تظهر منه الأرقام، مع مسمى داخلي ناعم.</div>
+                <div class="preview-area">
+                    <div class="led-box-style3">
+                        <span class="led-label-style3">PITCH الانحدار</span>
+                        <div class="led-content-style3">
+                            <span class="led-text-style3">12.8°</span>
+                            <span class="led-unit-style3">DEG</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="select-btn recommended" onclick="alert('لقد اخترت الخيار 3 (الشق الغائر - الموصى به). تصميم ممتاز يحاكي لوحات تحكم الطائرات الفاخرة!')">اختيار هذا التصميم (موصى به)</button>
+            </div>
+
+            <!-- Option 4: Cockpit Instrument Grid -->
+            <div class="option-card">
+                <div class="option-title">الخيار 4: لوحة قراءة قمرة القيادة</div>
+                <div class="option-desc">إطار داخلي مع خط متقطع يفصل بين مسمى القياس والقيمة الرقمية.</div>
+                <div class="preview-area">
+                    <div class="led-box-style4">
+                        <span class="led-label-style4">heading البوصلة</span>
+                        <div class="led-content-style4">
+                            <span class="led-text-style4">284°</span>
+                            <span class="led-unit-style4">N</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="select-btn" onclick="alert('لقد اخترت الخيار 4 (لوحة قراءة قمرة القيادة).')">اختر هذا التصميم</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

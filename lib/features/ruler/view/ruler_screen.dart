@@ -268,6 +268,7 @@ class _RulerViewState extends State<RulerView> {
                               distanceMm,
                               state.unit,
                             ),
+                            label: l10n.rulerTitle,
                           ),
                         ),
                       ),

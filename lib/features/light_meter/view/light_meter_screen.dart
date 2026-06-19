@@ -158,16 +158,46 @@ class LightMeterView extends StatelessWidget {
                             child: Builder(
                               builder: (context) {
                                 final numberFormatter = NumberFormat("0", Localizations.localeOf(context).toString());
+                                
+                                Color activeColor = AppColors.kLevelGreen;
+                                for (final zone in dialZones) {
+                                  if (normalizedValue >= zone.start && normalizedValue <= zone.end) {
+                                    activeColor = zone.color;
+                                    break;
+                                  }
+                                }
+
                                 return AnalogDialWidget(
                                   value: normalizedValue,
                                   zones: dialZones,
-                                  title: l10n.lightMeterLabelLuxDial,
+                                  title: "",
                                   minLabel: numberFormatter.format(0),
                                   maxLabel: l10n.lightMeterMaxDialLabel,
                                   size: 260.0,
-                                  overlayWidget: LedDisplay(
-                                    value: _formatVal(context, state.lux, "0.0"),
-                                    unit: l10n.commonUnitLux,
+                                  overlayWidget: Directionality(
+                                    textDirection: TextDirection.ltr,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                                      textBaseline: TextBaseline.alphabetic,
+                                      children: [
+                                        Text(
+                                          _formatVal(context, state.lux, "0.0"),
+                                          style: AppTypography.kDisplayM.copyWith(
+                                            color: activeColor,
+                                            fontSize: 22.0,
+                                          ),
+                                        ),
+                                        const SizedBox(width: AppDimensions.space4),
+                                        Text(
+                                          l10n.commonUnitLux,
+                                          style: AppTypography.kUnitLabel.copyWith(
+                                            fontSize: 14.0,
+                                            color: activeColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 );
                               }
@@ -182,114 +212,19 @@ class LightMeterView extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppDimensions.paddingL,
                             ),
-                            child: Row(
-                              children: [
-                                // EV Readout Panel
-                                Expanded(
-                                  child: MetalPanel(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(
-                                        AppDimensions.paddingM,
+                            child: state.isCameraFallback
+                                ? Row(
+                                    children: [
+                                      Expanded(
+                                        child: _buildEvReadout(context, state),
                                       ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            l10n.lightMeterLabelEv100,
-                                            style: AppTypography.kCaption
-                                                .copyWith(
-                                                  color:
-                                                      AppColors.kTextSecondary,
-                                                  letterSpacing: 0.5,
-                                                ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          const SizedBox(
-                                            height: AppDimensions.space8,
-                                          ),
-                                          LedDisplay(
-                                            value: _formatVal(
-                                              context,
-                                              state.exposureValue,
-                                              "0.0",
-                                            ),
-                                            unit: l10n.lightMeterUnitEv,
-                                            textStyle: AppTypography.kDisplayS,
-                                          ),
-                                        ],
+                                      const SizedBox(width: AppDimensions.space12),
+                                      Expanded(
+                                        child: _buildCameraViewport(context, state, cubit),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: AppDimensions.space12),
-
-                                // Camera Fallback Scope Viewport
-                                Expanded(
-                                  child: MetalPanel(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(
-                                        AppDimensions.paddingS,
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            state.isCameraFallback
-                                                ? l10n.lightMeterLabelCameraViewport
-                                                : l10n.lightMeterLabelHardwareSensor,
-                                            style: AppTypography.kCaption
-                                                .copyWith(
-                                                  color:
-                                                      AppColors.kTextSecondary,
-                                                  letterSpacing: 0.5,
-                                                ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          const SizedBox(
-                                            height: AppDimensions.space8,
-                                          ),
-                                          Expanded(
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                    AppDimensions.radiusChip,
-                                                  ),
-                                              child:
-                                                  state.isCameraFallback &&
-                                                      state
-                                                          .isCameraInitialized &&
-                                                      cubit.cameraController !=
-                                                          null
-                                                  ? AspectRatio(
-                                                      aspectRatio: 1.0,
-                                                      child: CameraPreview(
-                                                        cubit.cameraController!,
-                                                      ),
-                                                    )
-                                                  : Container(
-                                                      color: AppColors
-                                                          .kSurfaceInset,
-                                                      child: const Center(
-                                                        child: Icon(
-                                                          Icons
-                                                              .lightbulb_outline,
-                                                          color: AppColors
-                                                              .kChromeMid,
-                                                          size: 32.0,
-                                                        ),
-                                                      ),
-                                                    ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                                    ],
+                                  )
+                                : _buildEvReadout(context, state),
                           ),
                         ),
                         const SizedBox(height: AppDimensions.space24),
@@ -300,6 +235,63 @@ class LightMeterView extends StatelessWidget {
           bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
+    );
+  }
+
+  Widget _buildEvReadout(BuildContext context, LightMeterState state) {
+    final l10n = context.l10n;
+    return LedDisplay(
+      value: _formatVal(context, state.exposureValue, "0.0"),
+      unit: l10n.lightMeterUnitEv,
+      textStyle: AppTypography.kDisplayS,
+      label: l10n.lightMeterLabelEv100,
+    );
+  }
+
+  Widget _buildCameraViewport(
+    BuildContext context,
+    LightMeterState state,
+    LightMeterCubit cubit,
+  ) {
+    final l10n = context.l10n;
+    return MetalPanel(
+      child: Padding(
+        padding: const EdgeInsets.all(AppDimensions.paddingS),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              l10n.lightMeterLabelCameraViewport,
+              style: AppTypography.kCaption.copyWith(
+                color: AppColors.kTextSecondary,
+                letterSpacing: 0.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppDimensions.space8),
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
+                child: state.isCameraInitialized && cubit.cameraController != null
+                    ? AspectRatio(
+                        aspectRatio: 1.0,
+                        child: CameraPreview(cubit.cameraController!),
+                      )
+                    : Container(
+                        color: AppColors.kSurfaceInset,
+                        child: const Center(
+                          child: Icon(
+                            Icons.lightbulb_outline,
+                            color: AppColors.kChromeMid,
+                            size: 32.0,
+                          ),
+                        ),
+                      ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

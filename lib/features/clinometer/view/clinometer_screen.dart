@@ -10,7 +10,6 @@ import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
-import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/features/clinometer/bloc/clinometer_cubit.dart';
@@ -102,56 +101,29 @@ class ClinometerView extends StatelessWidget {
                       flex: 2,
                       child: Row(
                         children: [
-                          // Pitch Angle Panel
                           Expanded(
-                            child: MetalPanel(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: AppDimensions.paddingM,
-                                  horizontal: AppDimensions.paddingS,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    LedDisplay(
-                                      value: _formatVal(
-                                        context,
-                                        state.pitch.abs(),
-                                        "0.0",
-                                      ),
-                                      unit: l10n.commonUnitDegrees,
-                                      textStyle: AppTypography.kDisplayS,
-                                    ),
-                                  ],
-                                ),
+                            child: LedDisplay(
+                              value: _formatVal(
+                                context,
+                                state.pitch.abs(),
+                                "0.0",
                               ),
+                              unit: l10n.commonUnitDegrees,
+                              textStyle: AppTypography.kDisplayS,
+                              label: l10n.protractorLabelAngle,
                             ),
                           ),
                           const SizedBox(width: AppDimensions.space12),
-
-                          // Grade Percentage Panel
                           Expanded(
-                            child: MetalPanel(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: AppDimensions.paddingM,
-                                  horizontal: AppDimensions.paddingS,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    LedDisplay(
-                                      value: _formatVal(
-                                        context,
-                                        state.percentGrade.abs(),
-                                        "0.0",
-                                      ),
-                                      unit: l10n.commonUnitPercent,
-                                      textStyle: AppTypography.kDisplayS,
-                                    ),
-                                  ],
-                                ),
+                            child: LedDisplay(
+                              value: _formatVal(
+                                context,
+                                state.percentGrade.abs(),
+                                "0.0",
                               ),
+                              unit: l10n.commonUnitPercent,
+                              textStyle: AppTypography.kDisplayS,
+                              label: l10n.protractorLabelSlopeGrade,
                             ),
                           ),
                         ],

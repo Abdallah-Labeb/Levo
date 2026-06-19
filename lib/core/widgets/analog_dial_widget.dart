@@ -303,22 +303,24 @@ class _DialPainter extends CustomPainter {
     );
 
     // 6. Draw Min/Max Labels & Title Text
-    // Draw Title Text above center
-    final titlePainter = TextPainter(
-      text: TextSpan(
-        text: title.toUpperCase(),
-        style: AppTypography.kSectionHeader.copyWith(
-          color: AppColors.kChromeMid,
-          letterSpacing: 2.0,
+    // Draw Title Text above center if title is not empty
+    if (title.isNotEmpty) {
+      final titlePainter = TextPainter(
+        text: TextSpan(
+          text: title.toUpperCase(),
+          style: AppTypography.kSectionHeader.copyWith(
+            color: AppColors.kChromeMid,
+            letterSpacing: 2.0,
+          ),
         ),
-      ),
-      textDirection: TextDirection.ltr,
-      textAlign: TextAlign.center,
-    )..layout();
-    titlePainter.paint(
-      canvas,
-      Offset(center.dx - titlePainter.width / 2, center.dy - radius * 0.35),
-    );
+        textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
+      )..layout();
+      titlePainter.paint(
+        canvas,
+        Offset(center.dx - titlePainter.width / 2, center.dy - radius * 0.35),
+      );
+    }
 
     // Min Label
     const minAngle = sweepStartRad;

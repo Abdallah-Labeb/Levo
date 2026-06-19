@@ -228,6 +228,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                                 keyboardType: const TextInputType.numberWithOptions(
                                   decimal: true,
                                 ),
+                                textDirection: TextDirection.ltr,
                                 style: AppTypography.kDisplayS.copyWith(
                                   fontSize: 22.0,
                                   color: AppColors.kYellow,
@@ -370,11 +371,14 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                                       ),
                                     );
                                   }
-                                  return Text(
-                                    formatted,
-                                    style: style,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.clip,
+                                  return Directionality(
+                                    textDirection: TextDirection.ltr,
+                                    child: Text(
+                                      formatted,
+                                      style: style,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.clip,
+                                    ),
                                   );
                                 },
                               ),

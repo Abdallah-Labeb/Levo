@@ -10,7 +10,6 @@ import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
-import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/features/vibration_meter/bloc/vibration_meter_cubit.dart';
@@ -107,73 +106,21 @@ class VibrationMeterView extends StatelessWidget {
                       flex: 2,
                       child: Row(
                         children: [
-                          // Peak Acceleration Panel
                           Expanded(
-                            child: MetalPanel(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: AppDimensions.paddingM,
-                                  horizontal: AppDimensions.paddingS,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      l10n.vibrationMeterPeak,
-                                      style: AppTypography.kCaption.copyWith(
-                                        color: AppColors.kTextSecondary,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const SizedBox(
-                                      height: AppDimensions.space8,
-                                    ),
-                                    LedDisplay(
-                                      value: _formatVal(context, state.peak),
-                                      unit: l10n.commonUnitMetersPerSecSq,
-                                      textStyle: AppTypography.kDisplayS,
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            child: LedDisplay(
+                              value: _formatVal(context, state.peak),
+                              unit: l10n.commonUnitMetersPerSecSq,
+                              textStyle: AppTypography.kDisplayS,
+                              label: l10n.vibrationMeterPeak,
                             ),
                           ),
                           const SizedBox(width: AppDimensions.space12),
-
-                          // Baseline Offset Panel
                           Expanded(
-                            child: MetalPanel(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: AppDimensions.paddingM,
-                                  horizontal: AppDimensions.paddingS,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      l10n.vibrationMeterBaseline,
-                                      style: AppTypography.kCaption.copyWith(
-                                        color: AppColors.kTextSecondary,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const SizedBox(
-                                      height: AppDimensions.space8,
-                                    ),
-                                    LedDisplay(
-                                      value: _formatVal(
-                                        context,
-                                        state.baseline,
-                                      ),
-                                      unit: l10n.commonUnitMetersPerSecSq,
-                                      textStyle: AppTypography.kDisplayS,
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            child: LedDisplay(
+                              value: _formatVal(context, state.baseline),
+                              unit: l10n.commonUnitMetersPerSecSq,
+                              textStyle: AppTypography.kDisplayS,
+                              label: l10n.vibrationMeterBaseline,
                             ),
                           ),
                         ],

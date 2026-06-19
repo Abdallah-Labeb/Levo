@@ -28,11 +28,11 @@ void main() async {
   // Initialize service locator and core dependencies
   await setupDependencies();
 
-  // Initialize Mobile Ads SDK (must run after DI setup)
-  await getIt<AdService>().initialize();
+  // Initialize Mobile Ads SDK (must run after DI setup) - run asynchronously to speed up startup
+  getIt<AdService>().initialize();
 
-  // Pregenerate skeuomorphic noise background shader
-  await NoiseTextureHelper.pregenerateNoise();
+  // Pregenerate skeuomorphic noise background shader - run asynchronously to speed up startup
+  NoiseTextureHelper.pregenerateNoise();
 
   runApp(const LevoApp());
 }
