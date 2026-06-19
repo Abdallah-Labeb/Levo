@@ -464,6 +464,12 @@ abstract class AppLocalizations {
   /// **'lx'**
   String get commonUnitLux;
 
+  /// No description provided for @commonUnitFootCandle.
+  ///
+  /// In en, this message translates to:
+  /// **'fc'**
+  String get commonUnitFootCandle;
+
   /// No description provided for @commonUnitDecibel.
   ///
   /// In en, this message translates to:
@@ -829,6 +835,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'B'**
   String get rulerMarkerB;
+
+  /// No description provided for @metalDetectorWarningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Important Notice'**
+  String get metalDetectorWarningTitle;
 
   /// No description provided for @metalDetectorFirstLaunchWarning.
   ///

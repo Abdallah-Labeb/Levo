@@ -11,6 +11,7 @@ class LightMeterState extends Equatable {
     this.cameraPermissionGranted = false,
     this.isCameraInitialized = false,
     this.errorMessage,
+    this.useFootCandle = false,
   });
 
   final double lux;
@@ -21,6 +22,7 @@ class LightMeterState extends Equatable {
   final bool cameraPermissionGranted;
   final bool isCameraInitialized;
   final String? errorMessage;
+  final bool useFootCandle;
 
   @override
   List<Object?> get props => [
@@ -32,6 +34,7 @@ class LightMeterState extends Equatable {
     cameraPermissionGranted,
     isCameraInitialized,
     errorMessage,
+    useFootCandle,
   ];
 
   LightMeterState copyWith({
@@ -43,6 +46,7 @@ class LightMeterState extends Equatable {
     bool? cameraPermissionGranted,
     bool? isCameraInitialized,
     String? errorMessage,
+    bool? useFootCandle,
   }) {
     return LightMeterState(
       lux: lux ?? this.lux,
@@ -54,6 +58,7 @@ class LightMeterState extends Equatable {
           cameraPermissionGranted ?? this.cameraPermissionGranted,
       isCameraInitialized: isCameraInitialized ?? this.isCameraInitialized,
       errorMessage: errorMessage ?? this.errorMessage,
+      useFootCandle: useFootCandle ?? this.useFootCandle,
     );
   }
 }

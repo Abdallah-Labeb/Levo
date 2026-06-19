@@ -13,7 +13,7 @@ import 'package:levo/features/settings/bloc/settings_cubit.dart';
 import 'package:levo/features/settings/bloc/settings_state.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 
-import 'package:levo/core/widgets/levo_banner.dart';
+import 'package:levo/core/widgets/levo_popup.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -31,51 +31,41 @@ class SettingsScreen extends StatelessWidget {
     BuildContext context,
     PreferencesService prefs,
   ) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        final l10n = context.l10n;
-        return AlertDialog(
-          backgroundColor: AppColors.kSurface,
-          title: Text(
-            l10n.settingsResetCalibrationTitle,
-            style: AppTypography.kTitleL,
+    final l10n = context.l10n;
+    LevoPopup.showCustomDialog<void>(
+      context,
+      title: l10n.settingsResetCalibrationTitle,
+      message: l10n.settingsResetCalibrationConfirm,
+      type: LevoPopupType.warning,
+      actions: [
+        TactileButton(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.paddingM,
+            vertical: AppDimensions.paddingS,
           ),
-          content: Text(
-            l10n.settingsResetCalibrationConfirm,
-            style: AppTypography.kBody,
+          onPressed: () => Navigator.pop(context),
+          text: l10n.commonCancel,
+        ),
+        const SizedBox(width: AppDimensions.space8),
+        TactileButton(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.paddingM,
+            vertical: AppDimensions.paddingS,
           ),
-          actions: [
-            TactileButton(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.paddingM,
-                vertical: AppDimensions.paddingS,
-              ),
-              onPressed: () => Navigator.pop(context),
-              text: l10n.commonCancel,
-            ),
-            const SizedBox(width: AppDimensions.space8),
-            TactileButton(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.paddingM,
-                vertical: AppDimensions.paddingS,
-              ),
-              onPressed: () async {
-                await prefs.clearAllCalibration();
-                if (context.mounted) {
-                  Navigator.pop(context);
-                  LevoBanner.show(
-                    context,
-                    message: l10n.settingsResetCalibrationSuccess,
-                    type: LevoBannerType.success,
-                  );
-                }
-              },
-              text: l10n.settingsResetButton,
-            ),
-          ],
-        );
-      },
+          onPressed: () async {
+            await prefs.clearAllCalibration();
+            if (context.mounted) {
+              Navigator.pop(context);
+              LevoPopup.showNotification(
+                context,
+                message: l10n.settingsResetCalibrationSuccess,
+                type: LevoPopupType.success,
+              );
+            }
+          },
+          text: l10n.settingsResetButton,
+        ),
+      ],
     );
   }
 

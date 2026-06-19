@@ -197,6 +197,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonUnitLux => 'لوكس';
 
   @override
+  String get commonUnitFootCandle => 'شمعة قدم';
+
+  @override
   String get commonUnitDecibel => 'ديسيبل';
 
   @override
@@ -386,6 +389,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get rulerMarkerB => 'ب';
+
+  @override
+  String get metalDetectorWarningTitle => 'تنبيه هام';
 
   @override
   String get metalDetectorFirstLaunchWarning =>

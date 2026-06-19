@@ -13,6 +13,8 @@ import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
+import 'package:levo/core/widgets/skeuomorphic_slider.dart';
+import 'package:levo/core/widgets/levo_popup.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/features/metal_detector/bloc/metal_detector_cubit.dart';
@@ -43,7 +45,6 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
     with SingleTickerProviderStateMixin {
   late AnimationController _pulseController;
   late final PreferencesService _prefs = getIt<PreferencesService>();
-  bool _showWarningBanner = false;
 
   @override
   void initState() {
@@ -52,7 +53,37 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
       vsync: this,
       duration: AppAnimations.metalDetectorPulseDefault,
     )..repeat();
-    _showWarningBanner = !_prefs.metalFirstLaunchWarned;
+    
+    if (!_prefs.metalFirstLaunchWarned) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _showFirstLaunchWarning();
+        }
+      });
+    }
+  }
+
+  void _showFirstLaunchWarning() {
+    final l10n = context.l10n;
+    LevoPopup.showCustomDialog<void>(
+      context,
+      title: l10n.metalDetectorWarningTitle,
+      message: l10n.metalDetectorFirstLaunchWarning,
+      type: LevoPopupType.warning,
+      actions: [
+        TactileButton(
+          onPressed: () {
+            Navigator.pop(context);
+            _prefs.setMetalFirstLaunchWarned(true);
+          },
+          text: l10n.commonButtonClose,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.paddingM,
+            vertical: AppDimensions.paddingS,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -168,60 +199,7 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                   children: [
                     const SizedBox(height: AppDimensions.space8),
 
-                    // 1. Dismissible Warning Banner (skeuomorphic notification)
-                    if (_showWarningBanner)
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: AppDimensions.paddingM,
-                        ),
-                        child: MetalPanel(
-                          child: Padding(
-                            padding: const EdgeInsets.all(
-                              AppDimensions.paddingM,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.warning_amber_rounded,
-                                      color: AppColors.kWarningYellow,
-                                    ),
-                                    const SizedBox(width: AppDimensions.space8),
-                                    Expanded(
-                                      child: Text(
-                                        l10n.metalDetectorFirstLaunchWarning,
-                                        style: AppTypography.kBodySmall
-                                            .copyWith(
-                                              color: AppColors.kTextSecondary,
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: AppDimensions.space12),
-                                Align(
-                                  alignment: AlignmentDirectional.centerEnd,
-                                  child: TactileButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _showWarningBanner = false;
-                                      });
-                                      _prefs.setMetalFirstLaunchWarned(true);
-                                    },
-                                    text: l10n.commonButtonClose,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: AppDimensions.paddingM,
-                                      vertical: AppDimensions.paddingS,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                    // Warning popup is handled as a dialog on first launch
 
                     // 2. Alert Status Text Badge
                     Center(
@@ -271,6 +249,26 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                     ),
                     const SizedBox(height: AppDimensions.space12),
 
+                    // Sound & Vibration Toggles on the two sides below the radar scope
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _IconToggle(
+                          isActive: state.soundOn,
+                          onTap: () => cubit.toggleSound(!state.soundOn),
+                          iconOn: Icons.volume_up_rounded,
+                          iconOff: Icons.volume_off_rounded,
+                        ),
+                        _IconToggle(
+                          isActive: state.hapticOn,
+                          onTap: () => cubit.toggleHaptic(!state.hapticOn),
+                          iconOn: Icons.vibration_rounded,
+                          iconOff: Icons.phone_android_outlined,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppDimensions.space12),
+
                     Expanded(
                       flex: 2,
                       child: Row(
@@ -300,88 +298,31 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                     // 5. Sensitivity Slider (Knob panel)
                     MetalPanel(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppDimensions.paddingXS,
-                          horizontal: AppDimensions.paddingM,
-                        ),
-                        child: Row(
-                          children: [
-                            Text(
-                              l10n.metalDetectorLabelSensitivity,
-                              style: AppTypography.kCaption.copyWith(
-                                color: AppColors.kTextSecondary,
-                              ),
-                            ),
-                            Expanded(
-                              child: SliderTheme(
-                                data: SliderTheme.of(context).copyWith(
-                                  activeTrackColor: AppColors.kYellow,
-                                  inactiveTrackColor: AppColors.kSurfaceInset,
-                                  thumbColor: AppColors.kChromeLight,
-                                  overlayColor: AppColors.kYellow.withAlpha(40),
-                                  trackHeight: 3.0,
-                                ),
-                                child: Slider(
-                                  value: state.sensitivity,
-                                  min: 0.5,
-                                  max: 2.5,
-                                  divisions: 8,
-                                  onChanged: (val) =>
-                                      cubit.updateSensitivity(val),
-                                ),
-                              ),
-                            ),
-                            Text(
-                              l10n.metalDetectorSensitivityValue(
-                                NumberFormat('0.0', 'en')
-                                    .format(state.sensitivity),
-                              ),
-                              style: AppTypography.kCaption.copyWith(
-                                color: AppColors.kYellow,
-                                fontFamily: 'ShareTechMono',
-                              ),
-                            ),
-                          ],
+                        padding: const EdgeInsets.all(AppDimensions.paddingM),
+                        child: SkeuomorphicSlider(
+                          value: state.sensitivity,
+                          min: 0.5,
+                          max: 2.5,
+                          divisions: 8,
+                          label: l10n.metalDetectorLabelSensitivity,
+                          valueFormatter: (val) => l10n.metalDetectorSensitivityValue(
+                            NumberFormat('0.0', 'en').format(val),
+                          ),
+                          onChanged: (val) => cubit.updateSensitivity(val),
                         ),
                       ),
                     ),
                     const SizedBox(height: AppDimensions.space16),
 
-                    // 6. Action Toggles & Recalibrate Controls
-                    Column(
+                    // 6. Recalibrate Control
+                    Row(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // Toggle Sound — icon only
-                            _IconToggle(
-                              isActive: state.soundOn,
-                              onTap: () => cubit.toggleSound(!state.soundOn),
-                              iconOn: Icons.volume_up_rounded,
-                              iconOff: Icons.volume_off_rounded,
-                            ),
-                            const SizedBox(width: AppDimensions.space24),
-
-                            // Toggle Haptic — icon only
-                            _IconToggle(
-                              isActive: state.hapticOn,
-                              onTap: () => cubit.toggleHaptic(!state.hapticOn),
-                              iconOn: Icons.vibration_rounded,
-                              iconOff: Icons.phone_android_outlined,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppDimensions.space12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TactileButton(
-                                onPressed: () => cubit.recalibrate(),
-                                text: l10n.metalDetectorRecalibrate,
-                                icon: const Icon(Icons.refresh),
-                              ),
-                            ),
-                          ],
+                        Expanded(
+                          child: TactileButton(
+                            onPressed: () => cubit.recalibrate(),
+                            text: l10n.metalDetectorRecalibrate,
+                            icon: const Icon(Icons.refresh),
+                          ),
                         ),
                       ],
                     ),

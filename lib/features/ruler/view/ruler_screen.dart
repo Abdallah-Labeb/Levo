@@ -7,7 +7,7 @@ import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
-import 'package:levo/core/widgets/levo_banner.dart';
+import 'package:levo/core/widgets/levo_popup.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
@@ -107,10 +107,10 @@ class _RulerViewState extends State<RulerView> {
                       pixelDistance: currentPixelDistance,
                     );
                     if (context.mounted) {
-                      LevoBanner.show(
+                      LevoPopup.showNotification(
                         context,
                         message: l10n.rulerCalibrationSuccess,
-                        type: LevoBannerType.success,
+                        type: LevoPopupType.success,
                       );
                     }
                   },
@@ -128,10 +128,10 @@ class _RulerViewState extends State<RulerView> {
                       pixelDistance: currentPixelDistance,
                     );
                     if (context.mounted) {
-                      LevoBanner.show(
+                      LevoPopup.showNotification(
                         context,
                         message: l10n.rulerCalibrationSuccess,
-                        type: LevoBannerType.success,
+                        type: LevoPopupType.success,
                       );
                     }
                   },
@@ -149,10 +149,10 @@ class _RulerViewState extends State<RulerView> {
                       pixelDistance: currentPixelDistance,
                     );
                     if (context.mounted) {
-                      LevoBanner.show(
+                      LevoPopup.showNotification(
                         context,
                         message: l10n.rulerCalibrationSuccess,
-                        type: LevoBannerType.success,
+                        type: LevoPopupType.success,
                       );
                     }
                   },
@@ -370,10 +370,10 @@ class _RulerViewState extends State<RulerView> {
                                   child: TactileButton(
                                     onPressed: () {
                                       cubit.resetCalibration();
-                                      LevoBanner.show(
+                                      LevoPopup.showNotification(
                                         context,
                                         message: l10n.rulerCalibrationReset,
-                                        type: LevoBannerType.info,
+                                        type: LevoPopupType.info,
                                       );
                                     },
                                     text: l10n.commonButtonReset,

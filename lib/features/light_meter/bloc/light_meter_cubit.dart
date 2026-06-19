@@ -49,6 +49,11 @@ class LightMeterCubit extends Cubit<LightMeterState> {
     );
   }
 
+  /// Toggles between Lux and Foot-candle units.
+  void toggleUnit() {
+    emit(state.copyWith(useFootCandle: !state.useFootCandle));
+  }
+
   double _calculateExposureValue(double lux) {
     if (lux <= 0.0) return 0.0;
     // EV100 = log2(Lux / 2.5)

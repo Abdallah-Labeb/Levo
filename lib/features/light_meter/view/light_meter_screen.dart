@@ -166,36 +166,46 @@ class LightMeterView extends StatelessWidget {
                                   }
                                 }
 
-                                return AnalogDialWidget(
-                                  value: normalizedValue,
-                                  zones: dialZones,
-                                  title: "",
-                                  minLabel: numberFormatter.format(0),
-                                  maxLabel: l10n.lightMeterMaxDialLabel,
-                                  size: 260.0,
-                                  overlayWidget: Directionality(
-                                    textDirection: TextDirection.ltr,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                                      textBaseline: TextBaseline.alphabetic,
-                                      children: [
-                                        Text(
-                                          _formatVal(context, state.lux, "0.0"),
-                                          style: AppTypography.kDisplayM.copyWith(
-                                            color: activeColor,
-                                            fontSize: 22.0,
+                                final double displayLuxValue = state.useFootCandle
+                                    ? state.lux / 10.7639
+                                    : state.lux;
+                                final String displayLuxUnit = state.useFootCandle
+                                    ? l10n.commonUnitFootCandle
+                                    : l10n.commonUnitLux;
+
+                                return GestureDetector(
+                                  onTap: () => cubit.toggleUnit(),
+                                  child: AnalogDialWidget(
+                                    value: normalizedValue,
+                                    zones: dialZones,
+                                    title: "",
+                                    minLabel: numberFormatter.format(0),
+                                    maxLabel: l10n.lightMeterMaxDialLabel,
+                                    size: 260.0,
+                                    overlayWidget: Directionality(
+                                      textDirection: TextDirection.ltr,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                                        textBaseline: TextBaseline.alphabetic,
+                                        children: [
+                                          Text(
+                                            _formatVal(context, displayLuxValue, "0.0"),
+                                            style: AppTypography.kDisplayM.copyWith(
+                                              color: activeColor,
+                                              fontSize: 22.0,
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(width: AppDimensions.space4),
-                                        Text(
-                                          l10n.commonUnitLux,
-                                          style: AppTypography.kUnitLabel.copyWith(
-                                            fontSize: 14.0,
-                                            color: activeColor,
+                                          const SizedBox(width: AppDimensions.space4),
+                                          Text(
+                                            displayLuxUnit,
+                                            style: AppTypography.kUnitLabel.copyWith(
+                                              fontSize: 14.0,
+                                              color: activeColor,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 );
@@ -205,12 +215,12 @@ class LightMeterView extends StatelessWidget {
                         ),
 
                         // 3. EV (Exposure Value) LCD Readout and Camera fallback status
-                        Expanded(
-                          flex: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppDimensions.paddingL,
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppDimensions.paddingL,
+                          ),
+                          child: SizedBox(
+                            height: 80,
                             child: state.isCameraFallback
                                 ? Row(
                                     children: [

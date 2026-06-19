@@ -13,6 +13,7 @@ import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/sensors/sensor_error_type.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
+import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/features/spirit_level/bloc/spirit_level_cubit.dart';
 import 'package:levo/features/spirit_level/bloc/spirit_level_state.dart';
@@ -20,7 +21,7 @@ import 'package:levo/features/spirit_level/widgets/bubble_level_2d_widget.dart';
 import 'package:levo/features/spirit_level/widgets/bubble_level_1d_widget.dart';
 
 import 'package:levo/features/spirit_level/widgets/calibration_wizard.dart';
-import 'package:levo/features/spirit_level/widgets/skeuomorphic_slider.dart';
+import 'package:levo/core/widgets/skeuomorphic_slider.dart';
 
 /// The entry screen for the Spirit Level, establishing the BlocProvider environment.
 class SpiritLevelScreen extends StatelessWidget {
@@ -271,25 +272,7 @@ class SpiritLevelView extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppDimensions.paddingL,
                     ),
-                    child: Container(
-                      padding: const EdgeInsets.all(AppDimensions.paddingM),
-                      decoration: BoxDecoration(
-                        gradient: AppColors.kGradientBrushedAluminum,
-                        border: Border.all(
-                          color: AppColors.kBorderHighlight,
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.circular(
-                          AppDimensions.radiusPanel,
-                        ),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x33000000),
-                            offset: Offset(0, 4),
-                            blurRadius: 8,
-                          ),
-                        ],
-                      ),
+                    child: MetalPanel(
                       child: SkeuomorphicSlider(
                         value: state.viscosity,
                         label: l10n.spiritLevelViscosityLabel,

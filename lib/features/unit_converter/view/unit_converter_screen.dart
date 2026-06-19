@@ -9,7 +9,7 @@ import 'package:levo/app/theme/app_typography.dart';
 
 import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_background.dart';
-import 'package:levo/core/widgets/levo_banner.dart';
+import 'package:levo/core/widgets/levo_popup.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 
 import 'package:levo/l10n/l10n_extension.dart';
@@ -128,10 +128,10 @@ class _UnitConverterViewState extends State<UnitConverterView> {
     final formatted = _formatDouble(context, val);
     Clipboard.setData(ClipboardData(text: "$formatted $unit")).then((_) {
       if (context.mounted) {
-        LevoBanner.show(
+        LevoPopup.showNotification(
           context,
           message: context.l10n.commonCopySuccess,
-          type: LevoBannerType.success,
+          type: LevoPopupType.success,
         );
       }
     });

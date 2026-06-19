@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
-import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
+import 'package:levo/core/widgets/levo_popup.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 
 /// A service to centralize permission requests and dialog handling for Levo.
@@ -62,6 +61,7 @@ class PermissionService {
     required String body,
     required String permanentlyDeniedBody,
   }) async {
+    final l10n = context.l10n;
     final status = await permission.status;
 
     if (status.isGranted) {
@@ -71,91 +71,77 @@ class PermissionService {
     if (status.isDenied) {
       if (!context.mounted) return false;
 
-      final bool? allowed = await showDialog<bool>(
-        context: context,
-        builder: (dialogContext) {
-          final l10n = dialogContext.l10n;
-          return AlertDialog(
-            backgroundColor: AppColors.kSurface,
-            title: Text(
-              title,
-              style: AppTypography.kTitleL,
-            ),
-            content: Text(
-              body,
-              style: AppTypography.kBody,
-            ),
-            actions: [
-              TactileButton(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDimensions.paddingM,
-                  vertical: AppDimensions.paddingS,
-                ),
-                onPressed: () => Navigator.pop(dialogContext, false),
-                text: l10n.commonCancel,
-              ),
-              const SizedBox(width: AppDimensions.space8),
-              TactileButton(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDimensions.paddingM,
-                  vertical: AppDimensions.paddingS,
-                ),
-                onPressed: () => Navigator.pop(dialogContext, true),
-                text: l10n.commonAllow,
-              ),
-            ],
-          );
-        },
-      );
+      final showRationale = await permission.shouldShowRequestRationale;
+      if (!context.mounted) return false;
 
-      if (allowed == true) {
+      if (showRationale) {
+        final bool? allowed = await LevoPopup.showCustomDialog<bool>(
+          context,
+          title: title,
+          message: body,
+          type: LevoPopupType.info,
+          actions: [
+            TactileButton(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.paddingM,
+                vertical: AppDimensions.paddingS,
+              ),
+              onPressed: () => Navigator.pop(context, false),
+              text: l10n.commonCancel,
+            ),
+            const SizedBox(width: AppDimensions.space8),
+            TactileButton(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.paddingM,
+                vertical: AppDimensions.paddingS,
+              ),
+              onPressed: () => Navigator.pop(context, true),
+              text: l10n.commonAllow,
+            ),
+          ],
+        );
+
+        if (allowed == true) {
+          final result = await permission.request();
+          return result.isGranted;
+        }
+        return false;
+      } else {
         final result = await permission.request();
         return result.isGranted;
       }
-      return false;
     }
 
     if (status.isPermanentlyDenied) {
       if (!context.mounted) return false;
 
-      await showDialog<void>(
-        context: context,
-        builder: (dialogContext) {
-          final l10n = dialogContext.l10n;
-          return AlertDialog(
-            backgroundColor: AppColors.kSurface,
-            title: Text(
-              l10n.permissionPermanentlyDeniedTitle,
-              style: AppTypography.kTitleL,
+      await LevoPopup.showCustomDialog<void>(
+        context,
+        title: l10n.permissionPermanentlyDeniedTitle,
+        message: permanentlyDeniedBody,
+        type: LevoPopupType.warning,
+        actions: [
+          TactileButton(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDimensions.paddingM,
+              vertical: AppDimensions.paddingS,
             ),
-            content: Text(
-              permanentlyDeniedBody,
-              style: AppTypography.kBody,
+            onPressed: () => Navigator.pop(context),
+            text: l10n.commonCancel,
+          ),
+          const SizedBox(width: AppDimensions.space8),
+          TactileButton(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDimensions.paddingM,
+              vertical: AppDimensions.paddingS,
             ),
-            actions: [
-              TactileButton(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDimensions.paddingM,
-                  vertical: AppDimensions.paddingS,
-                ),
-                onPressed: () => Navigator.pop(dialogContext),
-                text: l10n.commonCancel,
-              ),
-              const SizedBox(width: AppDimensions.space8),
-              TactileButton(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDimensions.paddingM,
-                  vertical: AppDimensions.paddingS,
-                ),
-                onPressed: () async {
-                  Navigator.pop(dialogContext);
-                  await openAppSettings();
-                },
-                text: l10n.commonButtonOpenSettings,
-              ),
-            ],
-          );
-        },
+            onPressed: () async {
+              Navigator.pop(context);
+              await openAppSettings();
+            },
+            text: l10n.commonButtonOpenSettings,
+          ),
+        ],
       );
       return false;
     }

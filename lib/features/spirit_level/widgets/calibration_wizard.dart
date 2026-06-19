@@ -7,7 +7,7 @@ import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
-import 'package:levo/core/widgets/levo_banner.dart';
+import 'package:levo/core/widgets/levo_popup.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/features/spirit_level/bloc/spirit_level_cubit.dart';
 
@@ -90,10 +90,10 @@ class _CalibrationWizardState extends State<CalibrationWizard> {
               setState(() {
                 _isCapturing = false;
               });
-              LevoBanner.show(
+              LevoPopup.showNotification(
                 context,
                 message: context.l10n.calibrationWizardSensorError,
-                type: LevoBannerType.error,
+                type: LevoPopupType.error,
               );
             }
           },

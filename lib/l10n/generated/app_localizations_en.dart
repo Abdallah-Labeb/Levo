@@ -196,6 +196,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonUnitLux => 'lx';
 
   @override
+  String get commonUnitFootCandle => 'fc';
+
+  @override
   String get commonUnitDecibel => 'dB';
 
   @override
@@ -384,6 +387,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rulerMarkerB => 'B';
+
+  @override
+  String get metalDetectorWarningTitle => 'Important Notice';
 
   @override
   String get metalDetectorFirstLaunchWarning =>
