@@ -276,13 +276,16 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                     const SizedBox(height: AppDimensions.space12),
 
                     // 4. LED displays (height 70)
-                    SizedBox(
-                      height: 70,
-                      child: LedDisplay(
-                        value: _formatUt(context, state.deltaUt),
-                        unit: l10n.commonUnitMicrotesla,
-                        textStyle: AppTypography.kDisplayS,
-                        label: l10n.metalDetectorLabelMagneticDelta,
+                    Center(
+                      child: SizedBox(
+                        height: 70,
+                        width: 200.0,
+                        child: LedDisplay(
+                          value: _formatUt(context, state.deltaUt),
+                          unit: l10n.commonUnitMicrotesla,
+                          textStyle: AppTypography.kDisplayS,
+                          label: l10n.metalDetectorLabelMagneticDelta,
+                        ),
                       ),
                     ),
                     const SizedBox(height: AppDimensions.space12),
