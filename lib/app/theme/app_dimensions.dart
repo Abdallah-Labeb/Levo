@@ -47,7 +47,7 @@ class AppDimensions {
   static const double appBarButtonSize = 40.0;
   static const double iconL = 36.0;
   static const double iconXL = 64.0;
-  static const double compassDialSize = 270.0;
+  static const double compassDialSize = 300.0;
   static const double bannerAccentWidth = 4.0;
   static const double bannerAccentHeight = 40.0;
   static const double radiusXS = 2.0;

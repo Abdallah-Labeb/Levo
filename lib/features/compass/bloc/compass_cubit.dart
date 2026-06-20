@@ -106,6 +106,27 @@ class CompassCubit extends Cubit<CompassState> {
     _lastHeading = rawHeading;
     _lastTimestamp = now;
 
+    // Calculate dynamic adaptive alpha based on difference to eliminate jitter
+    double diff = (rawHeading - state.heading).abs();
+    if (diff > 180.0) {
+      diff = 360.0 - diff;
+    }
+
+    double adaptiveAlpha;
+    if (diff < 1.0) {
+      // High damping for small changes (tremors) to prevent number jittering
+      adaptiveAlpha = 0.03;
+    } else if (diff < 10.0) {
+      // Linear transition from 0.03 (smooth/steady) to 0.45 (responsive)
+      adaptiveAlpha = 0.03 + ((diff - 1.0) / 9.0) * (0.45 - 0.03);
+    } else {
+      // Full speed tracking when rotating actively
+      adaptiveAlpha = 0.45;
+    }
+
+    _cosFilter.alpha = adaptiveAlpha;
+    _sinFilter.alpha = adaptiveAlpha;
+
     // Low-pass filter the angle using unit vector coordinates (cos, sin) to prevent jitter and handle wrap
     final double headingRad = rawHeading * math.pi / 180.0;
     final double filteredCos = _cosFilter.filter(math.cos(headingRad));

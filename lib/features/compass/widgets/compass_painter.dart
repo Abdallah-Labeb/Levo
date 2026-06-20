@@ -75,7 +75,7 @@ class CompassPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final outerRadius = math.min(size.width, size.height) / 2;
-    final dialRadius = outerRadius - 12.0;
+    final dialRadius = outerRadius - 6.0;
 
     // 1. Draw outer chrome bezel sweep gradient (3D ring) - Static
     bezelPaint.shader = AppColors.kGradientChromeSweep.createShader(
@@ -109,7 +109,7 @@ class CompassPainter extends CustomPainter {
     canvas.drawCircle(Offset.zero, dialRadius * 0.70, _ringPaint);
     canvas.drawCircle(Offset.zero, dialRadius * 0.55, _ringPaint);
 
-    // Draw ticks
+    // Draw Ticks
     tickPaint
       ..color = AppColors.kChromeMid.withAlpha(150)
       ..strokeWidth = 1.0;
@@ -248,9 +248,14 @@ class CompassPainter extends CustomPainter {
       canvas.drawPath(rightPath, activeSilver);
     }
 
-    // Draw rotating needle pointers (North = Faceted Silver/Green, South = Faceted Red)
-    final double needleLength = dialRadius - 40.0;
-    const double needleWidth = 12.0;
+    canvas.restore(); // Restore dial card rotation
+
+    // 3. Draw static needle pointers (North = Faceted Red, South = Faceted Silver/Gray)
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+
+    final double needleLength = dialRadius - 26.0;
+    const double needleWidth = 13.0;
 
     // Draw shadow under the needle
     shadowPaint
@@ -274,46 +279,37 @@ class CompassPainter extends CustomPainter {
     canvas.drawPath(northShadowPath.shift(const Offset(2, 4)), shadowPaint);
     canvas.drawPath(southShadowPath.shift(const Offset(2, 4)), shadowPaint);
 
-    // North Needle Left Half (Bright Chrome/Silver)
+    // North Needle Left Half (Bright Red - points up)
     final Path northLeftPath = Path()
       ..moveTo(0, 0)
       ..lineTo(-needleWidth, -needleLength * 0.25)
       ..lineTo(0, -needleLength)
       ..close();
-    canvas.drawPath(northLeftPath, roseSilverMajorPaint);
+    canvas.drawPath(northLeftPath, needleRedLightPaint);
 
-    // North Needle Right Half (Darker Gray)
+    // North Needle Right Half (Darker Red)
     final Path northRightPath = Path()
       ..moveTo(0, 0)
       ..lineTo(needleWidth, -needleLength * 0.25)
       ..lineTo(0, -needleLength)
       ..close();
-    canvas.drawPath(northRightPath, roseSilverMinorPaint);
+    canvas.drawPath(northRightPath, needleRedDarkPaint);
 
-    // Green Tip on North Needle
-    final Path greenTipPath = Path()
-      ..moveTo(0, -needleLength)
-      ..lineTo(-needleWidth * 0.4, -needleLength * 0.75)
-      ..lineTo(0, -needleLength * 0.8)
-      ..lineTo(needleWidth * 0.4, -needleLength * 0.75)
-      ..close();
-    canvas.drawPath(greenTipPath, needleGreenPaint);
-
-    // South Needle Left Half (Bright Red)
+    // South Needle Left Half (Bright Chrome/Silver - points down)
     final Path southLeftPath = Path()
       ..moveTo(0, 0)
       ..lineTo(-needleWidth, needleLength * 0.25)
       ..lineTo(0, needleLength)
       ..close();
-    canvas.drawPath(southLeftPath, needleRedLightPaint);
+    canvas.drawPath(southLeftPath, roseSilverMajorPaint);
 
-    // South Needle Right Half (Darker Red)
+    // South Needle Right Half (Darker Gray)
     final Path southRightPath = Path()
       ..moveTo(0, 0)
       ..lineTo(needleWidth, needleLength * 0.25)
       ..lineTo(0, needleLength)
       ..close();
-    canvas.drawPath(southRightPath, needleRedDarkPaint);
+    canvas.drawPath(southRightPath, roseSilverMinorPaint);
 
     // Central mechanical pivot pin shadow
     pinShadow
@@ -335,9 +331,9 @@ class CompassPainter extends CustomPainter {
     ).createShader(const Rect.fromLTRB(-4, -4, 4, 4));
     canvas.drawCircle(Offset.zero, 4.0, capPaint);
 
-    canvas.restore();
+    canvas.restore(); // Restore needle translation
 
-    // 3. Draw static heading indicator at the top (Lubber Line) - Static
+    // 4. Draw static heading indicator at the top (Lubber Line) - Static
     // Instead of a large triangle, draw a clean red dot at the top of the outer bezel
     const double dotRadius = 4.0;
     final Offset dotOffset = Offset(center.dx, center.dy - outerRadius + 6.0);
