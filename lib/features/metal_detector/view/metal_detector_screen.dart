@@ -278,8 +278,8 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                     // 4. LED displays (height 70)
                     Center(
                       child: SizedBox(
+                        width: 180.0,
                         height: 70,
-                        width: 200.0,
                         child: LedDisplay(
                           value: _formatUt(context, state.deltaUt),
                           unit: l10n.commonUnitMicrotesla,

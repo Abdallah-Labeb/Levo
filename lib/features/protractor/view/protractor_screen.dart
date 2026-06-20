@@ -110,14 +110,14 @@ class _ProtractorViewState extends State<ProtractorView> {
                       bottom: AppDimensions.paddingS,
                     ),
                     child: SizedBox(
-                      height: 52.0,
+                      height: 70.0,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           // Left: Mode Dropdown Menu Switcher (Skeuomorphic)
                           SizedBox(
                             width: 98.0,
-                            height: 48.0,
+                            height: 56.0,
                             child: _DropdownMenuModeSwitcher(
                               isCameraActive: state.isCameraActive,
                               imagePath: state.imagePath,
@@ -129,11 +129,16 @@ class _ProtractorViewState extends State<ProtractorView> {
                           // Center: Measured Angle LED Display (Expanded for dynamic sizing)
                           Expanded(
                             child: SizedBox(
-                              height: 52.0,
+                              height: 70.0,
                               child: LedDisplay(
                                 value: _formatAngle(context, state.measuredAngle),
                                 label: l10n.protractorLabelAngle,
-                                textStyle: AppTypography.kDisplayS,
+                                textStyle: AppTypography.kDisplayM,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 6.0,
+                                  horizontal: 8.0,
+                                ),
+                                spacing: 4.0,
                               ),
                             ),
                           ),
@@ -142,7 +147,7 @@ class _ProtractorViewState extends State<ProtractorView> {
                           // Right: Reset Button (Text instead of Icon)
                           SizedBox(
                             width: 82.0,
-                            height: 48.0,
+                            height: 56.0,
                             child: TactileButton(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: AppDimensions.paddingS,
