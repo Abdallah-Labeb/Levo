@@ -44,6 +44,13 @@ class ProtractorView extends StatefulWidget {
 
 class _ProtractorViewState extends State<ProtractorView> {
   _DragTarget _activeTarget = _DragTarget.none;
+  late final ProtractorCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = context.read<ProtractorCubit>();
+  }
 
   String _formatAngle(BuildContext context, double angle) {
     final locale = Localizations.localeOf(context).languageCode;
@@ -53,7 +60,7 @@ class _ProtractorViewState extends State<ProtractorView> {
 
   @override
   void dispose() {
-    context.read<ProtractorCubit>().stopCamera();
+    _cubit.stopCamera();
     super.dispose();
   }
 
@@ -109,7 +116,7 @@ class _ProtractorViewState extends State<ProtractorView> {
                         children: [
                           // Left: Mode Dropdown Menu Switcher (Skeuomorphic)
                           SizedBox(
-                            width: 105.0,
+                            width: 98.0,
                             height: 52.0,
                             child: _DropdownMenuModeSwitcher(
                               isCameraActive: state.isCameraActive,
@@ -127,7 +134,7 @@ class _ProtractorViewState extends State<ProtractorView> {
                                 value: _formatAngle(context, state.measuredAngle),
                                 label: l10n.protractorLabelAngle,
                                 textStyle: AppTypography.kDisplayM.copyWith(fontSize: 32.0),
-                                labelFontSize: 13.0,
+                                labelFontSize: 14.0,
                               ),
                             ),
                           ),
@@ -135,7 +142,7 @@ class _ProtractorViewState extends State<ProtractorView> {
 
                           // Right: Reset Button (Text instead of Icon)
                           SizedBox(
-                            width: 90.0,
+                            width: 82.0,
                             height: 52.0,
                             child: TactileButton(
                               padding: const EdgeInsets.symmetric(

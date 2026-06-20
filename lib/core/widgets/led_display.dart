@@ -31,7 +31,7 @@ class LedDisplay extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppDimensions.paddingM,
+        horizontal: AppDimensions.paddingS,
         vertical: AppDimensions.paddingS,
       ),
       decoration: BoxDecoration(
@@ -49,15 +49,15 @@ class LedDisplay extends StatelessWidget {
           ),
         ],
       ),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (label != null && label!.isNotEmpty) ...[
-              Text(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (label != null && label!.isNotEmpty) ...[
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+              child: Text(
                 label!.toUpperCase(),
                 style: AppTypography.kSectionHeader.copyWith(
                   fontSize: labelFontSize ?? 11.0,
@@ -68,9 +68,13 @@ class LedDisplay extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 6.0),
-            ],
-            Directionality(
+            ),
+            const SizedBox(height: 6.0),
+          ],
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.center,
+            child: Directionality(
               textDirection: TextDirection.ltr,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -91,8 +95,8 @@ class LedDisplay extends StatelessWidget {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
