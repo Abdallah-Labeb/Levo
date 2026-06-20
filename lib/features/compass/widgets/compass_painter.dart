@@ -72,15 +72,12 @@ class CompassPainter extends CustomPainter {
 
   static final Map<String, TextPainter> _labelCache = {};
 
-  // Dial Picture Cache variables
-  static ui.Picture? _cachedDialPicture;
+  // Dial Image Cache variables (Raster Caching)
+  static ui.Image? _cachedDialImage;
   static double? _cachedDialRadius;
 
-  /// Builds a cached picture of the rotating dial card elements at heading = 0
-  ui.Picture _buildDialPicture(double dialRadius) {
-    final recorder = ui.PictureRecorder();
-    final canvas = Canvas(recorder);
-
+  /// Draws the rotating dial card elements onto the canvas centered at Offset.zero
+  void _drawDialCard(Canvas canvas, double dialRadius) {
     // Draw dial face (circle)
     facePaint.color = const Color(0xFF0F0F11); // Dark charcoal black
     canvas.drawCircle(Offset.zero, dialRadius, facePaint);
@@ -118,10 +115,9 @@ class CompassPainter extends CustomPainter {
       canvas.drawLine(startOffset, endOffset, activePaint);
     }
 
-    // Draw degree numbers radially every 20 degrees (except 90 & 270)
-    for (int angle = 0; angle < 360; angle += 20) {
-      if (angle == 90 || angle == 270) continue;
-
+    // Draw degree numbers radially at major ticks only (skipping 90 and 270)
+    const majorAngles = [0, 30, 60, 120, 150, 180, 210, 240, 300, 330];
+    for (final angle in majorAngles) {
       final String label = angle.toString();
       final painter = _labelCache.putIfAbsent(label, () {
         return TextPainter(
@@ -146,7 +142,7 @@ class CompassPainter extends CustomPainter {
       canvas.restore();
     }
 
-    // Draw Cardinal Labels (N, E, S, W) in neon green radially
+    // Draw Cardinal Labels (N, E, S, W) radially (N is Red, E/S/W are Neon Green)
     const cardinalLabels = {0: 'N', 90: 'E', 180: 'S', 270: 'W'};
     cardinalLabels.forEach((angle, text) {
       final painter = _labelCache.putIfAbsent(text, () {
@@ -155,7 +151,7 @@ class CompassPainter extends CustomPainter {
             text: text,
             style: AppTypography.kTitleL.copyWith(
               fontSize: 16.0,
-              color: AppColors.kDisplayGreen, // Neon Green
+              color: text == 'N' ? AppColors.kDangerRed : AppColors.kDisplayGreen,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -195,15 +191,13 @@ class CompassPainter extends CustomPainter {
       painter.paint(canvas, Offset(-painter.width / 2, -painter.height / 2));
       canvas.restore();
     });
-
-    return recorder.endRecording();
   }
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final outerRadius = math.min(size.width, size.height) / 2;
-    final dialRadius = outerRadius - 6.0;
+    final dialRadius = outerRadius - 4.0; // Expand diameter more
 
     // 1. Draw outer chrome bezel sweep gradient (3D ring) - Static
     bezelPaint.shader = AppColors.kGradientChromeSweep.createShader(
@@ -222,18 +216,28 @@ class CompassPainter extends CustomPainter {
       ..strokeWidth = 2.0;
     canvas.drawCircle(center, dialRadius + 1.0, groovePaint);
 
-    // Rebuild picture cache if necessary
-    if (_cachedDialPicture == null || _cachedDialRadius != dialRadius) {
-      _cachedDialPicture = _buildDialPicture(dialRadius);
+    // Rasterize and cache the dial image if null or radius changes (completely stable, no text shake)
+    final int imageSize = (dialRadius * 2).ceil();
+    if (_cachedDialImage == null || _cachedDialRadius != dialRadius) {
+      final recorder = ui.PictureRecorder();
+      final recordingCanvas = Canvas(recorder);
+      
+      // Center the dial card drawing at (dialRadius, dialRadius)
+      recordingCanvas.translate(dialRadius, dialRadius);
+      _drawDialCard(recordingCanvas, dialRadius);
+      
+      final picture = recorder.endRecording();
+      _cachedDialImage = picture.toImageSync(imageSize, imageSize);
       _cachedDialRadius = dialRadius;
     }
 
-    // 2. Rotate canvas and draw rotating dial card picture
+    // 2. Rotate canvas and draw rotating dial card image (completely stable, no text shake)
     canvas.save();
     canvas.translate(center.dx, center.dy);
     // Rotating opposite of heading so N points to North in space
     canvas.rotate(-heading * math.pi / 180.0);
-    canvas.drawPicture(_cachedDialPicture!);
+    // Draw centered raster image
+    canvas.drawImage(_cachedDialImage!, Offset(-dialRadius, -dialRadius), Paint());
     canvas.restore(); // Restore dial card rotation
 
     // 3. Draw static needle pointers (North = Faceted Red, South = Faceted Silver/Gray)
