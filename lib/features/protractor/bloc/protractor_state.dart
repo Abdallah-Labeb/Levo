@@ -52,6 +52,7 @@ class ProtractorState extends Equatable {
     bool? isCameraInitialized,
     String? cameraError,
     String? imagePath,
+    bool clearImagePath = false,
   }) {
     return ProtractorState(
       angleA: angleA ?? this.angleA,
@@ -61,7 +62,7 @@ class ProtractorState extends Equatable {
       isCameraActive: isCameraActive ?? this.isCameraActive,
       isCameraInitialized: isCameraInitialized ?? this.isCameraInitialized,
       cameraError: cameraError ?? this.cameraError,
-      imagePath: imagePath ?? this.imagePath,
+      imagePath: clearImagePath ? null : (imagePath ?? this.imagePath),
     );
   }
 }

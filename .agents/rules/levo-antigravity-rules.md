@@ -3,7 +3,7 @@ trigger: always_on
 ---
 
 # LEVO — Antigravity Agent Rules
-أى تعديل تعمل فى الكود تعمل commit و ترفعه على git , github
+أى تعديل تعمل فى الكود تعمل commit و ترفعه على git ثم github
 > [!IMPORTANT]
 > This file contains the authoritative coding rules and absolute laws for **Levo**.
 > Every AI agent operating in this workspace MUST read and enforce these rules without exception.

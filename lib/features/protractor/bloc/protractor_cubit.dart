@@ -35,7 +35,7 @@ class ProtractorCubit extends Cubit<ProtractorState> {
     } else {
       emit(state.copyWith(
         isCameraActive: true,
-        imagePath: null, // Clear loaded image when switching to camera
+        clearImagePath: true, // Clear loaded image when switching to camera
       ));
       await _initializeCamera();
     }
@@ -55,6 +55,7 @@ class ProtractorCubit extends Cubit<ProtractorState> {
   void setImagePath(String? path) {
     emit(state.copyWith(
       imagePath: path,
+      clearImagePath: path == null,
       isCameraActive: false, // Turn off camera when image is selected
       isCameraInitialized: false,
     ));
