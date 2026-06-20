@@ -26,9 +26,9 @@ class CompassCubit extends Cubit<CompassState> {
   int _lastTimestamp = 0;
 
   // Components filters to filter angular jitter across the 0/360 boundary.
-  // alpha 0.22 gives responsive yet smooth needle movement.
-  late final LowPassFilter _cosFilter = LowPassFilter(alpha: 0.22);
-  late final LowPassFilter _sinFilter = LowPassFilter(alpha: 0.22);
+  // alpha 0.45 gives responsive yet smooth needle movement.
+  late final LowPassFilter _cosFilter = LowPassFilter(alpha: 0.45);
+  late final LowPassFilter _sinFilter = LowPassFilter(alpha: 0.45);
 
   /// Starts listening to sensor updates and initializes declination if True North is on.
   Future<void> initialize() async {

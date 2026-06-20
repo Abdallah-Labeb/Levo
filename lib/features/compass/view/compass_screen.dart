@@ -101,76 +101,53 @@ class CompassView extends StatelessWidget {
                 children: [
                   const SizedBox(height: AppDimensions.space12),
 
-                  // 1. Interference Warning Banners
-                  if (state.hasInterference)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppDimensions.paddingL,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(AppDimensions.paddingM),
-                        decoration: BoxDecoration(
-                          color: AppColors.kDangerRedDim.withAlpha(200),
-                          border: Border.all(color: AppColors.kDangerRed),
-                          borderRadius: BorderRadius.circular(
-                            AppDimensions.radiusPanel,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.warning,
-                              color: AppColors.kDangerRed,
-                            ),
-                            const SizedBox(width: AppDimensions.space8),
-                            Expanded(
-                              child: Text(
-                                l10n.compassInterferenceWarning,
-                                style: AppTypography.kBodySmall.copyWith(
-                                  color: AppColors.kTextPrimary,
+                  // 1. Fixed-height minimalist status/warning banner
+                  SizedBox(
+                    height: 48.0,
+                    child: Center(
+                      child: state.hasInterference
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.warning_amber_rounded,
+                                  color: AppColors.kDangerRed,
+                                  size: 18.0,
                                 ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                  // 2. Calibration Pattern Helper Banners
-                  if (state.accuracy == CompassAccuracy.low &&
-                      !state.hasInterference)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppDimensions.paddingL,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(AppDimensions.paddingM),
-                        decoration: BoxDecoration(
-                          color: AppColors.kWarningYellowDim.withAlpha(200),
-                          border: Border.all(color: AppColors.kWarningYellow),
-                          borderRadius: BorderRadius.circular(
-                            AppDimensions.radiusPanel,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.sync,
-                              color: AppColors.kWarningYellow,
-                            ),
-                            const SizedBox(width: AppDimensions.space8),
-                            Expanded(
-                              child: Text(
-                                l10n.compassCalibrationHint,
-                                style: AppTypography.kBodySmall.copyWith(
-                                  color: AppColors.kTextPrimary,
+                                const SizedBox(width: AppDimensions.space8),
+                                Text(
+                                  l10n.compassInterferenceWarning,
+                                  style: AppTypography.kBodySmall.copyWith(
+                                    color: AppColors.kDangerRed,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                              ],
+                            )
+                          : (state.accuracy == CompassAccuracy.low
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.sync,
+                                      color: AppColors.kWarningYellow,
+                                      size: 18.0,
+                                    ),
+                                    const SizedBox(width: AppDimensions.space8),
+                                    Text(
+                                      l10n.compassCalibrationHint,
+                                      style: AppTypography.kBodySmall.copyWith(
+                                        color: AppColors.kWarningYellow,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : const SizedBox.shrink()),
                     ),
+                  ),
 
                   // 3. Rotating Compass Rose visualizer
                   Expanded(

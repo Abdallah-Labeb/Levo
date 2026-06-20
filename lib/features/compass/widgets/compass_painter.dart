@@ -1,12 +1,12 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:levo/app/theme/app_colors.dart';
-import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/features/compass/bloc/compass_state.dart';
 
 /// Custom Painter that renders a premium skeuomorphic compass.
-/// Displays a machined chrome bezel, cardinal index markers, and a rotating 3D teardrop needle.
+/// Displays a machined chrome bezel, a rotating dial card with green cardinal markers,
+/// intercardinals, degree numbers, a 3D compass rose star, and a faceted diamond needle.
 class CompassPainter extends CustomPainter {
   CompassPainter({required this.heading, required this.accuracy});
 
@@ -25,6 +25,50 @@ class CompassPainter extends CustomPainter {
   static final Paint pivotPaint = Paint();
   static final Paint capPaint = Paint();
 
+  // Predefined Paint objects to prevent allocations in paint() loop
+  static final Paint roseGreenPaint = Paint()
+    ..color = AppColors.kDisplayGreen
+    ..style = PaintingStyle.fill;
+
+  static final Paint roseSilverMajorPaint = Paint()
+    ..color = const Color(0xFFE0E0E0)
+    ..style = PaintingStyle.fill;
+
+  static final Paint roseSilverMinorPaint = Paint()
+    ..color = const Color(0xFF888888)
+    ..style = PaintingStyle.fill;
+
+  static final Paint needleGreenPaint = Paint()
+    ..color = AppColors.kDisplayGreen
+    ..style = PaintingStyle.fill;
+
+  static final Paint needleRedLightPaint = Paint()
+    ..color = const Color(0xFFE84545)
+    ..style = PaintingStyle.fill;
+
+  static final Paint needleRedDarkPaint = Paint()
+    ..color = const Color(0xFF991B1B)
+    ..style = PaintingStyle.fill;
+
+  static final Paint lubberPaint = Paint()
+    ..color = AppColors.kDangerRed
+    ..style = PaintingStyle.fill;
+
+  static final Paint bezelHighlightPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.5
+    ..color = Colors.white.withAlpha(100);
+
+  static final Paint bezelShadowPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1.5
+    ..color = Colors.black.withAlpha(120);
+
+  static final Paint _ringPaint = Paint()
+    ..color = const Color(0xFF1E1E22)
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 0.8;
+
   static final Map<String, TextPainter> _labelCache = {};
 
   @override
@@ -33,36 +77,47 @@ class CompassPainter extends CustomPainter {
     final outerRadius = math.min(size.width, size.height) / 2;
     final dialRadius = outerRadius - 12.0;
 
-    // 1. Draw outer chrome bezel sweep gradient (3D ring)
+    // 1. Draw outer chrome bezel sweep gradient (3D ring) - Static
     bezelPaint.shader = AppColors.kGradientChromeSweep.createShader(
       Rect.fromCircle(center: center, radius: outerRadius),
     );
     canvas.drawCircle(center, outerRadius, bezelPaint);
 
-    // Dark bezel inner shadow groove
+    // Bezel skeuomorphic detail rings
+    canvas.drawCircle(center, outerRadius - 1.5, bezelHighlightPaint);
+    canvas.drawCircle(center, outerRadius - 3.0, bezelShadowPaint);
+
+    // Dark bezel inner shadow groove - Static
     groovePaint
       ..color = AppColors.kCompassGroove
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
     canvas.drawCircle(center, dialRadius + 1.0, groovePaint);
 
-    // 2. Draw dial face (dark carbon/brushed center plate)
-    facePaint.shader = const RadialGradient(
-      colors: [AppColors.kCompassFaceStart, AppColors.kCompassFaceMid, AppColors.kCompassFaceEnd],
-      stops: [0.0, 0.7, 1.0],
-    ).createShader(Rect.fromCircle(center: center, radius: dialRadius));
-    canvas.drawCircle(center, dialRadius, facePaint);
+    // 2. Rotate canvas for all rotating dial card elements
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    // Rotating opposite of heading so N points to North in space
+    canvas.rotate(-heading * math.pi / 180.0);
 
-    // 3. Draw static dial marks (ticks and degree labels)
+    // Draw dial face (centered at Offset.zero)
+    facePaint.color = const Color(0xFF0F0F11); // Dark charcoal black
+    canvas.drawCircle(Offset.zero, dialRadius, facePaint);
+
+    // Draw 3 engraved concentric rings
+    canvas.drawCircle(Offset.zero, dialRadius * 0.85, _ringPaint);
+    canvas.drawCircle(Offset.zero, dialRadius * 0.70, _ringPaint);
+    canvas.drawCircle(Offset.zero, dialRadius * 0.55, _ringPaint);
+
+    // Draw ticks
     tickPaint
       ..color = AppColors.kChromeMid.withAlpha(150)
       ..strokeWidth = 1.0;
 
     majorTickPaint
-      ..color = AppColors.kChromeLight
+      ..color = AppColors.kChromeLight.withAlpha(220)
       ..strokeWidth = 2.0;
 
-    // Engrave ticks every 5 degrees
     for (int i = 0; i < 360; i += 5) {
       final double angleRad = i * math.pi / 180.0;
       final isMajor = i % 30 == 0;
@@ -72,56 +127,128 @@ class CompassPainter extends CustomPainter {
       final activePaint = isMajor ? majorTickPaint : tickPaint;
 
       final startOffset = Offset(
-        center.dx + (dialRadius - tickLength - 4.0) * math.sin(angleRad),
-        center.dy - (dialRadius - tickLength - 4.0) * math.cos(angleRad),
+        (dialRadius - tickLength - 4.0) * math.sin(angleRad),
+        -(dialRadius - tickLength - 4.0) * math.cos(angleRad),
       );
       final endOffset = Offset(
-        center.dx + (dialRadius - 4.0) * math.sin(angleRad),
-        center.dy - (dialRadius - 4.0) * math.cos(angleRad),
+        (dialRadius - 4.0) * math.sin(angleRad),
+        -(dialRadius - 4.0) * math.cos(angleRad),
       );
       canvas.drawLine(startOffset, endOffset, activePaint);
     }
 
+    // Draw degree numbers radially every 20 degrees (except 90 & 270)
+    for (int angle = 0; angle < 360; angle += 20) {
+      if (angle == 90 || angle == 270) continue;
+
+      final String label = angle.toString();
+      final painter = _labelCache.putIfAbsent(label, () {
+        return TextPainter(
+          text: TextSpan(
+            text: label,
+            style: AppTypography.kCaption.copyWith(
+              fontFamily: 'Inter',
+              fontSize: 9.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.white.withAlpha(220),
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+      });
+
+      final double radiusFactor = dialRadius - 18.0;
+      canvas.save();
+      canvas.rotate(angle * math.pi / 180.0);
+      canvas.translate(0, -radiusFactor);
+      painter.paint(canvas, Offset(-painter.width / 2, -painter.height / 2));
+      canvas.restore();
+    }
+
+    // Draw Cardinal Labels (N, E, S, W) in neon green radially
     const cardinalLabels = {0: 'N', 90: 'E', 180: 'S', 270: 'W'};
-
     cardinalLabels.forEach((angle, text) {
-      final double angleRad = angle * math.pi / 180.0;
       final painter = _labelCache.putIfAbsent(text, () {
-        final color = text == 'N'
-            ? AppColors.kCompassNorth
-            : AppColors.kTextPrimary;
-
-        final tp = TextPainter(
+        return TextPainter(
           text: TextSpan(
             text: text,
             style: AppTypography.kTitleL.copyWith(
-              fontSize: AppDimensions.fontSizeMedium,
-              color: color,
+              fontSize: 16.0,
+              color: AppColors.kDisplayGreen, // Neon Green
               fontWeight: FontWeight.bold,
             ),
           ),
           textDirection: TextDirection.ltr,
-        );
-        tp.layout();
-        return tp;
+        )..layout();
       });
 
-      // Position along the inner dial circle
-      final double radiusFactor = dialRadius - 28.0;
-      final targetOffset = Offset(
-        center.dx + radiusFactor * math.sin(angleRad) - painter.width / 2,
-        center.dy - radiusFactor * math.cos(angleRad) - painter.height / 2,
-      );
-      painter.paint(canvas, targetOffset);
+      final double radiusFactor = dialRadius - 30.0;
+      canvas.save();
+      canvas.rotate(angle * math.pi / 180.0);
+      canvas.translate(0, -radiusFactor);
+      painter.paint(canvas, Offset(-painter.width / 2, -painter.height / 2));
+      canvas.restore();
     });
 
-    // 5. Draw rotating needle pointers (North = Red, South = Silver)
-    canvas.save();
-    canvas.translate(center.dx, center.dy);
-    // Needle points physically to North, so we rotate by negative heading
-    canvas.rotate(-heading * math.pi / 180.0);
+    // Draw Intercardinal Labels (NE, SE, SW, NW) in white radially
+    const interCardinalLabels = {45: 'NE', 135: 'SE', 225: 'SW', 315: 'NW'};
+    interCardinalLabels.forEach((angle, text) {
+      final painter = _labelCache.putIfAbsent(text, () {
+        return TextPainter(
+          text: TextSpan(
+            text: text,
+            style: AppTypography.kCaption.copyWith(
+              fontSize: 10.0,
+              color: Colors.white.withAlpha(180),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+      });
 
-    // Needle size params
+      final double radiusFactor = dialRadius - 30.0;
+      canvas.save();
+      canvas.rotate(angle * math.pi / 180.0);
+      canvas.translate(0, -radiusFactor);
+      painter.paint(canvas, Offset(-painter.width / 2, -painter.height / 2));
+      canvas.restore();
+    });
+
+    // Draw 3D Compass Rose Star in the center
+    for (int i = 0; i < 8; i++) {
+      final double angle = i * math.pi / 4.0;
+      final bool isMajor = i % 2 == 0;
+      final double outerR = isMajor ? dialRadius * 0.38 : dialRadius * 0.24;
+      final double innerR = dialRadius * 0.12;
+
+      final double angleTip = angle;
+      final double angleLeft = angle - math.pi / 8.0;
+      final double angleRight = angle + math.pi / 8.0;
+
+      final tip = Offset(outerR * math.sin(angleTip), -outerR * math.cos(angleTip));
+      final left = Offset(innerR * math.sin(angleLeft), -innerR * math.cos(angleLeft));
+      final right = Offset(innerR * math.sin(angleRight), -innerR * math.cos(angleRight));
+
+      // Left half (Neon Green)
+      final Path leftPath = Path()
+        ..moveTo(0, 0)
+        ..lineTo(tip.dx, tip.dy)
+        ..lineTo(left.dx, left.dy)
+        ..close();
+      canvas.drawPath(leftPath, roseGreenPaint);
+
+      // Right half (Silver/Gray)
+      final Path rightPath = Path()
+        ..moveTo(0, 0)
+        ..lineTo(tip.dx, tip.dy)
+        ..lineTo(right.dx, right.dy)
+        ..close();
+      final activeSilver = isMajor ? roseSilverMajorPaint : roseSilverMinorPaint;
+      canvas.drawPath(rightPath, activeSilver);
+    }
+
+    // Draw rotating needle pointers (North = Faceted Silver/Green, South = Faceted Red)
     final double needleLength = dialRadius - 40.0;
     const double needleWidth = 12.0;
 
@@ -130,51 +257,71 @@ class CompassPainter extends CustomPainter {
       ..color = Colors.black.withAlpha(120)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5.0);
 
-    final Path northPath = _getTeardropNeedlePath(needleWidth, needleLength);
-    final Path southPath = _getTeardropNeedlePath(needleWidth, -needleLength);
+    final Path northShadowPath = Path()
+      ..moveTo(0, 0)
+      ..lineTo(-needleWidth, -needleLength * 0.25)
+      ..lineTo(0, -needleLength)
+      ..lineTo(needleWidth, -needleLength * 0.25)
+      ..close();
 
-    canvas.drawPath(northPath.shift(const Offset(2, 4)), shadowPaint);
-    canvas.drawPath(southPath.shift(const Offset(2, 4)), shadowPaint);
+    final Path southShadowPath = Path()
+      ..moveTo(0, 0)
+      ..lineTo(-needleWidth, needleLength * 0.25)
+      ..lineTo(0, needleLength)
+      ..lineTo(needleWidth, needleLength * 0.25)
+      ..close();
 
-    // North Needle (Red Teardrop)
-    northPaint.shader = const RadialGradient(
-      center: Alignment(-0.25, -0.3),
-      colors: [
-        AppColors.kCompassNeedleHighlight, // highlight
-        AppColors.kCompassNorth,
-        AppColors.kCompassNeedleShadow, // shade
-      ],
-      stops: [0.0, 0.6, 1.0],
-    ).createShader(
-      Rect.fromLTWH(
-        -needleWidth,
-        -needleLength,
-        needleWidth * 2,
-        needleLength,
-      ),
-    );
-    canvas.drawPath(northPath, northPaint);
+    canvas.drawPath(northShadowPath.shift(const Offset(2, 4)), shadowPaint);
+    canvas.drawPath(southShadowPath.shift(const Offset(2, 4)), shadowPaint);
 
-    // South Needle (Silver Teardrop)
-    southPaint.shader = const RadialGradient(
-      center: Alignment(-0.25, 0.3),
-      colors: [
-        Colors.white,
-        AppColors.kChromeMid,
-        AppColors.kChromeDarker,
-      ],
-      stops: [0.0, 0.55, 1.0],
-    ).createShader(
-      Rect.fromLTWH(-needleWidth, 0, needleWidth * 2, needleLength),
-    );
-    canvas.drawPath(southPath, southPaint);
+    // North Needle Left Half (Bright Chrome/Silver)
+    final Path northLeftPath = Path()
+      ..moveTo(0, 0)
+      ..lineTo(-needleWidth, -needleLength * 0.25)
+      ..lineTo(0, -needleLength)
+      ..close();
+    canvas.drawPath(northLeftPath, roseSilverMajorPaint);
 
-    // Draw central mechanical pivot pin (metallic brass look)
+    // North Needle Right Half (Darker Gray)
+    final Path northRightPath = Path()
+      ..moveTo(0, 0)
+      ..lineTo(needleWidth, -needleLength * 0.25)
+      ..lineTo(0, -needleLength)
+      ..close();
+    canvas.drawPath(northRightPath, roseSilverMinorPaint);
+
+    // Green Tip on North Needle
+    final Path greenTipPath = Path()
+      ..moveTo(0, -needleLength)
+      ..lineTo(-needleWidth * 0.4, -needleLength * 0.75)
+      ..lineTo(0, -needleLength * 0.8)
+      ..lineTo(needleWidth * 0.4, -needleLength * 0.75)
+      ..close();
+    canvas.drawPath(greenTipPath, needleGreenPaint);
+
+    // South Needle Left Half (Bright Red)
+    final Path southLeftPath = Path()
+      ..moveTo(0, 0)
+      ..lineTo(-needleWidth, needleLength * 0.25)
+      ..lineTo(0, needleLength)
+      ..close();
+    canvas.drawPath(southLeftPath, needleRedLightPaint);
+
+    // South Needle Right Half (Darker Red)
+    final Path southRightPath = Path()
+      ..moveTo(0, 0)
+      ..lineTo(needleWidth, needleLength * 0.25)
+      ..lineTo(0, needleLength)
+      ..close();
+    canvas.drawPath(southRightPath, needleRedDarkPaint);
+
+    // Central mechanical pivot pin shadow
     pinShadow
       ..color = Colors.black.withAlpha(150)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
     canvas.drawCircle(Offset.zero, 12.0, pinShadow);
 
+    // Central mechanical pivot pin brass base
     pivotPaint.shader = const RadialGradient(
       center: Alignment(-0.3, -0.3),
       colors: [AppColors.kCompassPivotHighlight, AppColors.kCompassPivotMid, AppColors.kCompassPivotShadow],
@@ -182,24 +329,19 @@ class CompassPainter extends CustomPainter {
     ).createShader(const Rect.fromLTRB(-10, -10, 10, 10));
     canvas.drawCircle(Offset.zero, 10.0, pivotPaint);
 
-    // Draw central silver cap inside pivot pin
+    // Central silver cap
     capPaint.shader = const LinearGradient(
       colors: [Colors.white, AppColors.kChromeMid],
     ).createShader(const Rect.fromLTRB(-4, -4, 4, 4));
     canvas.drawCircle(Offset.zero, 4.0, capPaint);
 
     canvas.restore();
-  }
 
-  Path _getTeardropNeedlePath(double width, double length) {
-    final Path path = Path();
-    // starts at center pivot (0,0)
-    path.moveTo(0, 0);
-    // curves out and up to a sharp tip
-    path.cubicTo(-width, length * 0.35, -width * 0.4, length, 0, length); // tip
-    path.cubicTo(width * 0.4, length, width, length * 0.35, 0, 0);
-    path.close();
-    return path;
+    // 3. Draw static heading indicator at the top (Lubber Line) - Static
+    // Instead of a large triangle, draw a clean red dot at the top of the outer bezel
+    const double dotRadius = 4.0;
+    final Offset dotOffset = Offset(center.dx, center.dy - outerRadius + 6.0);
+    canvas.drawCircle(dotOffset, dotRadius, lubberPaint);
   }
 
   @override
