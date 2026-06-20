@@ -101,70 +101,6 @@ class CompassView extends StatelessWidget {
                 children: [
                   const SizedBox(height: AppDimensions.space12),
 
-                  // 1. Fixed-height status/warning banner inside a black field
-                  SizedBox(
-                    height: 48.0,
-                    child: Center(
-                      child: (state.hasInterference || state.accuracy == CompassAccuracy.low)
-                          ? Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppDimensions.paddingL,
-                                vertical: AppDimensions.paddingS,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.kDisplayBg, // Solid black field
-                                border: Border.all(
-                                  color: state.hasInterference
-                                      ? AppColors.kDangerRed.withAlpha(80)
-                                      : AppColors.kWarningYellow.withAlpha(80),
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                  AppDimensions.radiusPanel,
-                                ),
-                              ),
-                              child: state.hasInterference
-                                  ? Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons.warning_amber_rounded,
-                                          color: AppColors.kDangerRed,
-                                          size: 18.0,
-                                        ),
-                                        const SizedBox(width: AppDimensions.space8),
-                                        Text(
-                                          l10n.compassInterferenceWarning,
-                                          style: AppTypography.kBodySmall.copyWith(
-                                            color: AppColors.kDangerRed,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons.sync,
-                                          color: AppColors.kWarningYellow,
-                                          size: 18.0,
-                                        ),
-                                        const SizedBox(width: AppDimensions.space8),
-                                        Text(
-                                          l10n.compassCalibrationHint,
-                                          style: AppTypography.kBodySmall.copyWith(
-                                            color: AppColors.kWarningYellow,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                            )
-                          : const SizedBox.shrink(),
-                    ),
-                  ),
-
                   // 2. Rotating Compass Dial card visualizer (Centered)
                   Expanded(
                     child: LayoutBuilder(
@@ -193,12 +129,93 @@ class CompassView extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            child: CustomPaint(
-                              painter: CompassPainter(
-                                heading: state.heading,
-                                accuracy: state.accuracy,
-                                devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
-                              ),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Positioned.fill(
+                                  child: CustomPaint(
+                                    painter: CompassPainter(
+                                      heading: state.heading,
+                                      accuracy: state.accuracy,
+                                      devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
+                                    ),
+                                  ),
+                                ),
+                                if (state.hasInterference || state.accuracy == CompassAccuracy.low)
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: AppDimensions.paddingM,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppDimensions.paddingM,
+                                      vertical: AppDimensions.paddingS,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withAlpha(230),
+                                      border: Border.all(
+                                        color: state.hasInterference
+                                            ? AppColors.kDangerRed.withAlpha(120)
+                                            : AppColors.kWarningYellow.withAlpha(120),
+                                        width: 1.0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                        AppDimensions.radiusPanel,
+                                      ),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Colors.black54,
+                                          blurRadius: 6.0,
+                                          offset: Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: state.hasInterference
+                                        ? Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Icon(
+                                                Icons.warning_amber_rounded,
+                                                color: AppColors.kDangerRed,
+                                                size: 16.0,
+                                              ),
+                                              const SizedBox(width: AppDimensions.space8),
+                                              Flexible(
+                                                child: Text(
+                                                  l10n.compassInterferenceWarning,
+                                                  textAlign: TextAlign.center,
+                                                  style: AppTypography.kBodySmall.copyWith(
+                                                    color: AppColors.kDangerRed,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 12.0,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Icon(
+                                                Icons.sync,
+                                                color: AppColors.kWarningYellow,
+                                                size: 16.0,
+                                              ),
+                                              const SizedBox(width: AppDimensions.space8),
+                                              Flexible(
+                                                child: Text(
+                                                  l10n.compassCalibrationHint,
+                                                  textAlign: TextAlign.center,
+                                                  style: AppTypography.kBodySmall.copyWith(
+                                                    color: AppColors.kWarningYellow,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 12.0,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                  ),
+                              ],
                             ),
                           ),
                         );
