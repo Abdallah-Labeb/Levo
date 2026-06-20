@@ -12,6 +12,7 @@ class LedDisplay extends StatelessWidget {
     this.isDim = false,
     this.textStyle = AppTypography.kDisplayM,
     this.label,
+    this.labelFontSize,
   });
 
   final String value;
@@ -19,6 +20,7 @@ class LedDisplay extends StatelessWidget {
   final bool isDim;
   final TextStyle textStyle;
   final String? label;
+  final double? labelFontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +60,7 @@ class LedDisplay extends StatelessWidget {
               Text(
                 label!.toUpperCase(),
                 style: AppTypography.kSectionHeader.copyWith(
-                  fontSize: 11.0,
+                  fontSize: labelFontSize ?? 11.0,
                   color: Colors.white,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 1.2,

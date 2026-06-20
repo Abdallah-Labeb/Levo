@@ -103,47 +103,46 @@ class _ProtractorViewState extends State<ProtractorView> {
                       bottom: AppDimensions.paddingS,
                     ),
                     child: SizedBox(
-                      height: 52.0,
-                      child: Stack(
+                      height: 64.0,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           // Left: Mode Dropdown Menu Switcher (Skeuomorphic)
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: SizedBox(
-                              width: 100.0,
-                              child: _DropdownMenuModeSwitcher(
-                                isCameraActive: state.isCameraActive,
-                                imagePath: state.imagePath,
-                                onModeSelected: (index) => _onModeSelected(index, cubit),
-                              ),
+                          SizedBox(
+                            width: 105.0,
+                            height: 52.0,
+                            child: _DropdownMenuModeSwitcher(
+                              isCameraActive: state.isCameraActive,
+                              imagePath: state.imagePath,
+                              onModeSelected: (index) => _onModeSelected(index, cubit),
                             ),
                           ),
+                          const SizedBox(width: AppDimensions.space8),
 
-                          // Center: Measured Angle LED Display (Restored size)
-                          Align(
-                            alignment: Alignment.center,
+                          // Center: Measured Angle LED Display (Expanded for dynamic sizing)
+                          Expanded(
                             child: SizedBox(
-                              width: 130.0,
+                              height: 64.0,
                               child: LedDisplay(
                                 value: _formatAngle(context, state.measuredAngle),
                                 label: l10n.protractorLabelAngle,
+                                textStyle: AppTypography.kDisplayM.copyWith(fontSize: 32.0),
+                                labelFontSize: 13.0,
                               ),
                             ),
                           ),
+                          const SizedBox(width: AppDimensions.space8),
 
                           // Right: Reset Button (Text instead of Icon)
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: SizedBox(
-                              width: 85.0,
-                              height: 52.0,
-                              child: TactileButton(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppDimensions.paddingS,
-                                ),
-                                onPressed: () => cubit.reset(),
-                                text: l10n.commonButtonReset,
+                          SizedBox(
+                            width: 90.0,
+                            height: 52.0,
+                            child: TactileButton(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppDimensions.paddingS,
                               ),
+                              onPressed: () => cubit.reset(),
+                              text: l10n.commonButtonReset,
                             ),
                           ),
                         ],
