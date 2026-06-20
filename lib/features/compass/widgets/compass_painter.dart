@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_typography.dart';
@@ -6,7 +7,7 @@ import 'package:levo/features/compass/bloc/compass_state.dart';
 
 /// Custom Painter that renders a premium skeuomorphic compass.
 /// Displays a machined chrome bezel, a rotating dial card with green cardinal markers,
-/// intercardinals, degree numbers, a 3D compass rose star, and a faceted diamond needle.
+/// intercardinals, degree numbers, and a static faceted diamond needle.
 class CompassPainter extends CustomPainter {
   CompassPainter({required this.heading, required this.accuracy});
 
@@ -71,43 +72,23 @@ class CompassPainter extends CustomPainter {
 
   static final Map<String, TextPainter> _labelCache = {};
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final outerRadius = math.min(size.width, size.height) / 2;
-    final dialRadius = outerRadius - 6.0;
+  // Dial Picture Cache variables
+  static ui.Picture? _cachedDialPicture;
+  static double? _cachedDialRadius;
 
-    // 1. Draw outer chrome bezel sweep gradient (3D ring) - Static
-    bezelPaint.shader = AppColors.kGradientChromeSweep.createShader(
-      Rect.fromCircle(center: center, radius: outerRadius),
-    );
-    canvas.drawCircle(center, outerRadius, bezelPaint);
+  /// Builds a cached picture of the rotating dial card elements at heading = 0
+  ui.Picture _buildDialPicture(double dialRadius) {
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
 
-    // Bezel skeuomorphic detail rings
-    canvas.drawCircle(center, outerRadius - 1.5, bezelHighlightPaint);
-    canvas.drawCircle(center, outerRadius - 3.0, bezelShadowPaint);
-
-    // Dark bezel inner shadow groove - Static
-    groovePaint
-      ..color = AppColors.kCompassGroove
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
-    canvas.drawCircle(center, dialRadius + 1.0, groovePaint);
-
-    // 2. Rotate canvas for all rotating dial card elements
-    canvas.save();
-    canvas.translate(center.dx, center.dy);
-    // Rotating opposite of heading so N points to North in space
-    canvas.rotate(-heading * math.pi / 180.0);
-
-    // Draw dial face (centered at Offset.zero)
+    // Draw dial face (circle)
     facePaint.color = const Color(0xFF0F0F11); // Dark charcoal black
     canvas.drawCircle(Offset.zero, dialRadius, facePaint);
 
-    // Draw 3 engraved concentric rings
-    canvas.drawCircle(Offset.zero, dialRadius * 0.85, _ringPaint);
-    canvas.drawCircle(Offset.zero, dialRadius * 0.70, _ringPaint);
-    canvas.drawCircle(Offset.zero, dialRadius * 0.55, _ringPaint);
+    // Draw 3 engraved concentric rings (Ring 1 separates degrees and cardinals)
+    canvas.drawCircle(Offset.zero, dialRadius - 32.0, _ringPaint);
+    canvas.drawCircle(Offset.zero, dialRadius - 56.0, _ringPaint);
+    canvas.drawCircle(Offset.zero, dialRadius - 70.0, _ringPaint);
 
     // Draw Ticks
     tickPaint
@@ -157,7 +138,7 @@ class CompassPainter extends CustomPainter {
         )..layout();
       });
 
-      final double radiusFactor = dialRadius - 18.0;
+      final double radiusFactor = dialRadius - 22.0; // Clear gap from ticks
       canvas.save();
       canvas.rotate(angle * math.pi / 180.0);
       canvas.translate(0, -radiusFactor);
@@ -182,7 +163,7 @@ class CompassPainter extends CustomPainter {
         )..layout();
       });
 
-      final double radiusFactor = dialRadius - 30.0;
+      final double radiusFactor = dialRadius - 44.0; // Inside ring 1
       canvas.save();
       canvas.rotate(angle * math.pi / 180.0);
       canvas.translate(0, -radiusFactor);
@@ -207,7 +188,7 @@ class CompassPainter extends CustomPainter {
         )..layout();
       });
 
-      final double radiusFactor = dialRadius - 30.0;
+      final double radiusFactor = dialRadius - 44.0; // Inside ring 1
       canvas.save();
       canvas.rotate(angle * math.pi / 180.0);
       canvas.translate(0, -radiusFactor);
@@ -215,39 +196,44 @@ class CompassPainter extends CustomPainter {
       canvas.restore();
     });
 
-    // Draw 3D Compass Rose Star in the center
-    for (int i = 0; i < 8; i++) {
-      final double angle = i * math.pi / 4.0;
-      final bool isMajor = i % 2 == 0;
-      final double outerR = isMajor ? dialRadius * 0.38 : dialRadius * 0.24;
-      final double innerR = dialRadius * 0.12;
+    return recorder.endRecording();
+  }
 
-      final double angleTip = angle;
-      final double angleLeft = angle - math.pi / 8.0;
-      final double angleRight = angle + math.pi / 8.0;
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final outerRadius = math.min(size.width, size.height) / 2;
+    final dialRadius = outerRadius - 6.0;
 
-      final tip = Offset(outerR * math.sin(angleTip), -outerR * math.cos(angleTip));
-      final left = Offset(innerR * math.sin(angleLeft), -innerR * math.cos(angleLeft));
-      final right = Offset(innerR * math.sin(angleRight), -innerR * math.cos(angleRight));
+    // 1. Draw outer chrome bezel sweep gradient (3D ring) - Static
+    bezelPaint.shader = AppColors.kGradientChromeSweep.createShader(
+      Rect.fromCircle(center: center, radius: outerRadius),
+    );
+    canvas.drawCircle(center, outerRadius, bezelPaint);
 
-      // Left half (Neon Green)
-      final Path leftPath = Path()
-        ..moveTo(0, 0)
-        ..lineTo(tip.dx, tip.dy)
-        ..lineTo(left.dx, left.dy)
-        ..close();
-      canvas.drawPath(leftPath, roseGreenPaint);
+    // Bezel skeuomorphic detail rings
+    canvas.drawCircle(center, outerRadius - 1.5, bezelHighlightPaint);
+    canvas.drawCircle(center, outerRadius - 3.0, bezelShadowPaint);
 
-      // Right half (Silver/Gray)
-      final Path rightPath = Path()
-        ..moveTo(0, 0)
-        ..lineTo(tip.dx, tip.dy)
-        ..lineTo(right.dx, right.dy)
-        ..close();
-      final activeSilver = isMajor ? roseSilverMajorPaint : roseSilverMinorPaint;
-      canvas.drawPath(rightPath, activeSilver);
+    // Dark bezel inner shadow groove - Static
+    groovePaint
+      ..color = AppColors.kCompassGroove
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    canvas.drawCircle(center, dialRadius + 1.0, groovePaint);
+
+    // Rebuild picture cache if necessary
+    if (_cachedDialPicture == null || _cachedDialRadius != dialRadius) {
+      _cachedDialPicture = _buildDialPicture(dialRadius);
+      _cachedDialRadius = dialRadius;
     }
 
+    // 2. Rotate canvas and draw rotating dial card picture
+    canvas.save();
+    canvas.translate(center.dx, center.dy);
+    // Rotating opposite of heading so N points to North in space
+    canvas.rotate(-heading * math.pi / 180.0);
+    canvas.drawPicture(_cachedDialPicture!);
     canvas.restore(); // Restore dial card rotation
 
     // 3. Draw static needle pointers (North = Faceted Red, South = Faceted Silver/Gray)
