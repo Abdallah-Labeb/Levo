@@ -219,40 +219,112 @@ class _LightMeterViewState extends State<LightMeterView> with WidgetsBindingObse
                                         numberFormatter.format(10000),
                                       ];
 
-                                return GestureDetector(
-                                  onTap: () => _cubit.toggleUnit(),
-                                  child: AnalogDialWidget(
-                                    value: normalizedValue,
-                                    zones: dialZones,
-                                    title: "",
-                                    minLabel: numberFormatter.format(0),
-                                    maxLabel: l10n.lightMeterMaxDialLabel,
-                                    dialLabels: dialLabels,
-                                    size: 260.0,
-                                    overlayWidget: Directionality(
-                                      textDirection: TextDirection.ltr,
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                                        textBaseline: TextBaseline.alphabetic,
-                                        children: [
-                                          Text(
-                                            _formatVal(context, displayLuxValue, "0.0"),
-                                            style: AppTypography.kDisplayM.copyWith(
-                                              color: activeColor,
-                                              fontSize: 22.0,
+                                return AnalogDialWidget(
+                                  value: normalizedValue,
+                                  zones: dialZones,
+                                  title: "",
+                                  minLabel: numberFormatter.format(0),
+                                  maxLabel: l10n.lightMeterMaxDialLabel,
+                                  dialLabels: dialLabels,
+                                  size: 260.0,
+                                  overlayWidget: Directionality(
+                                    textDirection: TextDirection.ltr,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                                      textBaseline: TextBaseline.alphabetic,
+                                      children: [
+                                        Text(
+                                          _formatVal(context, displayLuxValue, "0.0"),
+                                          style: AppTypography.kDisplayM.copyWith(
+                                            color: activeColor,
+                                            fontSize: 22.0,
+                                          ),
+                                        ),
+                                        const SizedBox(width: AppDimensions.space4),
+                                        Theme(
+                                          data: Theme.of(context).copyWith(
+                                            popupMenuTheme: PopupMenuThemeData(
+                                              color: AppColors.kSurfaceElevated,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(AppDimensions.radiusButton),
+                                                side: const BorderSide(color: AppColors.kBorderHighlight, width: 1.0),
+                                              ),
+                                              elevation: 8,
                                             ),
                                           ),
-                                          const SizedBox(width: AppDimensions.space4),
-                                          Text(
-                                            displayLuxUnit,
-                                            style: AppTypography.kUnitLabel.copyWith(
-                                              fontSize: 14.0,
-                                              color: activeColor,
+                                          child: PopupMenuButton<bool>(
+                                            initialValue: state.useFootCandle,
+                                            onSelected: (bool useFc) {
+                                              if (state.useFootCandle != useFc) {
+                                                _cubit.toggleUnit();
+                                              }
+                                            },
+                                            offset: const Offset(0, 32),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  displayLuxUnit,
+                                                  style: AppTypography.kUnitLabel.copyWith(
+                                                    fontSize: 14.0,
+                                                    color: activeColor,
+                                                  ),
+                                                ),
+                                                Icon(
+                                                  Icons.arrow_drop_down,
+                                                  color: activeColor,
+                                                  size: 16.0,
+                                                ),
+                                              ],
                                             ),
+                                            itemBuilder: (context) => [
+                                              PopupMenuItem<bool>(
+                                                value: false,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      l10n.commonUnitLux.toUpperCase(),
+                                                      style: AppTypography.kBody.copyWith(
+                                                        color: !state.useFootCandle
+                                                            ? AppColors.kTextSecondary
+                                                            : AppColors.kChromeLight,
+                                                        fontWeight: !state.useFootCandle
+                                                            ? FontWeight.bold
+                                                            : FontWeight.normal,
+                                                      ),
+                                                    ),
+                                                    if (!state.useFootCandle)
+                                                      const Icon(Icons.check, color: AppColors.kTextSecondary, size: 16.0),
+                                                  ],
+                                                ),
+                                              ),
+                                              PopupMenuItem<bool>(
+                                                value: true,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      l10n.commonUnitFootCandle.toUpperCase(),
+                                                      style: AppTypography.kBody.copyWith(
+                                                        color: state.useFootCandle
+                                                            ? AppColors.kTextSecondary
+                                                            : AppColors.kChromeLight,
+                                                        fontWeight: state.useFootCandle
+                                                            ? FontWeight.bold
+                                                            : FontWeight.normal,
+                                                      ),
+                                                    ),
+                                                    if (state.useFootCandle)
+                                                      const Icon(Icons.check, color: AppColors.kTextSecondary, size: 16.0),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );
@@ -260,47 +332,6 @@ class _LightMeterViewState extends State<LightMeterView> with WidgetsBindingObse
                             ),
                           ),
                         ),
-
-                        // 2.5 Visible Unit Switcher (Lux vs Foot-candle)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppDimensions.paddingL,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: TactileButton(
-                                  isActive: !state.useFootCandle,
-                                  onPressed: () {
-                                    if (state.useFootCandle) {
-                                      _cubit.toggleUnit();
-                                    }
-                                  },
-                                  text: l10n.commonUnitLux.toUpperCase(),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: AppDimensions.paddingS,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: AppDimensions.space12),
-                              Expanded(
-                                child: TactileButton(
-                                  isActive: state.useFootCandle,
-                                  onPressed: () {
-                                    if (!state.useFootCandle) {
-                                      _cubit.toggleUnit();
-                                    }
-                                  },
-                                  text: l10n.commonUnitFootCandle.toUpperCase(),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: AppDimensions.paddingS,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: AppDimensions.space12),
 
                         // 3. EV (Exposure Value) LCD Readout and Camera fallback status
                         Padding(

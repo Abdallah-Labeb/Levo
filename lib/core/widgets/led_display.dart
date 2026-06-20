@@ -13,6 +13,8 @@ class LedDisplay extends StatelessWidget {
     this.textStyle = AppTypography.kDisplayM,
     this.label,
     this.labelFontSize,
+    this.padding,
+    this.spacing = 6.0,
   });
 
   final String value;
@@ -21,6 +23,8 @@ class LedDisplay extends StatelessWidget {
   final TextStyle textStyle;
   final String? label;
   final double? labelFontSize;
+  final EdgeInsetsGeometry? padding;
+  final double spacing;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,7 @@ class LedDisplay extends StatelessWidget {
         : AppColors.kDisplayGreen;
 
     return Container(
-      padding: const EdgeInsets.symmetric(
+      padding: padding ?? const EdgeInsets.symmetric(
         horizontal: AppDimensions.paddingS,
         vertical: AppDimensions.paddingS,
       ),
@@ -69,7 +73,7 @@ class LedDisplay extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            const SizedBox(height: 6.0),
+            SizedBox(height: spacing),
           ],
           FittedBox(
             fit: BoxFit.scaleDown,

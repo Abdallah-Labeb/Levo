@@ -419,7 +419,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get soundMeterPeak => 'الذروة';
 
   @override
-  String get soundMeterAverage => 'المعدل';
+  String get soundMeterAverage => 'المعدل المتوسط';
 
   @override
   String get soundMeterMin => 'الأدنى';

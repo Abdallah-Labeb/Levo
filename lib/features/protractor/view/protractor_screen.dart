@@ -134,6 +134,11 @@ class _ProtractorViewState extends State<ProtractorView> {
                                 value: _formatAngle(context, state.measuredAngle),
                                 label: l10n.protractorLabelAngle,
                                 textStyle: AppTypography.kDisplayM,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4.0,
+                                  horizontal: 8.0,
+                                ),
+                                spacing: 2.0,
                               ),
                             ),
                           ),

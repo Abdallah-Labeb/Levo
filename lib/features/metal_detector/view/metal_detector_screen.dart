@@ -337,7 +337,7 @@ class _IconToggleSmall extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Icon(
           isActive ? iconOn : iconOff,
-          color: isActive ? AppColors.kDisplayGreen : Colors.white24,
+          color: isActive ? AppColors.kDisplayGreen : Colors.black,
           size: 24.0,
         ),
       ),

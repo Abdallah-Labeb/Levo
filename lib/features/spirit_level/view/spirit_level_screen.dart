@@ -135,31 +135,6 @@ class _SpiritLevelViewState extends State<SpiritLevelView> with WidgetsBindingOb
                 children: [
                   const SizedBox(height: AppDimensions.space12),
 
-                  // Sound and Vibration toggles
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimensions.paddingL,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _IconToggleSmall(
-                          isActive: state.soundOn,
-                          onTap: () => cubit.toggleSound(!state.soundOn),
-                          iconOn: Icons.volume_up_rounded,
-                          iconOff: Icons.volume_off_rounded,
-                        ),
-                        _IconToggleSmall(
-                          isActive: state.hapticOn,
-                          onTap: () => cubit.toggleHaptic(!state.hapticOn),
-                          iconOn: Icons.vibration_rounded,
-                          iconOff: Icons.phone_android_outlined,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: AppDimensions.space12),
-
                    // 1. Sub-mode Segmented control selectors (2D surface, 1D edge)
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -280,7 +255,33 @@ class _SpiritLevelViewState extends State<SpiritLevelView> with WidgetsBindingOb
                     ),
 
                   // 4. Physical Bubble Tube Visualizer Component
-                  Expanded(child: visualizer),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        visualizer,
+                        Positioned(
+                          top: 0,
+                          left: AppDimensions.paddingL,
+                          child: _IconToggleSmall(
+                            isActive: state.soundOn,
+                            onTap: () => cubit.toggleSound(!state.soundOn),
+                            iconOn: Icons.volume_up_rounded,
+                            iconOff: Icons.volume_off_rounded,
+                          ),
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: AppDimensions.paddingL,
+                          child: _IconToggleSmall(
+                            isActive: state.hapticOn,
+                            onTap: () => cubit.toggleHaptic(!state.hapticOn),
+                            iconOn: Icons.vibration_rounded,
+                            iconOff: Icons.phone_android_outlined,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
 
                   const SizedBox(height: AppDimensions.space12),
 
@@ -379,7 +380,7 @@ class _IconToggleSmall extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Icon(
           isActive ? iconOn : iconOff,
-          color: isActive ? AppColors.kDisplayGreen : Colors.white24,
+          color: isActive ? AppColors.kDisplayGreen : Colors.black,
           size: 24.0,
         ),
       ),
