@@ -29,6 +29,7 @@ class AnalogDialWidget extends StatefulWidget {
     required this.title,
     required this.minLabel,
     required this.maxLabel,
+    this.dialLabels,
     this.size = 240.0,
     this.overlayWidget,
   });
@@ -47,6 +48,9 @@ class AnalogDialWidget extends StatefulWidget {
 
   /// Maximum value label (e.g. 130).
   final String maxLabel;
+
+  /// List of numbers/labels to draw along the dial sweep.
+  final List<String>? dialLabels;
 
   /// Diameter of the dial container.
   final double size;
@@ -117,6 +121,7 @@ class _AnalogDialWidgetState extends State<AnalogDialWidget>
                     title: widget.title,
                     minLabel: widget.minLabel,
                     maxLabel: widget.maxLabel,
+                    dialLabels: widget.dialLabels,
                   ),
                 );
               },
@@ -141,6 +146,7 @@ class _DialPainter extends CustomPainter {
     required this.title,
     required this.minLabel,
     required this.maxLabel,
+    this.dialLabels,
   });
 
   final double value;
@@ -148,6 +154,7 @@ class _DialPainter extends CustomPainter {
   final String title;
   final String minLabel;
   final String maxLabel;
+  final List<String>? dialLabels;
 
   // Pre-allocate paints for performance (Anti-pattern rule check)
   static final _bgPaint = Paint()
@@ -322,51 +329,77 @@ class _DialPainter extends CustomPainter {
       );
     }
 
-    // Min Label
-    const minAngle = sweepStartRad;
-    final minPainter = TextPainter(
-      text: TextSpan(
-        text: minLabel,
-        style: AppTypography.kCaption.copyWith(
-          fontFamily: 'ShareTechMono',
-          fontSize: AppDimensions.fontSizeDialLabel,
-          color: AppColors.kChromeMid,
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    minPainter.paint(
-      canvas,
-      Offset(
-        center.dx + (radius * 0.55) * math.cos(minAngle) - minPainter.width / 2,
-        center.dy +
-            (radius * 0.55) * math.sin(minAngle) -
-            minPainter.height / 2,
-      ),
-    );
+    // 6. Draw Dial Labels & Title Text
+    if (dialLabels != null && dialLabels!.isNotEmpty) {
+      final int n = dialLabels!.length;
+      for (int i = 0; i < n; i++) {
+        final double percent = i / (n - 1);
+        final double angle = sweepStartRad + (percent * sweepAngleRad);
+        final label = dialLabels![i];
 
-    // Max Label
-    const maxAngle = sweepStartRad + sweepAngleRad;
-    final maxPainter = TextPainter(
-      text: TextSpan(
-        text: maxLabel,
-        style: AppTypography.kCaption.copyWith(
-          fontFamily: 'ShareTechMono',
-          fontSize: AppDimensions.fontSizeDialLabel,
-          color: AppColors.kChromeMid,
+        final labelPainter = TextPainter(
+          text: TextSpan(
+            text: label,
+            style: AppTypography.kCaption.copyWith(
+              fontFamily: 'ShareTechMono',
+              fontSize: AppDimensions.fontSizeDialLabel,
+              color: AppColors.kChromeMid,
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+
+        final x = center.dx + (radius * 0.55) * math.cos(angle) - labelPainter.width / 2;
+        final y = center.dy + (radius * 0.55) * math.sin(angle) - labelPainter.height / 2;
+        labelPainter.paint(canvas, Offset(x, y));
+      }
+    } else {
+      // Min Label
+      const minAngle = sweepStartRad;
+      final minPainter = TextPainter(
+        text: TextSpan(
+          text: minLabel,
+          style: AppTypography.kCaption.copyWith(
+            fontFamily: 'ShareTechMono',
+            fontSize: AppDimensions.fontSizeDialLabel,
+            color: AppColors.kChromeMid,
+          ),
         ),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    maxPainter.paint(
-      canvas,
-      Offset(
-        center.dx + (radius * 0.55) * math.cos(maxAngle) - maxPainter.width / 2,
-        center.dy +
-            (radius * 0.55) * math.sin(maxAngle) -
-            maxPainter.height / 2,
-      ),
-    );
+        textDirection: TextDirection.ltr,
+      )..layout();
+      minPainter.paint(
+        canvas,
+        Offset(
+          center.dx + (radius * 0.55) * math.cos(minAngle) - minPainter.width / 2,
+          center.dy +
+              (radius * 0.55) * math.sin(minAngle) -
+              minPainter.height / 2,
+        ),
+      );
+
+      // Max Label
+      const maxAngle = sweepStartRad + sweepAngleRad;
+      final maxPainter = TextPainter(
+        text: TextSpan(
+          text: maxLabel,
+          style: AppTypography.kCaption.copyWith(
+            fontFamily: 'ShareTechMono',
+            fontSize: AppDimensions.fontSizeDialLabel,
+            color: AppColors.kChromeMid,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      maxPainter.paint(
+        canvas,
+        Offset(
+          center.dx + (radius * 0.55) * math.cos(maxAngle) - maxPainter.width / 2,
+          center.dy +
+              (radius * 0.55) * math.sin(maxAngle) -
+              maxPainter.height / 2,
+        ),
+      );
+    }
   }
 
   @override
@@ -375,6 +408,7 @@ class _DialPainter extends CustomPainter {
         oldDelegate.title != title ||
         oldDelegate.minLabel != minLabel ||
         oldDelegate.maxLabel != maxLabel ||
-        oldDelegate.zones != zones;
+        oldDelegate.zones != zones ||
+        oldDelegate.dialLabels != dialLabels;
   }
 }

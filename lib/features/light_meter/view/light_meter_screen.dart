@@ -156,8 +156,10 @@ class LightMeterView extends StatelessWidget {
                           child: Center(
                             child: Builder(
                               builder: (context) {
-                                final numberFormatter = NumberFormat("0", "en");
-                                
+                                final locale = Localizations.localeOf(context).languageCode;
+                                final numberFormatter = NumberFormat("0", locale);
+                                final decimalFormatter = NumberFormat("0.0", locale);
+
                                 Color activeColor = AppColors.kLevelGreen;
                                 for (final zone in dialZones) {
                                   if (normalizedValue >= zone.start && normalizedValue <= zone.end) {
@@ -173,6 +175,22 @@ class LightMeterView extends StatelessWidget {
                                     ? l10n.commonUnitFootCandle
                                     : l10n.commonUnitLux;
 
+                                final List<String> dialLabels = state.useFootCandle
+                                    ? [
+                                        decimalFormatter.format(0.1),
+                                        numberFormatter.format(1),
+                                        numberFormatter.format(10),
+                                        numberFormatter.format(100),
+                                        numberFormatter.format(1000),
+                                      ]
+                                    : [
+                                        numberFormatter.format(1),
+                                        numberFormatter.format(10),
+                                        numberFormatter.format(100),
+                                        numberFormatter.format(1000),
+                                        numberFormatter.format(10000),
+                                      ];
+
                                 return GestureDetector(
                                   onTap: () => cubit.toggleUnit(),
                                   child: AnalogDialWidget(
@@ -181,6 +199,7 @@ class LightMeterView extends StatelessWidget {
                                     title: "",
                                     minLabel: numberFormatter.format(0),
                                     maxLabel: l10n.lightMeterMaxDialLabel,
+                                    dialLabels: dialLabels,
                                     size: 260.0,
                                     overlayWidget: Directionality(
                                       textDirection: TextDirection.ltr,
