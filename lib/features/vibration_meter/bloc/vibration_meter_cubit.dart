@@ -51,6 +51,12 @@ class VibrationMeterCubit extends Cubit<VibrationMeterState> {
     }
   }
 
+  /// Stops listening to the accelerometer.
+  void stopListening() {
+    _sensorSub?.cancel();
+    _sensorSub = null;
+  }
+
   void _onAccelerometerEvent(AccelerometerEvent event) {
     // Total acceleration vector length: sqrt(x² + y² + z²)
     final double gMagnitude = math.sqrt(

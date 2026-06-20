@@ -41,7 +41,7 @@ class MetalDetectorView extends StatefulWidget {
 }
 
 class _MetalDetectorViewState extends State<MetalDetectorView>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController _pulseController;
   late final PreferencesService _prefs = getIt<PreferencesService>();
 
@@ -53,12 +53,24 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
       duration: AppAnimations.metalDetectorPulseDefault,
     )..repeat();
     
+    WidgetsBinding.instance.addObserver(this);
+    
     if (!_prefs.metalFirstLaunchWarned) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _showFirstLaunchWarning();
         }
       });
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final cubit = context.read<MetalDetectorCubit>();
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      cubit.stopListening();
+    } else if (state == AppLifecycleState.resumed) {
+      cubit.startListening();
     }
   }
 
@@ -87,6 +99,7 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _pulseController.dispose();
     super.dispose();
   }
@@ -265,26 +278,11 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                     // 4. LED displays (height 70)
                     SizedBox(
                       height: 70,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: LedDisplay(
-                              value: _formatUt(context, state.deltaUt),
-                              unit: l10n.commonUnitMicrotesla,
-                              textStyle: AppTypography.kDisplayS,
-                              label: l10n.metalDetectorLabelMagneticDelta,
-                            ),
-                          ),
-                          const SizedBox(width: AppDimensions.space12),
-                          Expanded(
-                            child: LedDisplay(
-                              value: _formatUt(context, state.baseline),
-                              unit: l10n.commonUnitMicrotesla,
-                              textStyle: AppTypography.kDisplayS,
-                              label: l10n.metalDetectorLabelAmbientBaseline,
-                            ),
-                          ),
-                        ],
+                      child: LedDisplay(
+                        value: _formatUt(context, state.deltaUt),
+                        unit: l10n.commonUnitMicrotesla,
+                        textStyle: AppTypography.kDisplayS,
+                        label: l10n.metalDetectorLabelMagneticDelta,
                       ),
                     ),
                     const SizedBox(height: AppDimensions.space12),
@@ -303,18 +301,6 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                     ),
                     const SizedBox(height: AppDimensions.space12),
 
-                    // 6. Recalibrate Control
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TactileButton(
-                            onPressed: () => cubit.recalibrate(),
-                            text: l10n.metalDetectorRecalibrate,
-                            icon: const Icon(Icons.refresh),
-                          ),
-                        ),
-                      ],
-                    ),
                     const SizedBox(height: AppDimensions.space8),
                   ],
                 ),
@@ -351,8 +337,8 @@ class _IconToggleSmall extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Icon(
           isActive ? iconOn : iconOff,
-          color: Colors.black,
-          size: 20.0,
+          color: isActive ? AppColors.kDisplayGreen : Colors.white24,
+          size: 24.0,
         ),
       ),
     );

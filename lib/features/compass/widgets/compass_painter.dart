@@ -121,8 +121,8 @@ class CompassPainter extends CustomPainter {
       canvas.drawLine(startOffset, endOffset, activePaint);
     }
 
-    // Draw degree numbers radially at major ticks only (skipping 90 and 270)
-    const majorAngles = [0, 30, 60, 120, 150, 180, 210, 240, 300, 330];
+    // Draw degree numbers radially at major ticks (including 90 and 270)
+    const majorAngles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
     for (final angle in majorAngles) {
       final String label = angle.toString();
       final painter = _labelCache.putIfAbsent(label, () {
@@ -260,8 +260,8 @@ class CompassPainter extends CustomPainter {
     canvas.save();
     canvas.translate(center.dx, center.dy);
 
-    final double needleLength = dialRadius - 26.0;
-    const double needleWidth = 13.0;
+    final double needleLength = dialRadius - 36.0;
+    const double needleWidth = 9.0;
 
     // Draw shadow under the needle
     shadowPaint
@@ -341,7 +341,7 @@ class CompassPainter extends CustomPainter {
 
     // 4. Draw static heading indicator at the top (Lubber Line) - Static
     // Instead of a large triangle, draw a clean red dot at the top of the outer bezel
-    const double dotRadius = 4.0;
+    const double dotRadius = 2.5;
     final Offset dotOffset = Offset(center.dx, center.dy - outerRadius + 6.0);
     canvas.drawCircle(dotOffset, dotRadius, lubberPaint);
   }

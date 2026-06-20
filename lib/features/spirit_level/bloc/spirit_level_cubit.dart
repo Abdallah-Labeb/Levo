@@ -91,6 +91,12 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
     }
   }
 
+  /// Stops listening to the accelerometer.
+  void stopListening() {
+    _sensorSub?.cancel();
+    _sensorSub = null;
+  }
+
   void _onSensorEvent(AccelerometerEvent event) {
     if (state.isHeld) return;
 

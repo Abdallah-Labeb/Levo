@@ -18,6 +18,19 @@ class LightMeterCubit extends Cubit<LightMeterState> {
 
   /// Initializes the light sensor stream or fallback.
   Future<void> initialize() async {
+    await startListening();
+  }
+
+  /// Starts listening to the light sensor or camera.
+  Future<void> startListening() async {
+    if (_lightSubscription != null) return;
+    if (state.isCameraFallback) {
+      if (cameraController == null || !cameraController!.value.isStreamingImages) {
+        await _initializeCamera();
+      }
+      return;
+    }
+
     try {
       final Light light = Light();
       _lightSubscription = light.lightSensorStream.listen(
@@ -33,7 +46,17 @@ class LightMeterCubit extends Cubit<LightMeterState> {
     }
   }
 
+  /// Stops listening to the light sensor or camera.
+  Future<void> stopListening() async {
+    await _lightSubscription?.cancel();
+    _lightSubscription = null;
+    if (cameraController != null && cameraController!.value.isStreamingImages) {
+      await cameraController!.stopImageStream();
+    }
+  }
+
   void _onLightReading(int luxValue) {
+    if (state.isHeld) return;
     final double lux = luxValue.toDouble();
     final double ev = _calculateExposureValue(lux);
     final String sceneKey = _determineSceneKey(lux);
@@ -149,6 +172,7 @@ class LightMeterCubit extends Cubit<LightMeterState> {
   }
 
   void _processCameraImage(CameraImage image) {
+    if (state.isHeld) return;
     if (_isProcessingFrame) return;
     _isProcessingFrame = true;
 
@@ -187,6 +211,16 @@ class LightMeterCubit extends Cubit<LightMeterState> {
     } finally {
       _isProcessingFrame = false;
     }
+  }
+
+  /// Freezes/holds the current measurements.
+  void toggleHold() {
+    emit(state.copyWith(isHeld: !state.isHeld));
+  }
+
+  /// Resets hold states.
+  void reset() {
+    emit(state.copyWith(isHeld: false));
   }
 
   @override

@@ -30,8 +30,37 @@ class SoundMeterScreen extends StatelessWidget {
   }
 }
 
-class SoundMeterView extends StatelessWidget {
+class SoundMeterView extends StatefulWidget {
   const SoundMeterView({super.key});
+
+  @override
+  State<SoundMeterView> createState() => _SoundMeterViewState();
+}
+
+class _SoundMeterViewState extends State<SoundMeterView> with WidgetsBindingObserver {
+  late final SoundMeterCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = context.read<SoundMeterCubit>();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      _cubit.stopListening();
+    } else if (state == AppLifecycleState.resumed) {
+      _cubit.startListening();
+    }
+  }
 
   String _formatDb(BuildContext context, double db) {
     if (db == 0.0 || db.isInfinite || db.isNaN) return '---';
@@ -47,7 +76,7 @@ class SoundMeterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final cubit = context.read<SoundMeterCubit>();
+    final cubit = _cubit;
 
     return BlocBuilder<SoundMeterCubit, SoundMeterState>(
       builder: (context, state) {

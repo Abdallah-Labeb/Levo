@@ -29,8 +29,37 @@ class VibrationMeterScreen extends StatelessWidget {
   }
 }
 
-class VibrationMeterView extends StatelessWidget {
+class VibrationMeterView extends StatefulWidget {
   const VibrationMeterView({super.key});
+
+  @override
+  State<VibrationMeterView> createState() => _VibrationMeterViewState();
+}
+
+class _VibrationMeterViewState extends State<VibrationMeterView> with WidgetsBindingObserver {
+  late final VibrationMeterCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = context.read<VibrationMeterCubit>();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      _cubit.stopListening();
+    } else if (state == AppLifecycleState.resumed) {
+      _cubit.startListening();
+    }
+  }
 
   String _formatVal(BuildContext context, double val) {
     final formatter = NumberFormat("0.00", "en");
@@ -40,7 +69,7 @@ class VibrationMeterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final cubit = context.read<VibrationMeterCubit>();
+    final cubit = _cubit;
 
     return BlocBuilder<VibrationMeterCubit, VibrationMeterState>(
       builder: (context, state) {

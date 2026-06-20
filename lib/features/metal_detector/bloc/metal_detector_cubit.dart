@@ -56,6 +56,12 @@ class MetalDetectorCubit extends Cubit<MetalDetectorState> {
     }
   }
 
+  /// Stops listening to the magnetometer sensor.
+  void stopListening() {
+    _sensorSub?.cancel();
+    _sensorSub = null;
+  }
+
   void _onMagnetometerEvent(MagnetometerEvent event) {
     // Total magnetic field strength: sqrt(x² + y² + z²)
     final double fieldStrength = math.sqrt(
@@ -68,14 +74,23 @@ class MetalDetectorCubit extends Cubit<MetalDetectorState> {
       emit(state.copyWith(baseline: fieldStrength));
     }
 
+    double currentBaseline = state.baseline;
+    if (fieldStrength < currentBaseline) {
+      // If current field is less than baseline, instantly drop baseline
+      currentBaseline = fieldStrength;
+    } else {
+      // Slowly adapt baseline upwards to prevent absolute lock if ambient baseline shifted
+      currentBaseline = currentBaseline * 0.998 + fieldStrength * 0.002;
+    }
+
     // Calculate delta from baseline
-    final double rawDelta = (fieldStrength - state.baseline).abs();
+    final double rawDelta = (fieldStrength - currentBaseline).abs();
 
     // Classification of proximity alert level
     final double adjustedDelta = rawDelta * state.sensitivity;
     final MetalAlertLevel alert = _classifyAlertLevel(adjustedDelta);
 
-    emit(state.copyWith(deltaUt: rawDelta, alertLevel: alert));
+    emit(state.copyWith(baseline: currentBaseline, deltaUt: rawDelta, alertLevel: alert));
 
     // Handle audio/haptic pulse scheduling
     _triggerPulsedFeedback(alert);
@@ -161,7 +176,10 @@ class MetalDetectorCubit extends Cubit<MetalDetectorState> {
 
   /// Updates sensitivity factor.
   void updateSensitivity(double value) {
-    emit(state.copyWith(sensitivity: value));
+    final double adjustedDelta = state.deltaUt * value;
+    final MetalAlertLevel alert = _classifyAlertLevel(adjustedDelta);
+    emit(state.copyWith(sensitivity: value, alertLevel: alert));
+    _triggerPulsedFeedback(alert);
   }
 
   /// Toggles alert sound status.

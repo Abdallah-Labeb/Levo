@@ -34,10 +34,37 @@ class SpiritLevelScreen extends StatelessWidget {
   }
 }
 
-class SpiritLevelView extends StatelessWidget {
+class SpiritLevelView extends StatefulWidget {
   const SpiritLevelView({super.key});
 
+  @override
+  State<SpiritLevelView> createState() => _SpiritLevelViewState();
+}
 
+class _SpiritLevelViewState extends State<SpiritLevelView> with WidgetsBindingObserver {
+  late final SpiritLevelCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = context.read<SpiritLevelCubit>();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      _cubit.stopListening();
+    } else if (state == AppLifecycleState.resumed) {
+      _cubit.startListening();
+    }
+  }
 
   String _formatValue(BuildContext context, double value, bool isPercent) {
     double displayVal = value;
@@ -52,7 +79,7 @@ class SpiritLevelView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final cubit = context.read<SpiritLevelCubit>();
+    final cubit = _cubit;
 
     return BlocBuilder<SpiritLevelCubit, SpiritLevelState>(
       builder: (context, state) {
@@ -106,6 +133,31 @@ class SpiritLevelView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const SizedBox(height: AppDimensions.space12),
+
+                  // Sound and Vibration toggles
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.paddingL,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _IconToggleSmall(
+                          isActive: state.soundOn,
+                          onTap: () => cubit.toggleSound(!state.soundOn),
+                          iconOn: Icons.volume_up_rounded,
+                          iconOff: Icons.volume_off_rounded,
+                        ),
+                        _IconToggleSmall(
+                          isActive: state.hapticOn,
+                          onTap: () => cubit.toggleHaptic(!state.hapticOn),
+                          iconOn: Icons.vibration_rounded,
+                          iconOff: Icons.phone_android_outlined,
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: AppDimensions.space12),
 
                    // 1. Sub-mode Segmented control selectors (2D surface, 1D edge)
@@ -301,6 +353,36 @@ class SpiritLevelView extends StatelessWidget {
           bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
+    );
+  }
+}
+
+class _IconToggleSmall extends StatelessWidget {
+  const _IconToggleSmall({
+    required this.isActive,
+    required this.onTap,
+    required this.iconOn,
+    required this.iconOff,
+  });
+
+  final bool isActive;
+  final VoidCallback onTap;
+  final IconData iconOn;
+  final IconData iconOff;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Icon(
+          isActive ? iconOn : iconOff,
+          color: isActive ? AppColors.kDisplayGreen : Colors.white24,
+          size: 24.0,
+        ),
+      ),
     );
   }
 }

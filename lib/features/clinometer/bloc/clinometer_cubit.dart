@@ -52,21 +52,31 @@ class ClinometerCubit extends Cubit<ClinometerState> {
     }
   }
 
+  /// Stops listening to the accelerometer sensor.
+  void stopListening() {
+    _sensorSub?.cancel();
+    _sensorSub = null;
+  }
+
   void _onAccelerometerEvent(AccelerometerEvent event) {
     if (state.isHeld) return;
 
-    // Use the SAME axis convention as Spirit Level for consistency:
-    // Pitch: atan2(-x, sqrt(y² + z²)) - tilt around the device's short axis
-    // Roll:  atan2(y, z) - tilt around the device's long axis
-    final double rawPitch =
-        math.atan2(
-          -event.x,
-          math.sqrt(event.y * event.y + event.z * event.z),
-        ) *
-        (180.0 / math.pi);
+    final double gX = event.x;
+    final double gY = event.y;
+    final double gZ = event.z;
 
-    final double rawRoll =
-        math.atan2(event.y, event.z) * (180.0 / math.pi);
+    double rawPitch = 0.0;
+    double rawRoll = math.atan2(gY, gZ.abs()) * (180.0 / math.pi);
+
+    // Detect if device is upright (held on side/bottom edge) or flat on its back
+    if (gZ.abs() < 6.5) {
+      // Upright mode: measure tilt in screen plane.
+      final double refY = gY != 0 ? -gY : 1e-9;
+      rawPitch = math.atan2(-gX, refY) * (180.0 / math.pi);
+    } else {
+      // Flat mode: measure inclination of Y-axis relative to gravity (horizontal plane)
+      rawPitch = math.atan2(gY, gZ.abs()) * (180.0 / math.pi);
+    }
 
     // Apply low pass filter
     final double smoothedPitch = _pitchFilter.filter(rawPitch);

@@ -32,8 +32,37 @@ class LightMeterScreen extends StatelessWidget {
   }
 }
 
-class LightMeterView extends StatelessWidget {
+class LightMeterView extends StatefulWidget {
   const LightMeterView({super.key});
+
+  @override
+  State<LightMeterView> createState() => _LightMeterViewState();
+}
+
+class _LightMeterViewState extends State<LightMeterView> with WidgetsBindingObserver {
+  late final LightMeterCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = context.read<LightMeterCubit>();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      _cubit.stopListening();
+    } else if (state == AppLifecycleState.resumed) {
+      _cubit.startListening();
+    }
+  }
 
   String _formatVal(BuildContext context, double value, String format) {
     final formatter = NumberFormat(format, 'en');
@@ -53,7 +82,6 @@ class LightMeterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final cubit = context.read<LightMeterCubit>();
 
     return BlocBuilder<LightMeterCubit, LightMeterState>(
       builder: (context, state) {
@@ -136,7 +164,7 @@ class LightMeterView extends StatelessWidget {
                               const SizedBox(height: AppDimensions.space24),
                               TactileButton(
                                 onPressed: () =>
-                                    _requestCameraPermission(context, cubit),
+                                    _requestCameraPermission(context, _cubit),
                                 text: l10n.commonGrantAccess,
                                 icon: const Icon(Icons.check),
                               ),
@@ -192,7 +220,7 @@ class LightMeterView extends StatelessWidget {
                                       ];
 
                                 return GestureDetector(
-                                  onTap: () => cubit.toggleUnit(),
+                                  onTap: () => _cubit.toggleUnit(),
                                   child: AnalogDialWidget(
                                     value: normalizedValue,
                                     zones: dialZones,
@@ -245,7 +273,7 @@ class LightMeterView extends StatelessWidget {
                                   isActive: !state.useFootCandle,
                                   onPressed: () {
                                     if (state.useFootCandle) {
-                                      cubit.toggleUnit();
+                                      _cubit.toggleUnit();
                                     }
                                   },
                                   text: l10n.commonUnitLux.toUpperCase(),
@@ -260,7 +288,7 @@ class LightMeterView extends StatelessWidget {
                                   isActive: state.useFootCandle,
                                   onPressed: () {
                                     if (!state.useFootCandle) {
-                                      cubit.toggleUnit();
+                                      _cubit.toggleUnit();
                                     }
                                   },
                                   text: l10n.commonUnitFootCandle.toUpperCase(),
@@ -289,7 +317,7 @@ class LightMeterView extends StatelessWidget {
                                       ),
                                       const SizedBox(width: AppDimensions.space12),
                                       Expanded(
-                                        child: _buildCameraViewport(context, state, cubit),
+                                        child: _buildCameraViewport(context, state, _cubit),
                                       ),
                                     ],
                                   )
@@ -299,6 +327,24 @@ class LightMeterView extends StatelessWidget {
                                       child: _buildEvReadout(context, state),
                                     ),
                                   ),
+                          ),
+                        ),
+                        const SizedBox(height: AppDimensions.space12),
+
+                        // 3.5 Hold/Freeze button
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppDimensions.paddingL,
+                          ),
+                          child: TactileButton(
+                            isActive: state.isHeld,
+                            onPressed: () => _cubit.toggleHold(),
+                            text: state.isHeld
+                                ? l10n.spiritLevelButtonRelease
+                                : l10n.spiritLevelButtonHold,
+                            icon: Icon(
+                              state.isHeld ? Icons.play_arrow : Icons.pause,
+                            ),
                           ),
                         ),
                         const SizedBox(height: AppDimensions.space12),

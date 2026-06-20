@@ -69,6 +69,12 @@ class SoundMeterCubit extends Cubit<SoundMeterState> {
     }
   }
 
+  /// Stops listening to the microphone.
+  void stopListening() {
+    _noiseSub?.cancel();
+    _noiseSub = null;
+  }
+
   void _onNoiseReading(NoiseReading reading) {
     // Current instant decibel reading
     final double current = reading.meanDecibel;

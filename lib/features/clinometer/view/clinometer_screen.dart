@@ -28,18 +28,46 @@ class ClinometerScreen extends StatelessWidget {
     );
   }
 }
-
-class ClinometerView extends StatelessWidget {
+class ClinometerView extends StatefulWidget {
   const ClinometerView({super.key});
+
+  @override
+  State<ClinometerView> createState() => _ClinometerViewState();
+}
+
+class _ClinometerViewState extends State<ClinometerView> with WidgetsBindingObserver {
+  late final ClinometerCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = context.read<ClinometerCubit>();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      _cubit.stopListening();
+    } else if (state == AppLifecycleState.resumed) {
+      _cubit.startListening();
+    }
+  }
 
   String _formatVal(BuildContext context, double value, String format) {
     final formatter = NumberFormat(format, 'en');
     return formatter.format(value);
   }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final cubit = context.read<ClinometerCubit>();
 
     return BlocBuilder<ClinometerCubit, ClinometerState>(
       builder: (context, state) {
@@ -65,7 +93,6 @@ class ClinometerView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-
                     // 3. Slope diagram visualizer
                     Expanded(
                       flex: 4,
@@ -93,7 +120,21 @@ class ClinometerView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space12),
+                    const SizedBox(height: AppDimensions.space8),
+
+                    // Helper instruction text
+                    Center(
+                      child: Text(
+                        Localizations.localeOf(context).languageCode == 'ar'
+                            ? "ضع حافة الهاتف الجانبية على المنحدر، أو ظهر الهاتف مسطحاً"
+                            : "Place device side edge or back flat on the slope",
+                        style: AppTypography.kCaption.copyWith(
+                          color: AppColors.kTextSecondary.withAlpha(180),
+                          fontSize: 11.0,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppDimensions.space8),
 
                     // 4. LED displays for Angle (Degrees) and Grade (Percent)
                     SizedBox(
@@ -130,12 +171,12 @@ class ClinometerView extends StatelessWidget {
                     ),
                     const SizedBox(height: AppDimensions.space12),
 
-                    // 5. Hold & Reset Action Panel
+                    // 5. Hold Action Panel (Full-width)
                     Row(
                       children: [
                         Expanded(
                           child: TactileButton(
-                            onPressed: () => cubit.toggleHold(),
+                            onPressed: () => _cubit.toggleHold(),
                             text: state.isHeld
                                 ? l10n.spiritLevelButtonRelease
                                 : l10n.spiritLevelButtonHold,
@@ -145,14 +186,6 @@ class ClinometerView extends StatelessWidget {
                                   ? Icons.play_arrow_outlined
                                   : Icons.pause_outlined,
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: AppDimensions.space12),
-                        Expanded(
-                          child: TactileButton(
-                            onPressed: () => cubit.reset(),
-                            text: l10n.commonButtonReset,
-                            icon: const Icon(Icons.refresh),
                           ),
                         ),
                       ],

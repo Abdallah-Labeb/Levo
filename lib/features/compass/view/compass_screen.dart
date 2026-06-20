@@ -31,8 +31,37 @@ class CompassScreen extends StatelessWidget {
   }
 }
 
-class CompassView extends StatelessWidget {
+class CompassView extends StatefulWidget {
   const CompassView({super.key});
+
+  @override
+  State<CompassView> createState() => _CompassViewState();
+}
+
+class _CompassViewState extends State<CompassView> with WidgetsBindingObserver {
+  late final CompassCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = context.read<CompassCubit>();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      _cubit.stopListening();
+    } else if (state == AppLifecycleState.resumed) {
+      _cubit.startListening();
+    }
+  }
 
   String _formatDegree(BuildContext context, double heading) {
     final formatter = NumberFormat("0", "en");
@@ -75,7 +104,7 @@ class CompassView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final cubit = context.read<CompassCubit>();
+    final cubit = _cubit;
 
     return BlocBuilder<CompassCubit, CompassState>(
       builder: (context, state) {

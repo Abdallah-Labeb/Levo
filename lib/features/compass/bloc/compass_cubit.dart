@@ -77,6 +77,12 @@ class CompassCubit extends Cubit<CompassState> {
     }
   }
 
+  /// Stops listening to the compass sensor.
+  void stopListening() {
+    _compassSub?.cancel();
+    _compassSub = null;
+  }
+
   void _onCompassEvent(CompassEvent event) {
     final double? rawHeading = event.heading;
     if (rawHeading == null) {
