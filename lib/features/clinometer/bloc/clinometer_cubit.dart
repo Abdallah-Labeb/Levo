@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sensors_plus/sensors_plus.dart';
-import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/core/sensors/low_pass_filter.dart';
 import 'package:levo/core/sensors/sensor_error_type.dart';
 import 'package:levo/features/clinometer/bloc/clinometer_state.dart';
@@ -10,11 +9,8 @@ import 'package:levo/features/clinometer/bloc/clinometer_state.dart';
 /// Cubit managing clinometer accelerometer feeds, pitch/roll computations,
 /// slope grade ratios, low-pass smoothing, and visual holds.
 class ClinometerCubit extends Cubit<ClinometerState> {
-  ClinometerCubit({required PreferencesService prefs})
-    : _prefs = prefs,
-      super(const ClinometerState());
+  ClinometerCubit() : super(const ClinometerState());
 
-  final PreferencesService _prefs;
   StreamSubscription<AccelerometerEvent>? _sensorSub;
 
   // Use a low-pass filter to smooth the values
@@ -72,16 +68,9 @@ class ClinometerCubit extends Cubit<ClinometerState> {
     final double rawRoll =
         math.atan2(event.y, event.z) * (180.0 / math.pi);
 
-    // Apply shared calibration offsets from PreferencesService
-    final double calPitch = _prefs.calLevelPitch;
-    final double calRoll = _prefs.calLevelRoll;
-
-    final double pitchOffset = rawPitch - calPitch;
-    final double rollOffset = rawRoll - calRoll;
-
     // Apply low pass filter
-    final double smoothedPitch = _pitchFilter.filter(pitchOffset);
-    final double smoothedRoll = _rollFilter.filter(rollOffset);
+    final double smoothedPitch = _pitchFilter.filter(rawPitch);
+    final double smoothedRoll = _rollFilter.filter(rawRoll);
 
     // Compute percentage grade: tan(pitch_rad) * 100
     final double pitchRad = smoothedPitch * math.pi / 180.0;

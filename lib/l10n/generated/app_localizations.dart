@@ -1447,6 +1447,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Calibration reset'**
   String get rulerCalibrationReset;
+
+  /// No description provided for @settingsSpiritLevelCalibrateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Spirit Level Calibration'**
+  String get settingsSpiritLevelCalibrateTitle;
+
+  /// No description provided for @settingsSpiritLevelCalibrateDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Calibrates the internal accelerometer to define absolute flat (0.0°). This offsets slight hardware manufacturing variations.'**
+  String get settingsSpiritLevelCalibrateDesc;
+
+  /// No description provided for @settingsSpiritLevelCalibrateHow.
+  ///
+  /// In en, this message translates to:
+  /// **'How to Calibrate: Lay the device on a steady surface and tap \'Start\'. Rotate the device 180° on the same spot when prompted to capture the second reading.'**
+  String get settingsSpiritLevelCalibrateHow;
+
+  /// No description provided for @settingsSpiritLevelCalibrateBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Calibration Wizard'**
+  String get settingsSpiritLevelCalibrateBtn;
+
+  /// No description provided for @settingsSpiritLevelResetBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Spirit Level Calibration'**
+  String get settingsSpiritLevelResetBtn;
+
+  /// No description provided for @settingsSpiritLevelResetSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Spirit level calibration reset successfully'**
+  String get settingsSpiritLevelResetSuccess;
+
+  /// No description provided for @protractorModeManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual'**
+  String get protractorModeManual;
+
+  /// No description provided for @protractorModeCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get protractorModeCamera;
+
+  /// No description provided for @protractorModeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get protractorModeImage;
+
+  /// No description provided for @protractorButtonLock.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock Handles'**
+  String get protractorButtonLock;
+
+  /// No description provided for @protractorButtonUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Handles'**
+  String get protractorButtonUnlock;
+
+  /// No description provided for @protractorSnapInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap Interval'**
+  String get protractorSnapInterval;
+
+  /// No description provided for @protractorCameraDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera access is required for live measurement background.'**
+  String get protractorCameraDenied;
+
+  /// No description provided for @protractorSelectImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Image'**
+  String get protractorSelectImage;
+
+  /// No description provided for @protractorRemoveImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Image'**
+  String get protractorRemoveImage;
+
+  /// No description provided for @protractorVertexHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag Center Peg to adjust vertex position'**
+  String get protractorVertexHint;
+
+  /// No description provided for @protractorArmA.
+  ///
+  /// In en, this message translates to:
+  /// **'Arm A'**
+  String get protractorArmA;
+
+  /// No description provided for @protractorArmB.
+  ///
+  /// In en, this message translates to:
+  /// **'Arm B'**
+  String get protractorArmB;
+
+  /// No description provided for @protractorPreciseAdjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Fine Tuning'**
+  String get protractorPreciseAdjustment;
 }
 
 class _AppLocalizationsDelegate

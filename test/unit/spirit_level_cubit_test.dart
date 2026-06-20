@@ -44,8 +44,6 @@ void main() {
       'level_haptic_on': true,
       'level_viscosity': 0.1,
       'level_threshold': 0.5,
-      'cal_level_pitch': 0.0,
-      'cal_level_roll': 0.0,
     });
     final sharedPrefs = await SharedPreferences.getInstance();
     prefs = PreferencesService(sharedPrefs);
@@ -58,7 +56,7 @@ void main() {
 
   group('SpiritLevelCubit Unit Tests', () {
     test('Initial state reflects preferences configuration', () {
-      expect(cubit.state.mode, SpiritLevelMode.flat2d);
+      expect(cubit.state.mode, SpiritLevelMode.edge1d);
       expect(cubit.state.soundOn, true);
       expect(cubit.state.hapticOn, true);
       expect(cubit.state.pitch, 0.0);
@@ -93,14 +91,7 @@ void main() {
       expect(prefs.levelModeIndex, SpiritLevelMode.flat2d.index);
     });
 
-    test(
-      'saveCalibration updates offsets in preferences and resets filter state',
-      () async {
-        await cubit.saveCalibration(1.25, -0.75);
-        expect(prefs.calLevelPitch, 1.25);
-        expect(prefs.calLevelRoll, -0.75);
-      },
-    );
+
 
     test('toggleSound and toggleHaptic update states and preferences', () {
       cubit.toggleSound(false);

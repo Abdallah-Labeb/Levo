@@ -5,14 +5,22 @@ class ProtractorState extends Equatable {
   const ProtractorState({
     this.angleA = 0.0, // Angle of arm A in degrees (0..360)
     this.angleB = 45.0, // Angle of arm B in degrees (0..360)
-    this.reflexEnabled = false,
-    this.snapEnabled = true,
+    this.centerPercentX = 0.5, // Center horizontal coordinate (0.0..1.0)
+    this.centerPercentY = 0.5, // Center vertical coordinate (0.0..1.0)
+    this.isCameraActive = false, // Whether live camera feed background is active
+    this.isCameraInitialized = false,
+    this.cameraError,
+    this.imagePath, // Path of local gallery image used as background
   });
 
   final double angleA;
   final double angleB;
-  final bool reflexEnabled;
-  final bool snapEnabled;
+  final double centerPercentX;
+  final double centerPercentY;
+  final bool isCameraActive;
+  final bool isCameraInitialized;
+  final String? cameraError;
+  final String? imagePath;
 
   /// Calculates the raw angle difference between arm A and arm B (0..180)
   double get measuredAngle {
@@ -20,27 +28,40 @@ class ProtractorState extends Equatable {
     if (diff > 180.0) {
       diff = 360.0 - diff;
     }
-
-    if (reflexEnabled) {
-      return 360.0 - diff;
-    }
     return diff;
   }
 
   @override
-  List<Object?> get props => [angleA, angleB, reflexEnabled, snapEnabled];
+  List<Object?> get props => [
+        angleA,
+        angleB,
+        centerPercentX,
+        centerPercentY,
+        isCameraActive,
+        isCameraInitialized,
+        cameraError,
+        imagePath,
+      ];
 
   ProtractorState copyWith({
     double? angleA,
     double? angleB,
-    bool? reflexEnabled,
-    bool? snapEnabled,
+    double? centerPercentX,
+    double? centerPercentY,
+    bool? isCameraActive,
+    bool? isCameraInitialized,
+    String? cameraError,
+    String? imagePath,
   }) {
     return ProtractorState(
       angleA: angleA ?? this.angleA,
       angleB: angleB ?? this.angleB,
-      reflexEnabled: reflexEnabled ?? this.reflexEnabled,
-      snapEnabled: snapEnabled ?? this.snapEnabled,
+      centerPercentX: centerPercentX ?? this.centerPercentX,
+      centerPercentY: centerPercentY ?? this.centerPercentY,
+      isCameraActive: isCameraActive ?? this.isCameraActive,
+      isCameraInitialized: isCameraInitialized ?? this.isCameraInitialized,
+      cameraError: cameraError ?? this.cameraError,
+      imagePath: imagePath ?? this.imagePath,
     );
   }
 }

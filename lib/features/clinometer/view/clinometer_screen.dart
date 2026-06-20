@@ -11,7 +11,7 @@ import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/l10n/l10n_extension.dart';
-import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
+import 'package:levo/core/widgets/medium_rectangle_ad_widget.dart';
 import 'package:levo/features/clinometer/bloc/clinometer_cubit.dart';
 import 'package:levo/features/clinometer/bloc/clinometer_state.dart';
 import 'package:levo/features/clinometer/widgets/slope_diagram_painter.dart';
@@ -93,11 +93,11 @@ class ClinometerView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space16),
+                    const SizedBox(height: AppDimensions.space12),
 
                     // 4. LED displays for Angle (Degrees) and Grade (Percent)
-                    Expanded(
-                      flex: 2,
+                    SizedBox(
+                      height: 70,
                       child: Row(
                         children: [
                           Expanded(
@@ -128,7 +128,7 @@ class ClinometerView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space24),
+                    const SizedBox(height: AppDimensions.space12),
 
                     // 5. Hold & Reset Action Panel
                     Row(
@@ -157,13 +157,14 @@ class ClinometerView extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(height: AppDimensions.space12),
+                    const MediumRectangleAdWidget(),
                     const SizedBox(height: AppDimensions.space8),
                   ],
                 ),
               ),
             ),
           ),
-          bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
     );

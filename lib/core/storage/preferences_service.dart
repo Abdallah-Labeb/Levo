@@ -13,8 +13,6 @@ class PreferencesService {
   static const _kLanguageCode = 'language_code';
   static const _kKeepScreenOn = 'keep_screen_on';
 
-  static const _kCalLevelPitch = 'cal_level_pitch';
-  static const _kCalLevelRoll = 'cal_level_roll';
   static const _kLevelViscosity = 'level_viscosity';
   static const _kLevelThreshold = 'level_threshold';
   static const _kLevelMode = 'level_mode';
@@ -58,14 +56,6 @@ class PreferencesService {
       _prefs.setBool(_kKeepScreenOn, value);
 
   // ── Spirit Level Settings ─────────────────────────────────────────────────
-  double get calLevelPitch => _prefs.getDouble(_kCalLevelPitch) ?? 0.0;
-  Future<void> setCalLevelPitch(double value) =>
-      _prefs.setDouble(_kCalLevelPitch, value);
-
-  double get calLevelRoll => _prefs.getDouble(_kCalLevelRoll) ?? 0.0;
-  Future<void> setCalLevelRoll(double value) =>
-      _prefs.setDouble(_kCalLevelRoll, value);
-
   double get levelViscosity => _prefs.getDouble(_kLevelViscosity) ?? 0.5;
   Future<void> setLevelViscosity(double value) =>
       _prefs.setDouble(_kLevelViscosity, value);
@@ -74,7 +64,7 @@ class PreferencesService {
   Future<void> setLevelThreshold(double value) =>
       _prefs.setDouble(_kLevelThreshold, value);
 
-  int get levelModeIndex => _prefs.getInt(_kLevelMode) ?? 0;
+  int get levelModeIndex => _prefs.getInt(_kLevelMode) ?? 1;
   Future<void> setLevelModeIndex(int value) =>
       _prefs.setInt(_kLevelMode, value);
 
@@ -120,8 +110,6 @@ class PreferencesService {
 
   // ── Reset All Settings ────────────────────────────────────────────────────
   Future<void> clearAllCalibration() async {
-    await _prefs.remove(_kCalLevelPitch);
-    await _prefs.remove(_kCalLevelRoll);
     await _prefs.remove(_kRulerScaleFactor);
     await _prefs.remove(_kMetalFirstLaunchWarned);
   }

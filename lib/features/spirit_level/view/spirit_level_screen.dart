@@ -13,14 +13,12 @@ import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/sensors/sensor_error_type.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
-import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/features/spirit_level/bloc/spirit_level_cubit.dart';
 import 'package:levo/features/spirit_level/bloc/spirit_level_state.dart';
 import 'package:levo/features/spirit_level/widgets/bubble_level_2d_widget.dart';
 import 'package:levo/features/spirit_level/widgets/bubble_level_1d_widget.dart';
 
-import 'package:levo/features/spirit_level/widgets/calibration_wizard.dart';
 import 'package:levo/core/widgets/skeuomorphic_slider.dart';
 
 /// The entry screen for the Spirit Level, establishing the BlocProvider environment.
@@ -39,18 +37,7 @@ class SpiritLevelScreen extends StatelessWidget {
 class SpiritLevelView extends StatelessWidget {
   const SpiritLevelView({super.key});
 
-  void _showCalibrationWizard(BuildContext context, SpiritLevelCubit cubit) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          child: CalibrationWizard(cubit: cubit),
-        );
-      },
-    );
-  }
+
 
   String _formatValue(BuildContext context, double value, bool isPercent) {
     double displayVal = value;
@@ -103,8 +90,19 @@ class SpiritLevelView extends StatelessWidget {
 
         return Scaffold(
           appBar: LevoAppBar(title: l10n.spiritLevelTitle),
-          body: NoiseBackground(
-            child: SafeArea(
+          body: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onHorizontalDragEnd: (details) {
+              final double velocity = details.primaryVelocity ?? 0.0;
+              if (velocity.abs() > 200) {
+                final newMode = state.mode == SpiritLevelMode.flat2d
+                    ? SpiritLevelMode.edge1d
+                    : SpiritLevelMode.flat2d;
+                cubit.setMode(newMode);
+              }
+            },
+            child: NoiseBackground(
+              child: SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -135,45 +133,72 @@ class SpiritLevelView extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(height: AppDimensions.space12),
 
                   // 2. High-precision Digital Readout Indicator Panel
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppDimensions.paddingL,
-                      vertical: AppDimensions.paddingM,
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: LedDisplay(
-                            value: _formatValue(
-                              context,
-                              state.pitch,
-                              state.showPercent,
+                    child: SizedBox(
+                      height: 70,
+                      child: state.mode == SpiritLevelMode.edge1d
+                          ? Center(
+                              child: GestureDetector(
+                                onTap: () => cubit.togglePercent(),
+                                child: SizedBox(
+                                  width: 180.0,
+                                  child: LedDisplay(
+                                    value: _formatValue(
+                                      context,
+                                      state.roll,
+                                      state.showPercent,
+                                    ),
+                                    unit: state.showPercent
+                                        ? l10n.commonUnitPercent
+                                        : l10n.commonUnitDegrees,
+                                    textStyle: AppTypography.kDisplayS,
+                                    label: l10n.protractorLabelAngle,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : GestureDetector(
+                              onTap: () => cubit.togglePercent(),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: LedDisplay(
+                                      value: _formatValue(
+                                        context,
+                                        state.pitch,
+                                        state.showPercent,
+                                      ),
+                                      unit: state.showPercent
+                                          ? l10n.commonUnitPercent
+                                          : l10n.commonUnitDegrees,
+                                      textStyle: AppTypography.kDisplayS,
+                                      label: l10n.spiritLevelLabelPitch,
+                                    ),
+                                  ),
+                                  const SizedBox(width: AppDimensions.space12),
+                                  Expanded(
+                                    child: LedDisplay(
+                                      value: _formatValue(
+                                        context,
+                                        state.roll,
+                                        state.showPercent,
+                                      ),
+                                      unit: state.showPercent
+                                          ? l10n.commonUnitPercent
+                                          : l10n.commonUnitDegrees,
+                                      textStyle: AppTypography.kDisplayS,
+                                      label: l10n.spiritLevelLabelRoll,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            unit: state.showPercent
-                                ? l10n.commonUnitPercent
-                                : l10n.commonUnitDegrees,
-                            textStyle: AppTypography.kDisplayS,
-                            label: l10n.spiritLevelLabelPitch,
-                          ),
-                        ),
-                        const SizedBox(width: AppDimensions.space12),
-                        Expanded(
-                          child: LedDisplay(
-                            value: _formatValue(
-                              context,
-                              state.roll,
-                              state.showPercent,
-                            ),
-                            unit: state.showPercent
-                                ? l10n.commonUnitPercent
-                                : l10n.commonUnitDegrees,
-                            textStyle: AppTypography.kDisplayS,
-                            label: l10n.spiritLevelLabelRoll,
-                          ),
-                        ),
-                      ],
                     ),
                   ),
 
@@ -207,34 +232,36 @@ class SpiritLevelView extends StatelessWidget {
 
                   const SizedBox(height: AppDimensions.space12),
 
-                  // 5. Calibration, Hold and Reference buttons
+                  // 5. Viscosity / Damping slider panel
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppDimensions.paddingL,
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TactileButton(
-                            onPressed: () => _showCalibrationWizard(context, cubit),
-                            text: l10n.spiritLevelButtonCalibrate,
-                            icon: const Icon(Icons.tune),
-                          ),
-                        ),
-                        const SizedBox(width: AppDimensions.space12),
-                        Expanded(
-                          child: TactileButton(
-                            isActive: state.isHeld,
-                            onPressed: () => cubit.toggleHold(),
-                            text: state.isHeld
-                                ? l10n.spiritLevelButtonRelease
-                                : l10n.spiritLevelButtonHold,
-                            icon: Icon(
-                              state.isHeld ? Icons.play_arrow : Icons.pause,
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: SkeuomorphicSlider(
+                      value: state.viscosity,
+                      label: l10n.spiritLevelViscosityLabel,
+                      onChanged: (val) {
+                        cubit.updateViscosity(val);
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(height: AppDimensions.space12),
+
+                  // 6. Hold / Freeze button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.paddingL,
+                    ),
+                    child: TactileButton(
+                      isActive: state.isHeld,
+                      onPressed: () => cubit.toggleHold(),
+                      text: state.isHeld
+                          ? l10n.spiritLevelButtonRelease
+                          : l10n.spiritLevelButtonHold,
+                      icon: Icon(
+                        state.isHeld ? Icons.play_arrow : Icons.pause,
+                      ),
                     ),
                   ),
 
@@ -265,28 +292,11 @@ class SpiritLevelView extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: AppDimensions.space16),
-
-                  // 6. Viscosity / Damping slider panel
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimensions.paddingL,
-                    ),
-                    child: MetalPanel(
-                      child: SkeuomorphicSlider(
-                        value: state.viscosity,
-                        label: l10n.spiritLevelViscosityLabel,
-                        onChanged: (val) {
-                          cubit.updateViscosity(val);
-                        },
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: AppDimensions.space16),
+                  const SizedBox(height: AppDimensions.space8),
                 ],
               ),
             ),
+          ),
           ),
           bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );

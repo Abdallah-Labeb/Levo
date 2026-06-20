@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:levo/app/di/injection.dart';
+import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/core/storage/preferences_service.dart';
+import 'package:levo/core/widgets/noise_background.dart';
 
 /// A wrapper widget that displays a Google Mobile Ads [BannerAd] if the user is a free tier user.
 /// It renders a [SizedBox.shrink] if the user has purchased the Pro lifetime tier.
@@ -59,20 +61,38 @@ class _AdaptiveBannerAdWidgetState extends State<AdaptiveBannerAdWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_prefs.isPro || _bannerAd == null || !_isAdLoaded) {
+    if (_prefs.isPro) {
       return const SizedBox.shrink();
     }
 
+    // If the ad failed to load and was disposed/set to null, shrink it to zero
+    if (_bannerAd == null && !_isAdLoaded) {
+      return const SizedBox.shrink();
+    }
+
+    const double bannerHeight = 50.0;
+
     return Container(
-      alignment: Alignment.center,
       width: double.infinity,
-      height: _bannerAd!.size.height.toDouble(),
-      color: Colors.transparent,
-      child: SizedBox(
-        width: _bannerAd!.size.width.toDouble(),
-        height: _bannerAd!.size.height.toDouble(),
-        child: AdWidget(ad: _bannerAd!),
+      color: AppColors.kBackground,
+      child: NoiseBackground(
+        child: SafeArea(
+          top: false,
+          child: Container(
+            alignment: Alignment.center,
+            width: double.infinity,
+            height: bannerHeight,
+            child: _isAdLoaded && _bannerAd != null
+                ? SizedBox(
+                    width: _bannerAd!.size.width.toDouble(),
+                    height: _bannerAd!.size.height.toDouble(),
+                    child: AdWidget(ad: _bannerAd!),
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ),
       ),
     );
   }
 }
+

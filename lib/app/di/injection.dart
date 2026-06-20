@@ -67,7 +67,7 @@ Future<void> setupDependencies() async {
   );
 
   getIt.registerFactory<ProtractorCubit>(
-    () => ProtractorCubit(prefs: getIt<PreferencesService>()),
+    () => ProtractorCubit(),
   );
 
   getIt.registerFactory<SoundMeterCubit>(() => SoundMeterCubit());
@@ -79,7 +79,7 @@ Future<void> setupDependencies() async {
   getIt.registerFactory<MetalDetectorCubit>(() => MetalDetectorCubit());
 
   getIt.registerFactory<ClinometerCubit>(
-    () => ClinometerCubit(prefs: getIt<PreferencesService>()),
+    () => ClinometerCubit(),
   );
 
   getIt.registerFactory<UnitConverterCubit>(

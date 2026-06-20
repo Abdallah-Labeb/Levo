@@ -7,7 +7,7 @@ import 'package:levo/core/permissions/permission_service.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
-import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
+import 'package:levo/core/widgets/medium_rectangle_ad_widget.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_background.dart';
@@ -76,7 +76,6 @@ class CompassView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final cubit = context.read<CompassCubit>();
-    final declinationFormatter = NumberFormat("0.0", "en");
 
     return BlocBuilder<CompassCubit, CompassState>(
       builder: (context, state) {
@@ -212,33 +211,35 @@ class CompassView extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppDimensions.paddingL,
-                      vertical: AppDimensions.paddingM,
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: LedDisplay(
-                            value: _formatDegree(context, state.heading),
-                            textStyle: AppTypography.kDisplayS,
-                            label: l10n.compassLabelHeading,
-                          ),
-                        ),
-                        const SizedBox(width: AppDimensions.space12),
-                        Expanded(
-                          child: LedDisplay(
-                            value: _getLocalizedCardinal(
-                              context,
-                              state.heading,
+                    child: SizedBox(
+                      height: 70,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: LedDisplay(
+                              value: _formatDegree(context, state.heading),
+                              textStyle: AppTypography.kDisplayS,
+                              label: l10n.compassLabelHeading,
                             ),
-                            textStyle: AppTypography.kDisplayS,
-                            label: l10n.compassLabelCardinal,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: AppDimensions.space12),
+                          Expanded(
+                            child: LedDisplay(
+                              value: _getLocalizedCardinal(
+                                context,
+                                state.heading,
+                              ),
+                              textStyle: AppTypography.kDisplayS,
+                              label: l10n.compassLabelCardinal,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
 
-                  const SizedBox(height: AppDimensions.space16),
+                  const SizedBox(height: AppDimensions.space12),
 
                   // 5. Compass options buttons (Lock and True North toggles)
                   Padding(
@@ -281,37 +282,12 @@ class CompassView extends StatelessWidget {
 
                   const SizedBox(height: AppDimensions.space12),
 
-                  // 6. Sub-badge showing declination status
-                  if (state.trueNorthEnabled)
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppDimensions.paddingM,
-                          vertical: AppDimensions.paddingXS,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.kSurfaceInset,
-                          borderRadius: BorderRadius.circular(
-                            AppDimensions.radiusChip,
-                          ),
-                          border: Border.all(color: AppColors.kDivider),
-                        ),
-                        child: Text(
-                          "${l10n.compassDeclinationLabel}: ${state.declination > 0 ? '+' : (state.declination < 0 ? '-' : '')}${declinationFormatter.format(state.declination.abs())}°",
-                          style: AppTypography.kCaption.copyWith(
-                            color: AppColors.kYellow,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                  const SizedBox(height: AppDimensions.space24),
+                  const MediumRectangleAdWidget(),
+                  const SizedBox(height: AppDimensions.space8),
                 ],
               ),
             ),
           ),
-          bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
     );

@@ -12,7 +12,6 @@ import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
-import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/core/widgets/skeuomorphic_slider.dart';
 import 'package:levo/core/widgets/levo_popup.dart';
 import 'package:levo/l10n/l10n_extension.dart';
@@ -201,34 +200,48 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
 
                     // Warning popup is handled as a dialog on first launch
 
-                    // 2. Alert Status Text Badge
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppDimensions.paddingM,
-                          vertical: AppDimensions.paddingXS,
+                    // 2. Small Toggles & Alert Status Text Badge Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _IconToggleSmall(
+                          isActive: state.soundOn,
+                          onTap: () => cubit.toggleSound(!state.soundOn),
+                          iconOn: Icons.volume_up_rounded,
+                          iconOff: Icons.volume_off_rounded,
                         ),
-                        decoration: BoxDecoration(
-                          color: AppColors.kSurfaceInset,
-                          border: Border.all(color: AppColors.kDivider),
-                          borderRadius: BorderRadius.circular(
-                            AppDimensions.radiusChip,
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppDimensions.paddingM,
+                            vertical: AppDimensions.paddingXS,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.kSurfaceInset,
+                            border: Border.all(color: AppColors.kDivider),
+                            borderRadius: BorderRadius.circular(
+                              AppDimensions.radiusChip,
+                            ),
+                          ),
+                          child: Text(
+                            _getAlertText(context, state.alertLevel),
+                            style: AppTypography.kCaption.copyWith(
+                              color: _getAlertTextColor(state.alertLevel),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                        child: Text(
-                          _getAlertText(context, state.alertLevel),
-                          style: AppTypography.kCaption.copyWith(
-                            color: _getAlertTextColor(state.alertLevel),
-                            fontWeight: FontWeight.bold,
-                          ),
+                        _IconToggleSmall(
+                          isActive: state.hapticOn,
+                          onTap: () => cubit.toggleHaptic(!state.hapticOn),
+                          iconOn: Icons.vibration_rounded,
+                          iconOff: Icons.phone_android_outlined,
                         ),
-                      ),
+                      ],
                     ),
-                    const SizedBox(height: AppDimensions.space12),
+                    const SizedBox(height: AppDimensions.space8),
 
                     // 3. Proximity Radar Radar Scope View
                     Expanded(
-                      flex: 4,
                       child: Center(
                         child: AspectRatio(
                           aspectRatio: 1.0,
@@ -249,28 +262,9 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                     ),
                     const SizedBox(height: AppDimensions.space12),
 
-                    // Sound & Vibration Toggles on the two sides below the radar scope
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _IconToggle(
-                          isActive: state.soundOn,
-                          onTap: () => cubit.toggleSound(!state.soundOn),
-                          iconOn: Icons.volume_up_rounded,
-                          iconOff: Icons.volume_off_rounded,
-                        ),
-                        _IconToggle(
-                          isActive: state.hapticOn,
-                          onTap: () => cubit.toggleHaptic(!state.hapticOn),
-                          iconOn: Icons.vibration_rounded,
-                          iconOff: Icons.phone_android_outlined,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppDimensions.space12),
-
-                    Expanded(
-                      flex: 2,
+                    // 4. LED displays (height 70)
+                    SizedBox(
+                      height: 70,
                       child: Row(
                         children: [
                           Expanded(
@@ -293,26 +287,21 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space16),
+                    const SizedBox(height: AppDimensions.space12),
 
                     // 5. Sensitivity Slider (Knob panel)
-                    MetalPanel(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppDimensions.paddingM),
-                        child: SkeuomorphicSlider(
-                          value: state.sensitivity,
-                          min: 0.5,
-                          max: 2.5,
-                          divisions: 8,
-                          label: l10n.metalDetectorLabelSensitivity,
-                          valueFormatter: (val) => l10n.metalDetectorSensitivityValue(
-                            NumberFormat('0.0', 'en').format(val),
-                          ),
-                          onChanged: (val) => cubit.updateSensitivity(val),
-                        ),
+                    SkeuomorphicSlider(
+                      value: state.sensitivity,
+                      min: 0.5,
+                      max: 2.5,
+                      divisions: 8,
+                      label: l10n.metalDetectorLabelSensitivity,
+                      valueFormatter: (val) => l10n.metalDetectorSensitivityValue(
+                        NumberFormat('0.0', 'en').format(val),
                       ),
+                      onChanged: (val) => cubit.updateSensitivity(val),
                     ),
-                    const SizedBox(height: AppDimensions.space16),
+                    const SizedBox(height: AppDimensions.space12),
 
                     // 6. Recalibrate Control
                     Row(
@@ -326,7 +315,7 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppDimensions.space16),
+                    const SizedBox(height: AppDimensions.space8),
                   ],
                 ),
               ),
@@ -339,9 +328,9 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
   }
 }
 
-// ─── Icon-only toggle button ─────────────────────────────────────────────────
-class _IconToggle extends StatelessWidget {
-  const _IconToggle({
+// ─── Small borderless toggle button ──────────────────────────────────────────
+class _IconToggleSmall extends StatelessWidget {
+  const _IconToggleSmall({
     required this.isActive,
     required this.onTap,
     required this.iconOn,
@@ -357,24 +346,13 @@ class _IconToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width: 52,
-        height: 52,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: isActive
-              ? AppColors.kYellow.withAlpha(30)
-              : AppColors.kSurfaceInset,
-          border: Border.all(
-            color: isActive ? AppColors.kYellow : AppColors.kBorderHighlight,
-            width: 1.5,
-          ),
-        ),
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Icon(
           isActive ? iconOn : iconOff,
-          color: isActive ? AppColors.kYellow : AppColors.kChromeMid,
-          size: 26,
+          color: Colors.black,
+          size: 20.0,
         ),
       ),
     );

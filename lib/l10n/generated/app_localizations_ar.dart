@@ -717,4 +717,65 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get rulerCalibrationReset => 'تمت إعادة ضبط المعايرة';
+
+  @override
+  String get settingsSpiritLevelCalibrateTitle => 'معايرة ميزان الماء';
+
+  @override
+  String get settingsSpiritLevelCalibrateDesc =>
+      'تُعاير مستشعر التسارع الداخلي لتحديد مستوى الاستواء المطلق (0.0°). هذا يلغي الفروقات الطفيفة الناتجة عن تصنيع الهاتف.';
+
+  @override
+  String get settingsSpiritLevelCalibrateHow =>
+      'طريقة المعايرة: ضع الهاتف على سطح مستوٍ وثابت واضغط على \'بدء\'. قم بتدوير الهاتف 180 درجة في نفس المكان عندما يُطلب منك ذلك لالتقاط القراءة الثانية.';
+
+  @override
+  String get settingsSpiritLevelCalibrateBtn => 'بدء معالج المعايرة';
+
+  @override
+  String get settingsSpiritLevelResetBtn => 'إعادة تعيين معايرة ميزان الماء';
+
+  @override
+  String get settingsSpiritLevelResetSuccess =>
+      'تمت إعادة ضبط معايرة ميزان الماء بنجاح';
+
+  @override
+  String get protractorModeManual => 'يدوي';
+
+  @override
+  String get protractorModeCamera => 'الكاميرا';
+
+  @override
+  String get protractorModeImage => 'صورة';
+
+  @override
+  String get protractorButtonLock => 'قفل المؤشرات';
+
+  @override
+  String get protractorButtonUnlock => 'إلغاء القفل';
+
+  @override
+  String get protractorSnapInterval => 'فاصل المحاذاة';
+
+  @override
+  String get protractorCameraDenied =>
+      'مطلوب إذن الكاميرا لعرض خلفية القياس المباشر.';
+
+  @override
+  String get protractorSelectImage => 'اختر صورة';
+
+  @override
+  String get protractorRemoveImage => 'إزالة الصورة';
+
+  @override
+  String get protractorVertexHint => 'اسحب نقطة الارتكاز لضبط موضع الزاوية';
+
+  @override
+  String get protractorArmA => 'المؤشر أ';
+
+  @override
+  String get protractorArmB => 'المؤشر ب';
+
+  @override
+  String get protractorPreciseAdjustment => 'الضبط الدقيق';
 }

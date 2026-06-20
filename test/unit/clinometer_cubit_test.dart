@@ -1,22 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/features/clinometer/bloc/clinometer_cubit.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  late PreferencesService prefs;
   late ClinometerCubit cubit;
 
-  setUp(() async {
-    SharedPreferences.setMockInitialValues({
-      'cal_level_pitch': 0.0,
-      'cal_level_roll': 0.0,
-    });
-    final sharedPrefs = await SharedPreferences.getInstance();
-    prefs = PreferencesService(sharedPrefs);
-    cubit = ClinometerCubit(prefs: prefs);
+  setUp(() {
+    cubit = ClinometerCubit();
   });
 
   tearDown(() async {

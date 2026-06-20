@@ -712,4 +712,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rulerCalibrationReset => 'Calibration reset';
+
+  @override
+  String get settingsSpiritLevelCalibrateTitle => 'Spirit Level Calibration';
+
+  @override
+  String get settingsSpiritLevelCalibrateDesc =>
+      'Calibrates the internal accelerometer to define absolute flat (0.0°). This offsets slight hardware manufacturing variations.';
+
+  @override
+  String get settingsSpiritLevelCalibrateHow =>
+      'How to Calibrate: Lay the device on a steady surface and tap \'Start\'. Rotate the device 180° on the same spot when prompted to capture the second reading.';
+
+  @override
+  String get settingsSpiritLevelCalibrateBtn => 'Start Calibration Wizard';
+
+  @override
+  String get settingsSpiritLevelResetBtn => 'Reset Spirit Level Calibration';
+
+  @override
+  String get settingsSpiritLevelResetSuccess =>
+      'Spirit level calibration reset successfully';
+
+  @override
+  String get protractorModeManual => 'Manual';
+
+  @override
+  String get protractorModeCamera => 'Camera';
+
+  @override
+  String get protractorModeImage => 'Image';
+
+  @override
+  String get protractorButtonLock => 'Lock Handles';
+
+  @override
+  String get protractorButtonUnlock => 'Unlock Handles';
+
+  @override
+  String get protractorSnapInterval => 'Snap Interval';
+
+  @override
+  String get protractorCameraDenied =>
+      'Camera access is required for live measurement background.';
+
+  @override
+  String get protractorSelectImage => 'Select Image';
+
+  @override
+  String get protractorRemoveImage => 'Remove Image';
+
+  @override
+  String get protractorVertexHint =>
+      'Drag Center Peg to adjust vertex position';
+
+  @override
+  String get protractorArmA => 'Arm A';
+
+  @override
+  String get protractorArmB => 'Arm B';
+
+  @override
+  String get protractorPreciseAdjustment => 'Fine Tuning';
 }

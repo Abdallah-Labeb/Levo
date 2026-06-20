@@ -13,7 +13,7 @@ class SpiritLevelState extends Equatable {
     this.pitch = 0.0,
     this.roll = 0.0,
     this.status = LevelStatus.off,
-    this.mode = SpiritLevelMode.flat2d,
+    this.mode = SpiritLevelMode.edge1d,
     this.isHeld = false,
     this.showPercent = false,
     this.isSensorAvailable = true,

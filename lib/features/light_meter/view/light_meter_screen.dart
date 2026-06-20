@@ -15,7 +15,7 @@ import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/core/widgets/metal_panel.dart';
 import 'package:levo/l10n/l10n_extension.dart';
-import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
+import 'package:levo/core/widgets/medium_rectangle_ad_widget.dart';
 import 'package:levo/features/light_meter/bloc/light_meter_cubit.dart';
 import 'package:levo/features/light_meter/bloc/light_meter_state.dart';
 
@@ -214,13 +214,54 @@ class LightMeterView extends StatelessWidget {
                           ),
                         ),
 
+                        // 2.5 Visible Unit Switcher (Lux vs Foot-candle)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppDimensions.paddingL,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TactileButton(
+                                  isActive: !state.useFootCandle,
+                                  onPressed: () {
+                                    if (state.useFootCandle) {
+                                      cubit.toggleUnit();
+                                    }
+                                  },
+                                  text: l10n.commonUnitLux.toUpperCase(),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: AppDimensions.paddingS,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: AppDimensions.space12),
+                              Expanded(
+                                child: TactileButton(
+                                  isActive: state.useFootCandle,
+                                  onPressed: () {
+                                    if (!state.useFootCandle) {
+                                      cubit.toggleUnit();
+                                    }
+                                  },
+                                  text: l10n.commonUnitFootCandle.toUpperCase(),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: AppDimensions.paddingS,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: AppDimensions.space12),
+
                         // 3. EV (Exposure Value) LCD Readout and Camera fallback status
                         Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppDimensions.paddingL,
                           ),
                           child: SizedBox(
-                            height: 80,
+                            height: 70,
                             child: state.isCameraFallback
                                 ? Row(
                                     children: [
@@ -233,15 +274,21 @@ class LightMeterView extends StatelessWidget {
                                       ),
                                     ],
                                   )
-                                : _buildEvReadout(context, state),
+                                : Center(
+                                    child: SizedBox(
+                                      width: 180.0,
+                                      child: _buildEvReadout(context, state),
+                                    ),
+                                  ),
                           ),
                         ),
-                        const SizedBox(height: AppDimensions.space24),
+                        const SizedBox(height: AppDimensions.space12),
+                        const MediumRectangleAdWidget(),
+                        const SizedBox(height: AppDimensions.space12),
                       ],
                     ),
             ),
           ),
-          bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
     );
@@ -262,43 +309,26 @@ class LightMeterView extends StatelessWidget {
     LightMeterState state,
     LightMeterCubit cubit,
   ) {
-    final l10n = context.l10n;
     return MetalPanel(
       child: Padding(
-        padding: const EdgeInsets.all(AppDimensions.paddingS),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              l10n.lightMeterLabelCameraViewport,
-              style: AppTypography.kCaption.copyWith(
-                color: AppColors.kTextSecondary,
-                letterSpacing: 0.5,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppDimensions.space8),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
-                child: state.isCameraInitialized && cubit.cameraController != null
-                    ? AspectRatio(
-                        aspectRatio: 1.0,
-                        child: CameraPreview(cubit.cameraController!),
-                      )
-                    : Container(
-                        color: AppColors.kSurfaceInset,
-                        child: const Center(
-                          child: Icon(
-                            Icons.lightbulb_outline,
-                            color: AppColors.kChromeMid,
-                            size: 32.0,
-                          ),
-                        ),
-                      ),
-              ),
-            ),
-          ],
+        padding: const EdgeInsets.all(AppDimensions.paddingXS),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
+          child: state.isCameraInitialized && cubit.cameraController != null
+              ? AspectRatio(
+                  aspectRatio: 1.0,
+                  child: CameraPreview(cubit.cameraController!),
+                )
+              : Container(
+                  color: AppColors.kSurfaceInset,
+                  child: const Center(
+                    child: Icon(
+                      Icons.lightbulb_outline,
+                      color: AppColors.kChromeMid,
+                      size: 24.0,
+                    ),
+                  ),
+                ),
         ),
       ),
     );

@@ -15,6 +15,7 @@ import 'package:levo/l10n/l10n_extension.dart';
 
 import 'package:levo/core/widgets/levo_popup.dart';
 
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
@@ -26,6 +27,8 @@ class SettingsScreen extends StatelessWidget {
     if (_validCategories.contains(stored)) return stored;
     return 'length';
   }
+
+
 
   void _showResetCalibrationDialog(
     BuildContext context,
@@ -221,6 +224,7 @@ class SettingsScreen extends StatelessWidget {
 
                 // 3. Sensor & Calibration
                 _buildSectionHeader(context, context.l10n.settingsSectionSensor),
+
                 _buildSettingsCard(
                   child: Column(
                     children: [

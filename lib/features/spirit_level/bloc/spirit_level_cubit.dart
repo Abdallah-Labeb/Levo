@@ -109,13 +109,9 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
     final filteredRawPitch = _pitchFilter.filter(rawPitch);
     final filteredRawRoll = _rollFilter.filter(rawRoll);
 
-    // Apply baseline calibration offsets
-    final calibratedPitch = filteredRawPitch - _prefs.calLevelPitch;
-    final calibratedRoll = filteredRawRoll - _prefs.calLevelRoll;
-
     // Apply relative zero references (Set Reference)
-    final finalPitch = calibratedPitch - _refPitchOffset;
-    final finalRoll = calibratedRoll - _refRollOffset;
+    final finalPitch = filteredRawPitch - _refPitchOffset;
+    final finalRoll = filteredRawRoll - _refRollOffset;
 
     // Calculate total slope deviation
     final totalDeviation = state.mode == SpiritLevelMode.flat2d
@@ -195,17 +191,18 @@ class SpiritLevelCubit extends Cubit<SpiritLevelState> {
 
   /// Resets the relative zero reference to baseline calibration.
   void resetReference() {
+    final double prevPitchOffset = _refPitchOffset;
+    final double prevRollOffset = _refRollOffset;
     _refPitchOffset = 0.0;
     _refRollOffset = 0.0;
+
+    // Immediately reflect the reset in the UI by adding the offsets back to the active state values.
+    final newPitch = state.pitch + prevPitchOffset;
+    final newRoll = state.roll + prevRollOffset;
+    emit(state.copyWith(pitch: newPitch, roll: newRoll));
   }
 
-  /// Saves baseline calibration offsets computed from calibration wizard.
-  Future<void> saveCalibration(double pitchOffset, double rollOffset) async {
-    await _prefs.setCalLevelPitch(pitchOffset);
-    await _prefs.setCalLevelRoll(rollOffset);
-    _pitchFilter.reset();
-    _rollFilter.reset();
-  }
+
 
   /// Updates alpha values based on viscosity settings.
   void updateViscosity(double viscosity) {

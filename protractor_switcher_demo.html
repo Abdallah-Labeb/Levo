@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>Levo — مقترحات تبديل الأوضاع المبسطة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0f0f11;
+      --panel-bg: #18181a;
+      --panel-border: #262628;
+      --aluminum-gradient: linear-gradient(135deg, #353538 0%, #151517 100%);
+      --accent-yellow: #f5c22b;
+      --accent-orange: #ff6b35;
+      --neon-green: #39ff14;
+      --led-glow: 0 0 15px rgba(57, 255, 20, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: #eee;
+      font-family: 'Cairo', 'Outfit', sans-serif;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background-image: radial-gradient(circle at center, #202025 0%, #08080a 100%);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      max-width: 800px;
+    }
+
+    header h1 {
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--accent-yellow);
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    header p {
+      font-size: 15px;
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+    /* Live LED Display Board */
+    .status-board {
+      background: #030305;
+      border: 2px solid #202025;
+      border-radius: 12px;
+      padding: 12px 25px;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.9), 0 4px 15px rgba(0,0,0,0.5);
+      width: 100%;
+      max-width: 500px;
+      justify-content: space-between;
+    }
+
+    .status-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #555;
+      font-weight: bold;
+    }
+
+    .led-display {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--neon-green);
+      text-shadow: var(--led-glow);
+      letter-spacing: 2px;
+    }
+
+    .section-title {
+      width: 100%;
+      max-width: 1100px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #eee;
+      margin: 30px 0 15px 0;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #222;
+      align-self: center;
+      text-align: right;
+    }
+
+    .section-title span {
+      color: var(--accent-yellow);
+    }
+
+    /* Main Showcase Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 25px;
+      width: 100%;
+      max-width: 1100px;
+      margin-bottom: 40px;
+    }
+
+    /* Premium Panel Card */
+    .panel {
+      background-color: var(--panel-bg);
+      border-radius: 12px;
+      border: 1px solid var(--panel-border);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.02);
+      min-height: 240px;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #bbb;
+      margin-bottom: 15px;
+      align-self: flex-start;
+      border-right: 3px solid var(--accent-yellow);
+      padding-right: 8px;
+    }
+
+    .widget-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+      width: 100%;
+    }
+
+    .panel-footer {
+      font-size: 11px;
+      color: #555;
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    /* ---------------------------------------------------- */
+    /* DESIGN 7: Compact Dropdown Menu */
+    /* ---------------------------------------------------- */
+    .dropdown-container {
+      position: relative;
+      width: 130px;
+    }
+
+    .dropdown-trigger {
+      width: 100%;
+      height: 40px;
+      background: var(--aluminum-gradient);
+      border: 1px solid #444;
+      border-radius: 8px;
+      color: #ccc;
+      font-size: 12px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .dropdown-trigger svg {
+      width: 12px;
+      height: 12px;
+      fill: #888;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 45px;
+      left: 0;
+      right: 0;
+      background: #141416;
+      border: 1px solid #333;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      z-index: 10;
+      display: none;
+    }
+
+    .dropdown-item {
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #888;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: right;
+    }
+
+    .dropdown-item:hover {
+      background: #1e1e22;
+      color: #fff;
+    }
+
+    .dropdown-item.active {
+      color: var(--accent-yellow);
+    }
+
+    /* ---------------------------------------------------- */
+    /* DESIGN 8: Tactile Dot Indicators (Dot Bar) */
+    /* ---------------------------------------------------- */
+    .dot-bar {
+      background: #09090b;
+      border: 1px solid #222;
+      border-radius: 15px;
+      padding: 5px 12px;
+      display: flex;
+      gap: 16px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.7);
+    }
+
+    .dot-button {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #444 0%, #1a1a1c 100%);
+      border: 1px solid #111;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dot-button::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: transparent;
+      transition: all 0.2s;
+    }
+
+    .dot-button.active::after {
+      background: var(--neon-green);
+      box-shadow: 0 0 8px var(--neon-green);
+    }
+
+    /* ---------------------------------------------------- */
+    /* DESIGN 9: Micro Slider Pin */
+    /* ---------------------------------------------------- */
+    .micro-slider-track {
+      width: 140px;
+      height: 18px;
+      background: #08080a;
+      border-radius: 9px;
+      border: 1px solid #222;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .micro-slider-labels {
+      display: flex;
+      justify-content: space-between;
+      width: 140px;
+      padding: 0 6px;
+      margin-top: 6px;
+    }
+
+    .micro-slider-label {
+      font-size: 9px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .micro-slider-label.active {
+      color: var(--accent-orange);
+    }
+
+    .micro-slider-pin {
+      position: absolute;
+      top: -3px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--aluminum-gradient);
+      border: 1px solid #555;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      cursor: grab;
+      transition: left 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .micro-slider-pin::after {
+      content: '';
+      position: absolute;
+      top: 4px; left: 10px; width: 2px; height: 14px;
+      background: var(--accent-orange);
+      border-radius: 1px;
+    }
+
+    /* ---------------------------------------------------- */
+    /* DESIGN 10: Pure Icon Cycler Button */
+    /* ---------------------------------------------------- */
+    .pure-cycler {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--aluminum-gradient);
+      border: 1px solid #444;
+      box-shadow: 
+        0 3px 6px rgba(0,0,0,0.4), 
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        inset 0 -1px 0 rgba(0,0,0,0.5);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      color: var(--neon-green);
+    }
+
+    .pure-cycler:active {
+      transform: scale(0.95);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+    }
+
+    .pure-cycler svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+      filter: drop-shadow(0 0 4px rgba(57,255,20,0.4));
+    }
+
+    /* ---------------------------------------------------- */
+    /* DESIGN 11: Micro Text Segments */
+    /* ---------------------------------------------------- */
+    .text-segments {
+      display: flex;
+      background: #08080a;
+      border: 1px solid #222;
+      border-radius: 6px;
+      padding: 2px;
+      width: 140px;
+    }
+
+    .text-segment {
+      flex: 1;
+      font-size: 10px;
+      font-weight: 800;
+      color: #555;
+      text-align: center;
+      padding: 6px 0;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .text-segment.active {
+      background: #1c1c1f;
+      color: var(--accent-yellow);
+    }
+
+    /* ---------------------------------------------------- */
+    /* DESIGN 12: Mini Toggle Pill */
+    /* ---------------------------------------------------- */
+    .mini-pill {
+      background: #08080a;
+      border-radius: 12px;
+      border: 1px solid #222;
+      padding: 2px;
+      display: flex;
+      position: relative;
+      width: 120px;
+      height: 24px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
+    }
+
+    .mini-pill button {
+      background: transparent;
+      border: none;
+      color: #666;
+      flex: 1;
+      font-size: 9px;
+      font-weight: bold;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+      transition: color 0.2s;
+    }
+
+    .mini-pill button.active {
+      color: #000;
+    }
+
+    .mini-pill-slider {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 37px;
+      height: 18px;
+      background: var(--aluminum-gradient);
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+      border: 1px solid #444;
+      transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+      z-index: 1;
+    }
+
+    /* ---------------------------------------------------- */
+    /* ORIGINAL INTERACTIVE STYLES FOR REFERENCE */
+    /* ---------------------------------------------------- */
+    .segmented-switch {
+      background: #0d0d0d; border: 1px solid #333; border-radius: 30px; padding: 4px; display: flex; position: relative; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8); width: 260px; height: 48px;
+    }
+    .segmented-switch button {
+      background: transparent; border: none; color: #777; flex: 1; font-size: 13px; font-weight: bold; cursor: pointer; position: relative; z-index: 2; transition: color 0.3s;
+    }
+    .segmented-switch button.active { color: #000; }
+    .segmented-slider {
+      position: absolute; top: 4px; right: 4px; width: 82px; height: 40px; background: var(--aluminum-gradient); border-radius: 26px; box-shadow: 0 2px 5px rgba(0,0,0,0.4); border: 1px solid #4a4a4a; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1.1); z-index: 1;
+    }
+
+    .rotary-widget { position: relative; width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; }
+    .rotary-label { position: absolute; font-size: 12px; font-weight: bold; color: #666; cursor: pointer; }
+    .rotary-label.active { color: var(--accent-yellow); }
+    .label-manual { top: 10px; left: 50%; transform: translateX(-50%); }
+    .label-camera { bottom: 15px; left: 15px; }
+    .label-image { bottom: 15px; right: 15px; }
+    .rotary-knob-outer { width: 70px; height: 70px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #555, #222); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.6); border: 2px solid #2a2a2a; cursor: pointer; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2); }
+    .rotary-knob-inner { width: 56px; height: 56px; border-radius: 50%; background: conic-gradient(from 0deg, #444 0%, #222 25%, #888 50%, #333 75%, #444 100%); position: relative; }
+    .rotary-indicator { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 4px; height: 10px; background: var(--accent-yellow); border-radius: 2px; }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>مفاتيح تبديل الأوضاع (المبسطة والصغيرة)</h1>
+    <p>لقد قمت بإضافة <strong>6 مقترحات مبسطة (Micro / Compact)</strong> جديدة في الجزء الأول. تتميز هذه التصاميم بصغر حجمها المطلق لتناسب شريط التحكم العلوي بجانب شاشة الزاوية دون تشتيت أو أخذ مساحة بصرية تذكر.</p>
+  </header>
+
+  <!-- Live Status Display Board -->
+  <div class="status-board">
+    <div class="status-label">الوضع النشط حالياً:</div>
+    <div class="led-display" id="global-status">MANUAL</div>
+  </div>
+
+  <!-- SECTION: SIMPLIFIED MICRO DESIGNS -->
+  <div class="section-title">المجموعة الأولى: <span>مفاهيم مبسطة فائقة الصغر (Micro)</span></div>
+  <div class="grid">
+
+    <!-- Design 7: Compact Dropdown Menu -->
+    <div class="panel">
+      <div class="panel-title">المقترح 7: القائمة المنسدلة الغائرة (Dropdown Menu)</div>
+      <div class="widget-container">
+        <div class="dropdown-container">
+          <div class="dropdown-trigger" onclick="toggleDropdown()">
+            <span id="dropdown-text">يدوي</span>
+            <svg viewBox="0 0 24 24"><path d="M7,10L12,15L17,10H7Z"/></svg>
+          </div>
+          <div class="dropdown-menu" id="dropdown-menu">
+            <div class="dropdown-item active" onclick="selectDropdown('MANUAL', 'يدوي')">يدوي</div>
+            <div class="dropdown-item" onclick="selectDropdown('CAMERA', 'كاميرا')">كاميرا</div>
+            <div class="dropdown-item" onclick="selectDropdown('IMAGE', 'صورة')">صورة</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer">يأخذ مساحة زر واحد فقط؛ بالنقر عليه ينسدل خيار تحديد الوضع يدوياً بقائمة مرتبة.</div>
+    </div>
+
+    <!-- Design 8: Tactile Dot Indicators -->
+    <div class="panel">
+      <div class="panel-title">المقترح 8: شريط النقاط التفاعلية (Dot Bar)</div>
+      <div class="widget-container">
+        <div class="dot-bar">
+          <div class="dot-button active" id="dot-0" onclick="updateMode('MANUAL')" title="يدوي"></div>
+          <div class="dot-button" id="dot-1" onclick="updateMode('CAMERA')" title="كاميرا"></div>
+          <div class="dot-button" id="dot-2" onclick="updateMode('IMAGE')" title="صورة"></div>
+        </div>
+      </div>
+      <div class="panel-footer">ثلاث نقاط معدنية غائرة. تضيء النقطة النشطة بليد أخضر نيون فسفوري. مساحة بصرية صغيرة جداً.</div>
+    </div>
+
+    <!-- Design 9: Micro Slider Pin -->
+    <div class="panel">
+      <div class="panel-title">المقترح 9: المزلاج الصغير (Micro Slider Pin)</div>
+      <div class="widget-container">
+        <div>
+          <div class="micro-slider-track" onclick="clickSliderTrack(event)">
+            <div class="micro-slider-pin" id="slider-pin" style="right: 4px;"></div>
+          </div>
+          <div class="micro-slider-labels">
+            <span class="micro-slider-label active" id="slabel-0">يدوي</span>
+            <span class="micro-slider-label" id="slabel-1">كاميرا</span>
+            <span class="micro-slider-label" id="slabel-2">صورة</span>
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer">مجرى صغير ومزلاج معدني غائر ينزلق بمرونة فائقة بين الأوضاع الثلاثة.</div>
+    </div>
+
+    <!-- Design 10: Pure Icon Cycler -->
+    <div class="panel">
+      <div class="panel-title">المقترح 10: زر الأيقونة الحلقي الصغير (Icon Cycler)</div>
+      <div class="widget-container">
+        <button class="pure-cycler" id="pure-cycler" onclick="cycleModePure()" title="انقر للتبديل">
+          <svg viewBox="0 0 24 24" id="cycler-svg"><path d="M4,4H20V20H4V4M6,6V18H18V6H6M8,8H16V16H8V8Z"/></svg>
+        </button>
+      </div>
+      <div class="panel-footer">الحد الأدنى للمساحة. زر دائري وحيد تتبدل أيقونته ولونه مع كل نقرة ليعبّر عن الوضع.</div>
+    </div>
+
+    <!-- Design 11: Micro Text Segments -->
+    <div class="panel">
+      <div class="panel-title">المقترح 11: مفاتيح النصوص المصغرة (Text Segments)</div>
+      <div class="widget-container">
+        <div class="text-segments">
+          <div class="text-segment active" id="tseg-0" onclick="updateMode('MANUAL')">M</div>
+          <div class="text-segment" id="tseg-1" onclick="updateMode('CAMERA')">C</div>
+          <div class="text-segment" id="tseg-2" onclick="updateMode('IMAGE')">I</div>
+        </div>
+      </div>
+      <div class="panel-footer">تبديل نصي مبسط جداً بالحروف الأولى فقط للأوضاع (Manual, Camera, Image).</div>
+    </div>
+
+    <!-- Design 12: Mini Toggle Pill -->
+    <div class="panel">
+      <div class="panel-title">المقترح 12: كبسولة التحكم المصغرة (Mini Pill)</div>
+      <div class="widget-container">
+        <div class="mini-pill">
+          <div class="mini-pill-slider" id="mini-pill-slider" style="transform: translateX(0px);"></div>
+          <button class="active" id="pill-btn-0" onclick="updateMode('MANUAL')">يدوي</button>
+          <button id="pill-btn-1" onclick="updateMode('CAMERA')">كاميرا</button>
+          <button id="pill-btn-2" onclick="updateMode('IMAGE')">صورة</button>
+        </div>
+      </div>
+      <div class="panel-footer">نسخة مصغرة ورقيقة جداً من مفتاح الشرائح المعدني تناسب الهوامش الضيقة للواجهات.</div>
+    </div>
+
+  </div>
+
+  <!-- SECTION: ORIGINAL SHOWCASE FOR REFERENCE -->
+  <div class="section-title">المجموعة الثانية: <span>المقترحات الميكانيكية السابقة (Mechanical)</span></div>
+  <div class="grid">
+    <!-- Design 1: Segmented metal switch -->
+    <div class="panel">
+      <div class="panel-title">المقترح 1: شريط الشرائح المعدني (Segmented Switch)</div>
+      <div class="widget-container">
+        <div class="segmented-switch" id="switcher-segmented">
+          <div class="segmented-slider" id="slider-segmented"></div>
+          <button class="active" onclick="updateMode('MANUAL', 0)">يدوي</button>
+          <button onclick="updateMode('CAMERA', 1)">كاميرا</button>
+          <button onclick="updateMode('IMAGE', 2)">صورة</button>
+        </div>
+      </div>
+      <div class="panel-footer">تخطيط معدني متوسط الحجم.</div>
+    </div>
+
+    <!-- Design 2: Rotary dial -->
+    <div class="panel">
+      <div class="panel-title">المقترح 2: المفتاح الدوار الميكانيكي (Rotary Dial)</div>
+      <div class="widget-container">
+        <div class="rotary-widget">
+          <span class="rotary-label label-manual active" onclick="updateMode('MANUAL')">M</span>
+          <span class="rotary-label label-camera" onclick="updateMode('CAMERA')">C</span>
+          <span class="rotary-label label-image" onclick="updateMode('IMAGE')">I</span>
+          <div class="rotary-knob-outer" id="knob-rotary" onclick="cycleRotary()">
+            <div class="rotary-knob-inner">
+              <div class="rotary-indicator"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer">مقبض ميكانيكي دوار.</div>
+    </div>
+  </div>
+
+  <script>
+    let currentMode = 'MANUAL';
+
+    function updateMode(mode, index = -1) {
+      currentMode = mode;
+      document.getElementById('global-status').innerText = mode;
+      
+      // Update LED colors based on mode
+      const led = document.getElementById('global-status');
+      if (mode === 'MANUAL') led.style.color = '#39ff14';
+      if (mode === 'CAMERA') led.style.color = '#ff6b35';
+      if (mode === 'IMAGE') led.style.color = '#f5c22b';
+
+      const idx = mode === 'MANUAL' ? 0 : (mode === 'CAMERA' ? 1 : 2);
+
+      // Sync 7: Dropdown
+      const dropdownItems = document.querySelectorAll('.dropdown-item');
+      dropdownItems.forEach((item, i) => {
+        if (i === idx) item.classList.add('active');
+        else item.classList.remove('active');
+      });
+      const names = ['يدوي', 'كاميرا', 'صورة'];
+      document.getElementById('dropdown-text').innerText = names[idx];
+
+      // Sync 8: Dot indicators
+      document.querySelectorAll('.dot-button').forEach(dot => dot.classList.remove('active'));
+      document.getElementById(`dot-${idx}`).classList.add('active');
+
+      // Sync 9: Micro Slider Pin
+      const pin = document.getElementById('slider-pin');
+      // track is 140px, pin is 24px. Range: 4px to 112px
+      if (idx === 0) pin.style.right = '4px';
+      if (idx === 1) pin.style.right = '58px';
+      if (idx === 2) pin.style.right = '112px';
+      
+      document.querySelectorAll('.micro-slider-label').forEach(lbl => lbl.classList.remove('active'));
+      document.getElementById(`slabel-${idx}`).classList.add('active');
+
+      // Sync 10: Pure Icon Cycler
+      const cyclerBtn = document.getElementById('pure-cycler');
+      const svg = document.getElementById('cycler-svg');
+      
+      if (idx === 0) {
+        cyclerBtn.style.color = '#39ff14';
+        svg.innerHTML = '<path d="M4,4H20V20H4V4M6,6V18H18V6H6M8,8H16V16H8V8Z"/>';
+      } else if (idx === 1) {
+        cyclerBtn.style.color = '#ff6b35';
+        svg.innerHTML = '<path d="M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z"/>';
+      } else if (idx === 2) {
+        cyclerBtn.style.color = '#f5c22b';
+        svg.innerHTML = '<path d="M8.5,13.5L11,16.5L14.5,12L19,18H5L8.5,13.5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19M5,5H19V19H5V5Z"/>';
+      }
+
+      // Sync 11: Text Segments
+      document.querySelectorAll('.text-segment').forEach(seg => seg.classList.remove('active'));
+      document.getElementById(`tseg-${idx}`).classList.add('active');
+
+      // Sync 12: Mini Pill
+      const pillSlider = document.getElementById('mini-pill-slider');
+      pillSlider.style.transform = `translateX(-${idx * 39}px)`;
+      document.querySelectorAll('.mini-pill button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`pill-btn-${idx}`).classList.add('active');
+
+      // Sync Original 1: Segmented Switcher
+      const slider = document.getElementById('slider-segmented');
+      if (slider) slider.style.transform = `translateX(-${idx * 86}px)`;
+      const origButtons = document.querySelectorAll('.segmented-switch button');
+      origButtons.forEach((btn, bIdx) => {
+        if (bIdx === idx) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+
+      // Sync Original 2: Rotary
+      const knob = document.getElementById('knob-rotary');
+      if (knob) {
+        const labels = document.querySelectorAll('.rotary-label');
+        labels.forEach(lbl => lbl.classList.remove('active'));
+        if (idx === 0) {
+          knob.style.transform = 'rotate(0deg)';
+          document.querySelector('.label-manual').classList.add('active');
+        } else if (idx === 1) {
+          knob.style.transform = 'rotate(-120deg)';
+          document.querySelector('.label-camera').classList.add('active');
+        } else if (idx === 2) {
+          knob.style.transform = 'rotate(120deg)';
+          document.querySelector('.label-image').classList.add('active');
+        }
+      }
+    }
+
+    // Dropdown Actions
+    function toggleDropdown() {
+      const menu = document.getElementById('dropdown-menu');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function selectDropdown(mode, name) {
+      updateMode(mode);
+      toggleDropdown();
+    }
+
+    // Slider click actions
+    function clickSliderTrack(event) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const percent = x / rect.width;
+      if (percent < 0.33) updateMode('MANUAL');
+      else if (percent < 0.66) updateMode('CAMERA');
+      else updateMode('IMAGE');
+    }
+
+    // Pure Cycle Button
+    function cycleModePure() {
+      if (currentMode === 'MANUAL') updateMode('CAMERA');
+      else if (currentMode === 'CAMERA') updateMode('IMAGE');
+      else updateMode('MANUAL');
+    }
+
+    // Rotary
+    function cycleRotary() {
+      if (currentMode === 'MANUAL') updateMode('CAMERA');
+      else if (currentMode === 'CAMERA') updateMode('IMAGE');
+      else updateMode('MANUAL');
+    }
+  </script>
+</body>
+</html>

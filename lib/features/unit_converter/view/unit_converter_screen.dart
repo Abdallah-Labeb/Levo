@@ -13,7 +13,7 @@ import 'package:levo/core/widgets/levo_popup.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 
 import 'package:levo/l10n/l10n_extension.dart';
-import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
+import 'package:levo/core/widgets/medium_rectangle_ad_widget.dart';
 import 'package:levo/features/unit_converter/domain/conversion_engine.dart';
 import 'package:levo/features/unit_converter/bloc/unit_converter_cubit.dart';
 import 'package:levo/features/unit_converter/bloc/unit_converter_state.dart';
@@ -187,7 +187,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                         },
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space24),
+                    const SizedBox(height: AppDimensions.space12),
 
                     // 2. Numeric Input Section
                     Text(
@@ -196,9 +196,9 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                         color: AppColors.kBlack,
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space8),
+                    const SizedBox(height: AppDimensions.space4),
                     Container(
-                      height: 56.0,
+                      height: 50.0,
                       decoration: BoxDecoration(
                         color: AppColors.kSurfaceInset,
                         borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
@@ -251,7 +251,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                           ),
                           Container(
                             width: 1.5,
-                            height: 32.0,
+                            height: 28.0,
                             color: AppColors.kDivider,
                           ),
                           Padding(
@@ -279,7 +279,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space12),
+                    const SizedBox(height: AppDimensions.space8),
 
                     // 3. Swap Units middle controller
                     Center(
@@ -288,11 +288,11 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                         child: const Icon(
                           Icons.swap_vert_rounded,
                           color: AppColors.kBlack,
-                          size: 36.0,
+                          size: 32.0,
                         ),
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space12),
+                    const SizedBox(height: AppDimensions.space8),
 
                     // 4. Output Display Section
                     Text(
@@ -301,9 +301,9 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                         color: AppColors.kBlack,
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space8),
+                    const SizedBox(height: AppDimensions.space4),
                     Container(
-                      height: 56.0,
+                      height: 50.0,
                       decoration: BoxDecoration(
                         color: AppColors.kSurfaceInset,
                         borderRadius: BorderRadius.circular(AppDimensions.radiusChip),
@@ -384,7 +384,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                           ),
                           Container(
                             width: 1.5,
-                            height: 32.0,
+                            height: 28.0,
                             color: AppColors.kDivider,
                           ),
                           Padding(
@@ -412,7 +412,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space24),
+                    const SizedBox(height: AppDimensions.space12),
 
                     // 5. Standalone Copy Button
                     TactileButton(
@@ -427,13 +427,14 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                         vertical: AppDimensions.paddingM,
                       ),
                     ),
-                    const SizedBox(height: AppDimensions.space16),
+                    const SizedBox(height: AppDimensions.space12),
+                    const MediumRectangleAdWidget(),
+                    const SizedBox(height: AppDimensions.space8),
                   ],
                 ),
               ),
             ),
           ),
-          bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
     );
