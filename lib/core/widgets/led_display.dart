@@ -33,75 +33,94 @@ class LedDisplay extends StatelessWidget {
         ? AppColors.kDisplayGreenDim
         : AppColors.kDisplayGreen;
 
-    return Container(
-      padding: padding ?? const EdgeInsets.symmetric(
-        horizontal: AppDimensions.paddingS,
-        vertical: AppDimensions.paddingS,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.black, // Dark black screen background
-        border: Border.all(
-          color: const Color(0xFF1E2126), // Uniform slot edge border
-          width: 1.0,
-        ),
-        borderRadius: BorderRadius.circular(4.0), // Rounded corners for slot
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x66000000),
-            offset: Offset(0, 1),
-            blurRadius: 2,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool isHeightConstrained = constraints.maxHeight.isFinite;
+
+        Widget labelWidget = Text(
+          label?.toUpperCase() ?? "",
+          style: AppTypography.kSectionHeader.copyWith(
+            fontSize: labelFontSize ?? 11.0,
+            color: Colors.white,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
           ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          if (label != null && label!.isNotEmpty) ...[
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.center,
-              child: Text(
-                label!.toUpperCase(),
-                style: AppTypography.kSectionHeader.copyWith(
-                  fontSize: labelFontSize ?? 11.0,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1.2,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        );
+
+        Widget valueWidget = Directionality(
+          textDirection: TextDirection.ltr,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text(value, style: textStyle.copyWith(color: displayColor)),
+              if (unit != null) ...[
+                const SizedBox(width: AppDimensions.space4),
+                Text(
+                  unit!,
+                  style: AppTypography.kUnitLabel.copyWith(
+                    fontSize: AppDimensions.ledUnitFontSize - 2, // slightly smaller unit inside
+                    color: displayColor,
+                  ),
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+              ],
+            ],
+          ),
+        );
+
+        Widget labelFitted = FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.center,
+          child: labelWidget,
+        );
+
+        Widget valueFitted = FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.center,
+          child: valueWidget,
+        );
+
+        List<Widget> children = [
+          if (label != null && label!.isNotEmpty) ...[
+            isHeightConstrained ? Flexible(flex: 1, child: labelFitted) : labelFitted,
             SizedBox(height: spacing),
           ],
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.center,
-            child: Directionality(
-              textDirection: TextDirection.ltr,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text(value, style: textStyle.copyWith(color: displayColor)),
-                  if (unit != null) ...[
-                    const SizedBox(width: AppDimensions.space4),
-                    Text(
-                      unit!,
-                      style: AppTypography.kUnitLabel.copyWith(
-                        fontSize: AppDimensions.ledUnitFontSize - 2, // slightly smaller unit inside
-                        color: displayColor,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
+          isHeightConstrained ? Flexible(flex: 2, child: valueFitted) : valueFitted,
+        ];
+
+        Widget content = Column(
+          mainAxisSize: isHeightConstrained ? MainAxisSize.max : MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: children,
+        );
+
+        return Container(
+          padding: padding ?? const EdgeInsets.symmetric(
+            horizontal: AppDimensions.paddingS,
+            vertical: AppDimensions.paddingS,
           ),
-        ],
-      ),
+          decoration: BoxDecoration(
+            color: Colors.black, // Dark black screen background
+            border: Border.all(
+              color: const Color(0xFF1E2126), // Uniform slot edge border
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(4.0), // Rounded corners for slot
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x66000000),
+                offset: Offset(0, 1),
+                blurRadius: 2,
+              ),
+            ],
+          ),
+          child: content,
+        );
+      },
     );
   }
 }
