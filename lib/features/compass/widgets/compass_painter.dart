@@ -9,10 +9,15 @@ import 'package:levo/features/compass/bloc/compass_state.dart';
 /// Displays a machined chrome bezel, a rotating dial card with green cardinal markers,
 /// intercardinals, degree numbers, and a static faceted diamond needle.
 class CompassPainter extends CustomPainter {
-  CompassPainter({required this.heading, required this.accuracy});
+  CompassPainter({
+    required this.heading,
+    required this.accuracy,
+    required this.devicePixelRatio,
+  });
 
   final double heading;
   final CompassAccuracy accuracy;
+  final double devicePixelRatio;
 
   static final Paint bezelPaint = Paint();
   static final Paint groovePaint = Paint();
@@ -75,6 +80,7 @@ class CompassPainter extends CustomPainter {
   // Dial Image Cache variables (Raster Caching)
   static ui.Image? _cachedDialImage;
   static double? _cachedDialRadius;
+  static double? _cachedDpr;
 
   /// Draws the rotating dial card elements onto the canvas centered at Offset.zero
   void _drawDialCard(Canvas canvas, double dialRadius) {
@@ -216,19 +222,24 @@ class CompassPainter extends CustomPainter {
       ..strokeWidth = 2.0;
     canvas.drawCircle(center, dialRadius + 1.0, groovePaint);
 
-    // Rasterize and cache the dial image if null or radius changes (completely stable, no text shake)
-    final int imageSize = (dialRadius * 2).ceil();
-    if (_cachedDialImage == null || _cachedDialRadius != dialRadius) {
+    // Rasterize and cache the dial image if null or radius/DPR changes (completely stable, no text shake)
+    final double physicalSize = dialRadius * 2 * devicePixelRatio;
+    final int imageSize = physicalSize.ceil();
+    if (_cachedDialImage == null || _cachedDialRadius != dialRadius || _cachedDpr != devicePixelRatio) {
       final recorder = ui.PictureRecorder();
       final recordingCanvas = Canvas(recorder);
       
-      // Center the dial card drawing at (dialRadius, dialRadius)
+      // Scale the canvas so logical drawing commands are recorded at physical resolution
+      recordingCanvas.scale(devicePixelRatio);
+      
+      // Center the dial card drawing at (dialRadius, dialRadius) in logical coordinates
       recordingCanvas.translate(dialRadius, dialRadius);
       _drawDialCard(recordingCanvas, dialRadius);
       
       final picture = recorder.endRecording();
       _cachedDialImage = picture.toImageSync(imageSize, imageSize);
       _cachedDialRadius = dialRadius;
+      _cachedDpr = devicePixelRatio;
     }
 
     // 2. Rotate canvas and draw rotating dial card image (completely stable, no text shake)
@@ -236,8 +247,13 @@ class CompassPainter extends CustomPainter {
     canvas.translate(center.dx, center.dy);
     // Rotating opposite of heading so N points to North in space
     canvas.rotate(-heading * math.pi / 180.0);
-    // Draw centered raster image
-    canvas.drawImage(_cachedDialImage!, Offset(-dialRadius, -dialRadius), Paint());
+    // Draw centered raster image mapped from physical dimensions back to logical bounds
+    canvas.drawImageRect(
+      _cachedDialImage!,
+      Rect.fromLTWH(0, 0, _cachedDialImage!.width.toDouble(), _cachedDialImage!.height.toDouble()),
+      Rect.fromCircle(center: Offset.zero, radius: dialRadius),
+      Paint()..filterQuality = ui.FilterQuality.high,
+    );
     canvas.restore(); // Restore dial card rotation
 
     // 3. Draw static needle pointers (North = Faceted Red, South = Faceted Silver/Gray)

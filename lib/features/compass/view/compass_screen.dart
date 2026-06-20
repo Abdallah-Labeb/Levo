@@ -165,47 +165,46 @@ class CompassView extends StatelessWidget {
                     ),
                   ),
 
-                  // 2. Spacer above the compass to push it down
-                  const Spacer(flex: 1),
-
-                  // 3. Rotating Compass Dial card visualizer (Centered)
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      final double dialSize = math.min(
-                        math.min(
-                          constraints.maxWidth - 32.0,
-                          constraints.maxHeight - 32.0,
-                        ),
-                        AppDimensions.compassDialSize,
-                      );
-
-                      return Center(
-                        child: Container(
-                          width: dialSize,
-                          height: dialSize,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x99000000),
-                                offset: Offset(4, 8),
-                                blurRadius: 16,
-                              ),
-                            ],
+                  // 2. Rotating Compass Dial card visualizer (Centered)
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final double dialSize = math.min(
+                          math.min(
+                            constraints.maxWidth - 32.0,
+                            constraints.maxHeight - 32.0,
                           ),
-                          child: CustomPaint(
-                            painter: CompassPainter(
-                              heading: state.heading,
-                              accuracy: state.accuracy,
+                          AppDimensions.compassDialSize,
+                        );
+
+                        if (dialSize <= 0) return const SizedBox.shrink();
+
+                        return Center(
+                          child: Container(
+                            width: dialSize,
+                            height: dialSize,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0x99000000),
+                                  offset: Offset(4, 8),
+                                  blurRadius: 16,
+                                ),
+                              ],
+                            ),
+                            child: CustomPaint(
+                              painter: CompassPainter(
+                                heading: state.heading,
+                                accuracy: state.accuracy,
+                                devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-
-                  // 4. Spacer below the compass to balance it
-                  const Spacer(flex: 1),
 
                   // 4. LED Digital Readout display
                   Padding(

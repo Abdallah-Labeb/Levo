@@ -110,7 +110,7 @@ class _ProtractorViewState extends State<ProtractorView> {
                       bottom: AppDimensions.paddingS,
                     ),
                     child: SizedBox(
-                      height: 64.0,
+                      height: 80.0,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -129,7 +129,7 @@ class _ProtractorViewState extends State<ProtractorView> {
                           // Center: Measured Angle LED Display (Expanded for dynamic sizing)
                           Expanded(
                             child: SizedBox(
-                              height: 64.0,
+                              height: 80.0,
                               child: LedDisplay(
                                 value: _formatAngle(context, state.measuredAngle),
                                 label: l10n.protractorLabelAngle,
