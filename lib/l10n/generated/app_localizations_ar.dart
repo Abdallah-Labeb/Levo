@@ -778,4 +778,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get protractorPreciseAdjustment => 'الضبط الدقيق';
+
+  @override
+  String get clinometerHelpInstructions =>
+      'ضع حافة الهاتف الجانبية على المنحدر، أو ظهر الهاتف مسطحاً';
 }

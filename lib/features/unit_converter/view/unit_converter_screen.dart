@@ -193,7 +193,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                     Text(
                       l10n.unitConverterFromUnit,
                       style: AppTypography.kSectionHeader.copyWith(
-                        color: AppColors.kBlack,
+                        color: AppColors.kTextSecondary,
                       ),
                     ),
                     const SizedBox(height: AppDimensions.space4),
@@ -228,7 +228,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                                 ),
                                 textDirection: TextDirection.ltr,
                                 style: AppTypography.kDisplayS.copyWith(
-                                  fontSize: 22.0,
+                                  fontSize: AppDimensions.fontSizeOnboardingTitle,
                                   color: AppColors.kYellow,
                                   fontFamily: 'ShareTechMono',
                                 ),
@@ -287,7 +287,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                         onTap: () => cubit.swapUnits(),
                         child: const Icon(
                           Icons.swap_vert_rounded,
-                          color: AppColors.kBlack,
+                          color: AppColors.kChromeLight,
                           size: 32.0,
                         ),
                       ),
@@ -298,7 +298,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                     Text(
                       l10n.unitConverterToUnit,
                       style: AppTypography.kSectionHeader.copyWith(
-                        color: AppColors.kBlack,
+                        color: AppColors.kTextSecondary,
                       ),
                     ),
                     const SizedBox(height: AppDimensions.space4),
@@ -329,7 +329,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                               child: LayoutBuilder(
                                 builder: (context, constraints) {
                                   final style = AppTypography.kDisplayS.copyWith(
-                                    fontSize: 22.0,
+                                    fontSize: AppDimensions.fontSizeOnboardingTitle,
                                     color: AppColors.kDisplayGreen,
                                     fontFamily: 'ShareTechMono',
                                   );
@@ -360,7 +360,9 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                                                 offset: const Offset(0, -4),
                                                 child: Text(
                                                   exponent,
-                                                  style: style.copyWith(fontSize: 14.0),
+                                                  style: style.copyWith(
+                                                    fontSize: AppTypography.kBody.fontSize,
+                                                  ),
                                                 ),
                                               ),
                                             ),

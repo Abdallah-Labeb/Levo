@@ -13,6 +13,7 @@ import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/core/widgets/skeuomorphic_slider.dart';
+import 'package:levo/core/widgets/icon_toggle_button.dart';
 import 'package:levo/core/widgets/levo_popup.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
@@ -217,7 +218,7 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _IconToggleSmall(
+                        IconToggleButton(
                           isActive: state.soundOn,
                           onTap: () => cubit.toggleSound(!state.soundOn),
                           iconOn: Icons.volume_up_rounded,
@@ -243,7 +244,7 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                             ),
                           ),
                         ),
-                        _IconToggleSmall(
+                        IconToggleButton(
                           isActive: state.hapticOn,
                           onTap: () => cubit.toggleHaptic(!state.hapticOn),
                           iconOn: Icons.vibration_rounded,
@@ -313,37 +314,6 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
           bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
-    );
-  }
-}
-
-// ─── Small borderless toggle button ──────────────────────────────────────────
-class _IconToggleSmall extends StatelessWidget {
-  const _IconToggleSmall({
-    required this.isActive,
-    required this.onTap,
-    required this.iconOn,
-    required this.iconOff,
-  });
-
-  final bool isActive;
-  final VoidCallback onTap;
-  final IconData iconOn;
-  final IconData iconOff;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Icon(
-          isActive ? iconOn : iconOff,
-          color: isActive ? AppColors.kDisplayGreen : Colors.black,
-          size: 24.0,
-        ),
-      ),
     );
   }
 }

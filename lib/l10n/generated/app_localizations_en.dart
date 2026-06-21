@@ -774,4 +774,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get protractorPreciseAdjustment => 'Fine Tuning';
+
+  @override
+  String get clinometerHelpInstructions =>
+      'Place device side edge or back flat on the slope';
 }

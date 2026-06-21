@@ -253,5 +253,6 @@
   "protractorVertexHint": "اسحب نقطة الارتكاز لضبط موضع الزاوية",
   "protractorArmA": "المؤشر أ",
   "protractorArmB": "المؤشر ب",
-  "protractorPreciseAdjustment": "الضبط الدقيق"
+  "protractorPreciseAdjustment": "الضبط الدقيق",
+  "clinometerHelpInstructions": "ضع حافة الهاتف الجانبية على المنحدر، أو ظهر الهاتف مسطحاً"
 }

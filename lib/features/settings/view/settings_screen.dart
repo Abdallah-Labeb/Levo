@@ -361,9 +361,8 @@ class SettingsScreen extends StatelessWidget {
       child: Text(
         title,
         style: AppTypography.kSectionHeader.copyWith(
-          color: AppColors.kBlack,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+          color: AppColors.kTextSecondary,
+          fontSize: AppDimensions.fontSizeMedium,
         ),
       ),
     );

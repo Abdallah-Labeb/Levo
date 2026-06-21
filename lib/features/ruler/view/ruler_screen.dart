@@ -257,8 +257,8 @@ class _RulerViewState extends State<RulerView> {
 
                       // 2. Fixed digital measurement display readout at the top
                       Positioned(
-                        left: 45.0,
-                        right: 15.0,
+                        left: AppDimensions.rulerDisplayLeft,
+                        right: AppDimensions.rulerDisplayRight,
                         top: AppDimensions.paddingL,
                         child: Center(
                           child: LedDisplay(
@@ -274,7 +274,7 @@ class _RulerViewState extends State<RulerView> {
 
                       // 3. Draggable Handle A (knurled metal bar + tab)
                       Positioned(
-                        top: a - 12.0,
+                        top: a - AppDimensions.rulerMeasurementOffset,
                         left: 0.0,
                         right: 0.0,
                         child: GestureDetector(
@@ -293,7 +293,7 @@ class _RulerViewState extends State<RulerView> {
 
                       // 4. Draggable Handle B (knurled metal bar + tab)
                       Positioned(
-                        top: b - 12.0,
+                        top: b - AppDimensions.rulerMeasurementOffset,
                         left: 0.0,
                         right: 0.0,
                         child: GestureDetector(
@@ -400,20 +400,20 @@ class _RulerViewState extends State<RulerView> {
   Widget _buildDraggableHandle(String label) {
     return Container(
       color: Colors.transparent, // expand vertical tap hit target
-      height: 24.0,
+      height: AppDimensions.rulerHandleHeight,
       child: Stack(
         alignment: Alignment.center,
         children: [
           // Drag Grip Line
-          Container(height: 4.0, color: AppColors.kYellow),
+          Container(height: AppDimensions.rulerHandleBarHeight, color: AppColors.kYellow),
           // Knurled grip backing channel (machined metal slider plate)
           Container(
-            height: 18.0,
-            margin: const EdgeInsets.symmetric(horizontal: 40.0),
+            height: AppDimensions.rulerHandleGripHeight,
+            margin: const EdgeInsets.symmetric(horizontal: AppDimensions.rulerHandleGripHorizontalMargin),
             decoration: BoxDecoration(
               gradient: AppColors.kGradientButtonNormal,
               border: Border.all(color: AppColors.kBorderHighlight),
-              borderRadius: BorderRadius.circular(4.0),
+              borderRadius: BorderRadius.circular(AppDimensions.rulerHandleGripRadius),
               boxShadow: const [
                 BoxShadow(
                   color: AppColors.kShadowDark,
@@ -425,11 +425,11 @@ class _RulerViewState extends State<RulerView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                12,
+                AppDimensions.rulerHandleGripKnurlCount,
                 (index) => Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 2.0),
-                  width: 1.5,
-                  height: 10.0,
+                  margin: const EdgeInsets.symmetric(horizontal: AppDimensions.rulerHandleGripKnurlMargin),
+                  width: AppDimensions.rulerHandleGripKnurlWidth,
+                  height: AppDimensions.rulerHandleGripKnurlHeight,
                   color: AppColors.kChromeDark,
                 ),
               ),
@@ -440,15 +440,15 @@ class _RulerViewState extends State<RulerView> {
             right: 0.0,
             child: Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-                vertical: 3.0,
+                horizontal: AppDimensions.rulerHandleLabelPaddingH,
+                vertical: AppDimensions.rulerHandleLabelPaddingV,
               ),
               decoration: BoxDecoration(
                 gradient: AppColors.kGradientYellowCasing,
                 border: Border.all(color: AppColors.kYellowDark),
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(4.0),
-                  bottomLeft: Radius.circular(4.0),
+                  topLeft: Radius.circular(AppDimensions.rulerHandleLabelRadius),
+                  bottomLeft: Radius.circular(AppDimensions.rulerHandleLabelRadius),
                 ),
                 boxShadow: const [
                   BoxShadow(

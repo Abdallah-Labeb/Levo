@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:levo/app/theme/app_animations.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
@@ -114,7 +115,7 @@ class LevoPopup extends StatelessWidget {
     required String message,
     String? title,
     LevoPopupType type = LevoPopupType.info,
-    Duration duration = const Duration(seconds: 2),
+    Duration duration = AppAnimations.popupDismiss,
   }) {
     late OverlayEntry overlayEntry;
     final overlayState = Overlay.of(context);
@@ -140,7 +141,7 @@ class LevoPopup extends StatelessWidget {
             color: Colors.transparent,
             child: TweenAnimationBuilder<double>(
               tween: Tween<double>(begin: -80.0, end: 0.0),
-              duration: const Duration(milliseconds: 250),
+              duration: AppAnimations.popupSlide,
               curve: Curves.easeOut,
               builder: (context, slideY, child) {
                 return Transform.translate(
@@ -184,8 +185,8 @@ class LevoPopup extends StatelessWidget {
       context: context,
       barrierLabel: "LevoPopupDialog",
       barrierDismissible: barrierDismissible,
-      barrierColor: Colors.black.withAlpha((0.55 * 255).round()),
-      transitionDuration: const Duration(milliseconds: 220),
+      barrierColor: AppColors.kBlack.withAlpha((0.55 * 255).round()),
+      transitionDuration: AppAnimations.popupTransition,
       pageBuilder: (context, anim1, anim2) {
         return Center(
           child: Padding(

@@ -125,12 +125,9 @@ class _ClinometerViewState extends State<ClinometerView> with WidgetsBindingObse
                     // Helper instruction text
                     Center(
                       child: Text(
-                        Localizations.localeOf(context).languageCode == 'ar'
-                            ? "ضع حافة الهاتف الجانبية على المنحدر، أو ظهر الهاتف مسطحاً"
-                            : "Place device side edge or back flat on the slope",
+                        l10n.clinometerHelpInstructions,
                         style: AppTypography.kCaption.copyWith(
                           color: AppColors.kTextSecondary.withAlpha(180),
-                          fontSize: 11.0,
                         ),
                       ),
                     ),

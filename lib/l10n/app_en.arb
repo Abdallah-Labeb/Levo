@@ -253,5 +253,6 @@
   "protractorVertexHint": "Drag Center Peg to adjust vertex position",
   "protractorArmA": "Arm A",
   "protractorArmB": "Arm B",
-  "protractorPreciseAdjustment": "Fine Tuning"
+  "protractorPreciseAdjustment": "Fine Tuning",
+  "clinometerHelpInstructions": "Place device side edge or back flat on the slope"
 }

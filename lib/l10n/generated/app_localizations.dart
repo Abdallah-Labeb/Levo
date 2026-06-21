@@ -1561,6 +1561,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fine Tuning'**
   String get protractorPreciseAdjustment;
+
+  /// No description provided for @clinometerHelpInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Place device side edge or back flat on the slope'**
+  String get clinometerHelpInstructions;
 }
 
 class _AppLocalizationsDelegate

@@ -336,14 +336,14 @@ class _ProtractorViewState extends State<ProtractorView> {
                                       vertical: AppDimensions.paddingXS,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.black54,
+                                      color: AppColors.kShadowDark,
                                       borderRadius: BorderRadius.circular(AppDimensions.radiusXS),
                                     ),
                                     child: Text(
                                       l10n.protractorVertexHint,
                                       style: AppTypography.kCaption.copyWith(
-                                        color: Colors.white,
-                                        fontSize: 10.0,
+                                        color: AppColors.kTextSecondary,
+                                        fontSize: AppDimensions.fontSizeDialLabel,
                                       ),
                                     ),
                                   ),
@@ -467,7 +467,7 @@ class _DropdownMenuModeSwitcher extends StatelessWidget {
             border: Border.all(color: AppColors.kBorderHighlight, width: 1.0),
             boxShadow: const [
               BoxShadow(
-                color: Colors.black38,
+                color: AppColors.kShadowMedium,
                 offset: Offset(0, 1),
                 blurRadius: 2.0,
               ),

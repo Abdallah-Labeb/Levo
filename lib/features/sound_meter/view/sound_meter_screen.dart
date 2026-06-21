@@ -6,6 +6,7 @@ import 'package:levo/core/permissions/permission_service.dart';
 import 'package:levo/app/theme/app_colors.dart';
 import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
+import 'package:levo/app/theme/app_animations.dart';
 import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_background.dart';
@@ -297,11 +298,11 @@ class _LevelBar extends StatelessWidget {
           final isActive = i < activeCount;
           final color = _segmentColor(i);
           return AnimatedContainer(
-            duration: const Duration(milliseconds: 60),
+            duration: AppAnimations.soundMeterSegment,
             height: segH,
             decoration: BoxDecoration(
               color: isActive ? color : color.withAlpha(28),
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(AppDimensions.radiusXS),
             ),
           );
         });
@@ -341,7 +342,7 @@ class _DbScaleLabels extends StatelessWidget {
               fmt.format(v),
               style: AppTypography.kCaption.copyWith(
                 color: AppColors.kTextSecondary,
-                fontSize: 10,
+                fontSize: AppDimensions.fontSizeDialLabel,
                 fontWeight: FontWeight.bold,
               ),
             ),
