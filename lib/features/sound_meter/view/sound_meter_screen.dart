@@ -166,7 +166,7 @@ class _SoundMeterViewState extends State<SoundMeterView> with WidgetsBindingObse
                           Expanded(
                             child: Center(
                               child: Container(
-                                width: 280.0,
+                                width: 220.0,
                                 decoration: BoxDecoration(
                                   color: AppColors.kSurfaceInset,
                                   borderRadius: BorderRadius.circular(
@@ -190,39 +190,7 @@ class _SoundMeterViewState extends State<SoundMeterView> with WidgetsBindingObse
                                     Expanded(
                                       child: _LevelBar(
                                         normalizedValue: normalizedValue,
-                                        barCount: state.barCount,
-                                      ),
-                                    ),
-                                    const SizedBox(width: AppDimensions.space12),
-                                    
-                                    // Side vertical slider for segment control
-                                    SizedBox(
-                                      height: double.infinity,
-                                      width: 32.0,
-                                      child: RotatedBox(
-                                        quarterTurns: 3,
-                                        child: SliderTheme(
-                                          data: SliderTheme.of(context).copyWith(
-                                            activeTrackColor: AppColors.kYellow,
-                                            inactiveTrackColor: AppColors.kSurfaceElevated,
-                                            thumbColor: AppColors.kYellow,
-                                            overlayColor: AppColors.kYellow.withAlpha(32),
-                                            trackHeight: 4.0,
-                                            tickMarkShape: SliderTickMarkShape.noTickMark,
-                                            thumbShape: const RoundSliderThumbShape(
-                                              enabledThumbRadius: 8.0,
-                                            ),
-                                          ),
-                                          child: Slider(
-                                            value: state.barCount.toDouble(),
-                                            min: 10.0,
-                                            max: 40.0,
-                                            divisions: 30,
-                                            onChanged: (val) {
-                                              cubit.updateBarCount(val.round());
-                                            },
-                                          ),
-                                        ),
+                                        barCount: 40,
                                       ),
                                     ),
                                   ],
