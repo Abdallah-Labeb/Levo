@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Levo Sound Meter - Proposed Visual Designs</title>
+  <title>Levo Sound Meter - Tapered Designs with Side Sliders</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -20,18 +20,9 @@
       --chrome-dark: #444444;
       
       --level-green: #4eba74;
-      --level-green-dim: rgba(78, 186, 116, 0.15);
       --warning-yellow: #ffcc00;
-      --warning-yellow-dim: rgba(255, 204, 0, 0.15);
       --orange: #ff6b35;
-      --orange-dim: rgba(255, 107, 53, 0.15);
       --danger-red: #e84545;
-      --danger-red-dim: rgba(232, 69, 69, 0.15);
-      
-      --led-glow-green: 0 0 10px rgba(78, 186, 116, 0.7);
-      --led-glow-yellow: 0 0 10px rgba(255, 204, 0, 0.7);
-      --led-glow-orange: 0 0 10px rgba(255, 107, 53, 0.7);
-      --led-glow-red: 0 0 10px rgba(232, 69, 69, 0.7);
     }
 
     * {
@@ -49,7 +40,7 @@
       background-image: radial-gradient(circle at center, #222222 0%, #111111 100%);
     }
 
-    /* Brushed Metal Casing Container */
+    /* Brushed Metal Casing */
     .dashboard {
       max-width: 1200px;
       margin: 0 auto;
@@ -63,16 +54,6 @@
       padding: 2rem;
       position: relative;
       overflow: hidden;
-    }
-
-    /* Overlay noise for brushed metal texture */
-    .dashboard::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-image: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.4) 100%);
-      pointer-events: none;
-      z-index: 1;
     }
 
     header {
@@ -137,10 +118,8 @@
       box-shadow: 
         0 4px 6px rgba(0,0,0,0.3),
         inset 0 1px 0 rgba(255,255,255,0.1);
-      position: relative;
     }
 
-    /* Skeuomorphic Tactile Button Style */
     .btn-tactile {
       background: linear-gradient(to bottom, #3a3a3a, #222222);
       color: var(--chrome-light);
@@ -159,14 +138,6 @@
       box-shadow: 
         0 0 15px rgba(255, 150, 0, 0.4),
         inset 0 1px 0 rgba(255,255,255,0.3);
-      text-shadow: 0 1px 0 rgba(255,255,255,0.2);
-    }
-
-    .btn-tactile:active {
-      transform: translateY(2px);
-      box-shadow: 
-        0 1px 2px rgba(0,0,0,0.5),
-        inset 0 2px 4px rgba(0,0,0,0.6);
     }
 
     .led-display-container {
@@ -177,13 +148,10 @@
       display: flex;
       align-items: baseline;
       gap: 0.5rem;
-      box-shadow: 
-        inset 0 0 10px rgba(0,0,0,0.9),
-        0 1px 0 rgba(255,255,255,0.05);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.9);
     }
 
     .led-display-label {
-      font-family: 'Outfit', sans-serif;
       font-size: 0.75rem;
       color: #666;
       text-transform: uppercase;
@@ -203,7 +171,6 @@
       font-family: 'Share Tech Mono', monospace;
       font-size: 1.1rem;
       color: var(--level-green);
-      opacity: 0.8;
     }
 
     /* Grid of Proposals */
@@ -215,7 +182,6 @@
       z-index: 2;
     }
 
-    /* Proposal Card Casing */
     .proposal-card {
       background: #202020;
       border: 1px solid #2d2d2d;
@@ -245,7 +211,6 @@
       border: 1px solid rgba(255, 204, 0, 0.3);
       margin-bottom: 0.5rem;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
     .proposal-title {
@@ -261,221 +226,106 @@
       line-height: 1.35;
     }
 
-    /* Visualizer Canvas Area */
-    .visualizer-area {
+    /* Visualizer & Side Slider Row */
+    .layout-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
       background: var(--surface-inset);
       border-radius: 12px;
       border: 1.5px solid #282828;
       box-shadow: inset 0 3px 8px rgba(0,0,0,0.9);
-      padding: 1.5rem;
+      padding: 2rem;
       flex-grow: 1;
+      min-height: 340px;
+    }
+
+    /* Vertical Slider Container */
+    .vertical-slider-container {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      min-height: 320px;
+      gap: 8px;
+    }
+
+    .vertical-slider-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--chrome-mid);
+      text-transform: uppercase;
+    }
+
+    .vertical-slider-value {
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--warning-yellow);
+      font-size: 0.85rem;
+    }
+
+    /* Vertical HTML Input Range Slider */
+    .slider-vertical {
+      -webkit-appearance: slider-vertical;
+      writing-mode: bt-lr;
+      width: 12px;
+      height: 200px;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    /* --- PROPOSAL 1: Pyramid Taper (Widest at Bottom) --- */
+    .tapered-meter-pyramid {
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      gap: 3px;
+      height: 240px;
+      width: 140px;
+      background: rgba(0,0,0,0.3);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* --- PROPOSAL 2: V-Shape Taper (Widest at Top) --- */
+    .tapered-meter-vshape {
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      gap: 3px;
+      height: 240px;
+      width: 140px;
+      background: rgba(0,0,0,0.3);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* --- PROPOSAL 3: Curved Wave Taper (Offset) --- */
+    .tapered-meter-curve {
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      gap: 3px;
+      height: 240px;
+      width: 140px;
+      background: rgba(0,0,0,0.3);
+      padding: 10px;
+      border-radius: 8px;
       position: relative;
     }
 
-    /* Custom Slider Panels */
-    .slider-panel {
-      margin-top: 1.5rem;
-      background: #181818;
-      border-radius: 10px;
-      padding: 1rem;
-      border: 1px solid #242424;
-    }
-
-    .slider-info {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-size: 0.8rem;
-      color: var(--chrome-light);
-      font-weight: 600;
-    }
-
-    .slider-value {
-      font-family: 'Share Tech Mono', monospace;
-      color: var(--warning-yellow);
-      font-size: 0.9rem;
-    }
-
-    .range-input {
-      -webkit-appearance: none;
-      width: 100%;
+    /* Bar Styling */
+    .tapered-bar {
       height: 6px;
-      border-radius: 3px;
-      background: #111;
-      outline: none;
-      border: 1px solid #222;
-      box-shadow: inset 0 1px 2px rgba(0,0,0,0.6);
-    }
-
-    .range-input::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: linear-gradient(to bottom, #d8d8d8, #777777);
-      border: 1px solid #333;
-      cursor: pointer;
-      box-shadow: 
-        0 2px 4px rgba(0,0,0,0.5),
-        inset 0 1px 0 #fff;
-      transition: background 0.1s ease;
-    }
-
-    .range-input::-webkit-slider-thumb:hover {
-      background: linear-gradient(to bottom, #f2f2f2, #999999);
-    }
-
-    /* --- PROPOSAL 1: Vertical Segmented LED --- */
-    .segmented-meter {
-      display: flex;
-      flex-direction: column-reverse;
-      gap: 3px;
-      width: 60px;
-      height: 260px;
-      padding: 5px;
-      background: #060606;
-      border-radius: 6px;
-      border: 1px solid #222;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.9);
-    }
-
-    .led-segment {
-      width: 100%;
-      border-radius: 1px;
+      border-radius: 2px;
       background: currentColor;
       opacity: 0.08;
       transition: opacity 0.05s ease, box-shadow 0.05s ease;
-    }
-
-    .led-segment.active {
-      opacity: 1;
-    }
-
-    /* --- PROPOSAL 2: Speedometer Curved Arc --- */
-    .arc-visualizer-container {
       width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
     }
 
-    .arc-svg {
-      width: 250px;
-      height: 250px;
-      transform: rotate(-90deg);
-    }
-
-    .arc-segment {
-      fill: none;
-      stroke-width: 14;
-      stroke-linecap: round;
-      opacity: 0.1;
-      transition: stroke 0.05s ease, opacity 0.05s ease, filter 0.05s ease;
-    }
-
-    .arc-segment.active {
+    .tapered-bar.active {
       opacity: 1;
-      filter: drop-shadow(0 0 3px currentColor);
-    }
-
-    /* --- PROPOSAL 3: Gradient Fluid Tube --- */
-    .fluid-tube-container {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      height: 260px;
-      position: relative;
-    }
-
-    .fluid-tube {
-      width: 32px;
-      height: 240px;
-      background: #090909;
-      border-radius: 16px;
-      border: 2px solid #282828;
-      box-shadow: 
-        inset 5px 0 10px rgba(0,0,0,0.8),
-        inset -5px 0 10px rgba(0,0,0,0.8),
-        0 0 0 2px #151515,
-        0 4px 10px rgba(0,0,0,0.6);
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Realistic glass glare reflection */
-    .fluid-tube::after {
-      content: "";
-      position: absolute;
-      top: 0; left: 4px; bottom: 0; width: 6px;
-      background: linear-gradient(to right, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 100%);
-      border-radius: 3px;
-      pointer-events: none;
-      z-index: 3;
-    }
-
-    .fluid-column {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 0%;
-      background: linear-gradient(to top, 
-        var(--level-green) 0%, 
-        var(--level-green) 50%, 
-        var(--warning-yellow) 75%, 
-        var(--orange) 88%, 
-        var(--danger-red) 100%
-      );
-      transition: height 0.08s ease-out;
-      border-radius: 0 0 12px 12px;
-      box-shadow: 0 -2px 10px rgba(255, 255, 255, 0.2);
-    }
-
-    /* Graduated marks next to tube */
-    .tube-markers {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 240px;
-      width: 25px;
-    }
-
-    .tube-marker {
-      height: 1px;
-      background-color: var(--chrome-dark);
-      width: 8px;
-      position: relative;
-    }
-
-    .tube-marker.major {
-      width: 16px;
-      background-color: var(--chrome-light);
-    }
-
-    .tube-marker.major::after {
-      content: attr(data-val);
-      position: absolute;
-      left: 20px;
-      top: -6px;
-      font-size: 9px;
-      font-family: 'Share Tech Mono', monospace;
-      color: var(--chrome-mid);
-    }
-
-    .slider-description-rtl {
-      direction: rtl;
-      font-size: 0.85rem;
-      color: var(--chrome-mid);
-      margin-top: 1rem;
-      border-top: 1px solid #222;
-      padding-top: 0.8rem;
-      line-height: 1.4;
     }
   </style>
 </head>
@@ -483,8 +333,8 @@
 
   <div class="dashboard">
     <header>
-      <h1>مقياس شدة الصوت — المقترحات البصرية</h1>
-      <p class="subtitle">Sound Intensity Level Meter — Interactive Prototypes</p>
+      <h1>مقياس شدة الصوت — التدرج والمنزلق الجانبي</h1>
+      <p class="subtitle">Sound Meter - Tapered Bar Layouts with Side Controllers</p>
     </header>
 
     <!-- Source Selection & Master Readout -->
@@ -502,95 +352,68 @@
       </div>
     </div>
 
-    <!-- The Three Proposed Designs -->
+    <!-- Grid of Proposals -->
     <div class="proposals-grid">
 
-      <!-- PROPOSAL 1: Rectangular Segmented LED -->
+      <!-- PROPOSAL 1: Pyramid Taper (Widest at Bottom) -->
       <div class="proposal-card">
         <div class="proposal-header">
-          <span class="proposal-badge">مقترح 1</span>
-          <h2 class="proposal-title">مقياس LED مستطيل متدرج</h2>
-          <div class="proposal-desc">عمود من قطع الـ LED الكلاسيكية المنفصلة. يعتمد على مظهر شريط الكاسيت أو خلاط الصوت الكلاسيكي.</div>
+          <span class="proposal-badge">مقترح أ</span>
+          <h2 class="proposal-title">شكل الهرم (Pyramid Taper)</h2>
+          <div class="proposal-desc">تكون الأشرطة عريضة بالأسفل وتضيق تدريجياً كلما ارتفعت للأعلى لتعكس الهرم الكلاسيكي. المنزلق الجانبي يضبط التقسيم.</div>
         </div>
 
-        <div class="visualizer-area">
-          <div id="p1-meter" class="segmented-meter">
-            <!-- Segments populated dynamically by JS -->
-          </div>
-        </div>
+        <div class="layout-row">
+          <!-- The Visualizer -->
+          <div id="p1-meter" class="tapered-meter-pyramid"></div>
 
-        <div class="slider-panel">
-          <div class="slider-info">
-            <span>عدد قطع الـ LED (Segments):</span>
-            <span id="p1-slider-val" class="slider-value">24</span>
-          </div>
-          <input type="range" id="p1-slider" class="range-input" min="10" max="60" value="24">
-          
-          <div class="slider-description-rtl">
-            يتحكم هذا الشريط في <strong>دقة التقسيم</strong>. زيادة عدد القطع يعطي إحساساً رقمياً حديثاً، بينما يعطي العدد الأقل (مثل 12 أو 16) إحساساً كلاسيكياً (Retro).
+          <!-- Vertical Side Slider -->
+          <div class="vertical-slider-container">
+            <span class="vertical-slider-label">القطع</span>
+            <input type="range" id="p1-slider" class="slider-vertical" min="10" max="40" value="20" orient="vertical">
+            <span id="p1-slider-val" class="vertical-slider-value">20</span>
           </div>
         </div>
       </div>
 
-      <!-- PROPOSAL 2: Speedometer Curved Arc -->
+      <!-- PROPOSAL 2: V-Shape Taper (Widest at Top) -->
       <div class="proposal-card">
         <div class="proposal-header">
-          <span class="proposal-badge">مقترح 2</span>
-          <h2 class="proposal-title">مقياس قوسي دائري (Speedometer)</h2>
-          <div class="proposal-desc">شريط قوسي محني يشبه عدادات السيارات أو الأجهزة العلمية التناظرية مع استجابة LED سريعة.</div>
+          <span class="proposal-badge">مقترح ب</span>
+          <h2 class="proposal-title">شكل الكأس (V-Shape Taper)</h2>
+          <div class="proposal-desc">تكون الأشرطة ضيقة بالأسفل وتتسع تدريجياً كلما ارتفعت للأعلى، لتوحي باتساع النطاق وقوة الصوت بالأعلى.</div>
         </div>
 
-        <div class="visualizer-area">
-          <div class="arc-visualizer-container">
-            <svg id="p2-svg" class="arc-svg" viewBox="0 0 200 200">
-              <!-- Dynamically populated segments -->
-            </svg>
-          </div>
-        </div>
+        <div class="layout-row">
+          <!-- The Visualizer -->
+          <div id="p2-meter" class="tapered-meter-vshape"></div>
 
-        <div class="slider-panel">
-          <div class="slider-info">
-            <span>عدد النقاط القوسية (Segments):</span>
-            <span id="p2-slider-val" class="slider-value">18</span>
-          </div>
-          <input type="range" id="p2-slider" class="range-input" min="8" max="40" value="18">
-          
-          <div class="slider-description-rtl">
-            تصميم قوسي جذاب يعطي طابعاً تناظرياً (Analog) فاخراً. ينحني مؤشر الصوت بشكل دائري متجاوب ومحدد مع إمكانية تعديل كثافة النقاط.
+          <!-- Vertical Side Slider -->
+          <div class="vertical-slider-container">
+            <span class="vertical-slider-label">القطع</span>
+            <input type="range" id="p2-slider" class="slider-vertical" min="10" max="40" value="20" orient="vertical">
+            <span id="p2-slider-val" class="vertical-slider-value">20</span>
           </div>
         </div>
       </div>
 
-      <!-- PROPOSAL 3: Gradient Fluid Tube (Continuous) -->
+      <!-- PROPOSAL 3: Curved S-Taper (S-Curve) -->
       <div class="proposal-card">
         <div class="proposal-header">
-          <span class="proposal-badge">مقترح 3</span>
-          <h2 class="proposal-title">الأنبوب الزجاجي المستمر (Continuous Fluid)</h2>
-          <div class="proposal-desc">أنبوب زجاجي مضيء يحتوي على سائل ملون متصل يرتفع وينخفض بنعومة تامة دون مربعات منفصلة.</div>
+          <span class="proposal-badge">مقترح ج</span>
+          <h2 class="proposal-title">شكل المنحنى التناظري (S-Curve)</h2>
+          <div class="proposal-desc">تتدرج الأشرطة في الحجم مع انحراف أو ميل جانبي تدريجي لتعطي إحساس موجي أو مؤشر ميكانيكي مائل.</div>
         </div>
 
-        <div class="visualizer-area">
-          <div class="fluid-tube-container">
-            <!-- Glass Tube visualizer -->
-            <div class="fluid-tube">
-              <div id="p3-fluid" class="fluid-column"></div>
-            </div>
-            <!-- Dynamic tick markers -->
-            <div id="p3-markers" class="tube-markers">
-              <!-- Dynamically populated scale lines -->
-            </div>
-          </div>
-        </div>
+        <div class="layout-row">
+          <!-- The Visualizer -->
+          <div id="p3-meter" class="tapered-meter-curve"></div>
 
-        <div class="slider-panel">
-          <div class="slider-info">
-            <span>عدد خطوط القياس (Graduations):</span>
-            <span id="p3-slider-val" class="slider-value">10</span>
-          </div>
-          <input type="range" id="p3-slider" class="range-input" min="5" max="30" value="10">
-          
-          <div class="slider-description-rtl">
-            شريط متدفق ومستمر بالكامل يعكس تغير شدة الصوت كحركة سائل أو مؤشر ليزر دقيق. يتحكم المنزلق هنا في <strong>كثافة خطوط وعلامات الترقيم</strong> الجانبية للأنبوب.
+          <!-- Vertical Side Slider -->
+          <div class="vertical-slider-container">
+            <span class="vertical-slider-label">القطع</span>
+            <input type="range" id="p3-slider" class="slider-vertical" min="10" max="40" value="20" orient="vertical">
+            <span id="p3-slider-val" class="vertical-slider-value">20</span>
           </div>
         </div>
       </div>
@@ -599,34 +422,32 @@
   </div>
 
   <script>
-    // Global State variables
-    let mode = 'simulate'; // 'simulate' or 'mic'
+    let mode = 'simulate';
     let currentDb = 30.0;
-    let normalizedLevel = 0.0; // 0.0 to 1.0 representing 30 to 130 dB
+    let normalizedLevel = 0.0;
     
-    // Web Audio Variables
     let audioCtx = null;
     let analyser = null;
     let dataArray = null;
     let micStream = null;
     let animationFrameId = null;
 
-    // Elements
     const dbValueDisplay = document.getElementById('db-val');
     const btnSimulate = document.getElementById('btn-simulate');
     const btnMic = document.getElementById('btn-mic');
 
-    // Setup Sliders & Values
     const p1Slider = document.getElementById('p1-slider');
     const p1SliderVal = document.getElementById('p1-slider-val');
+    const p1Meter = document.getElementById('p1-meter');
+
     const p2Slider = document.getElementById('p2-slider');
     const p2SliderVal = document.getElementById('p2-slider-val');
+    const p2Meter = document.getElementById('p2-meter');
+
     const p3Slider = document.getElementById('p3-slider');
     const p3SliderVal = document.getElementById('p3-slider-val');
+    const p3Meter = document.getElementById('p3-meter');
 
-    // ----------------------------------------------------
-    // Color Helpers for Segments/Arcs
-    // ----------------------------------------------------
     function getSegmentColor(index, total) {
       const fraction = index / total;
       if (fraction < 0.50) return 'var(--level-green)';
@@ -636,223 +457,107 @@
     }
 
     // ----------------------------------------------------
-    // PROPOSAL 1: Rectangular Segmented LED Generator
+    // PROPOSAL 1: Pyramid Taper (Bottom Widest, Top Narrowest)
     // ----------------------------------------------------
-    const p1Meter = document.getElementById('p1-meter');
-    function generateP1Segments() {
+    function generateP1() {
       const count = parseInt(p1Slider.value);
       p1SliderVal.textContent = count;
-      
       p1Meter.innerHTML = '';
-      const height = (250 / count) - 3; // fit within 260px box height
       
+      const maxW = 120; // bottom bar width
+      const minW = 20;  // top bar width
+      const height = Math.floor(200 / count) - 2;
+
       for (let i = 0; i < count; i++) {
-        const seg = document.createElement('div');
-        seg.className = 'led-segment';
-        seg.style.height = `${height}px`;
-        seg.style.color = getSegmentColor(i, count);
-        p1Meter.appendChild(seg);
+        const bar = document.createElement('div');
+        bar.className = 'tapered-bar';
+        bar.style.height = `${height}px`;
+        
+        // Linear interpolation from bottom (i=0) to top (i=count-1)
+        const width = maxW - (i / (count - 1)) * (maxW - minW);
+        bar.style.width = `${width}px`;
+        bar.style.color = getSegmentColor(i, count);
+        p1Meter.appendChild(bar);
       }
     }
 
-    function updateP1Display(level) {
-      const segments = p1Meter.querySelectorAll('.led-segment');
-      const activeCount = Math.round(level * segments.length);
-      
-      segments.forEach((seg, i) => {
-        if (i < activeCount) {
-          seg.classList.add('active');
-          seg.style.boxShadow = `0 0 6px ${seg.style.color}`;
-        } else {
-          seg.classList.remove('active');
-          seg.style.boxShadow = 'none';
-        }
-      });
-    }
-
     // ----------------------------------------------------
-    // PROPOSAL 2: Speedometer Curved Arc Generator
+    // PROPOSAL 2: V-Shape Taper (Bottom Narrowest, Top Widest)
     // ----------------------------------------------------
-    const p2Svg = document.getElementById('p2-svg');
-    function generateP2Segments() {
+    function generateP2() {
       const count = parseInt(p2Slider.value);
       p2SliderVal.textContent = count;
-      p2Svg.innerHTML = '';
-
-      const cx = 100;
-      const cy = 100;
-      const r = 75;
-      const startAngle = 135; // degrees
-      const endAngle = 405;   // degrees
-      const angleRange = endAngle - startAngle;
+      p2Meter.innerHTML = '';
+      
+      const maxW = 120; // top bar width
+      const minW = 20;  // bottom bar width
+      const height = Math.floor(200 / count) - 2;
 
       for (let i = 0; i < count; i++) {
-        // Calculate dynamic arc path for each discrete segment
-        const itemAngleStart = startAngle + (i / count) * angleRange;
-        // Keep a 4-degree gap between segments
-        const gap = 4;
-        const itemAngleEnd = startAngle + ((i + 1) / count) * angleRange - (i === count - 1 ? 0 : gap);
+        const bar = document.createElement('div');
+        bar.className = 'tapered-bar';
+        bar.style.height = `${height}px`;
         
-        const radStart = (itemAngleStart * Math.PI) / 180;
-        const radEnd = (itemAngleEnd * Math.PI) / 180;
-
-        const x1 = cx + r * Math.cos(radStart);
-        const y1 = cy + r * Math.sin(radStart);
-        const x2 = cx + r * Math.cos(radEnd);
-        const y2 = cy + r * Math.sin(radEnd);
-
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', `M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`);
-        path.setAttribute('class', 'arc-segment');
-        
-        const color = getSegmentColor(i, count);
-        path.setAttribute('stroke', color);
-        p2Svg.appendChild(path);
+        // Linear interpolation: bottom (i=0) is minW, top (i=count-1) is maxW
+        const width = minW + (i / (count - 1)) * (maxW - minW);
+        bar.style.width = `${width}px`;
+        bar.style.color = getSegmentColor(i, count);
+        p2Meter.appendChild(bar);
       }
     }
 
-    function updateP2Display(level) {
-      const segments = p2Svg.querySelectorAll('.arc-segment');
-      const activeCount = Math.round(level * segments.length);
+    // ----------------------------------------------------
+    // PROPOSAL 3: Curved S-Taper (S-Curve & Offset)
+    // ----------------------------------------------------
+    function generateP3() {
+      const count = parseInt(p3Slider.value);
+      p3SliderVal.textContent = count;
+      p3Meter.innerHTML = '';
       
-      segments.forEach((seg, i) => {
+      const height = Math.floor(200 / count) - 2;
+
+      for (let i = 0; i < count; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'tapered-bar';
+        bar.style.height = `${height}px`;
+        
+        // Width oscillates or tapers organically
+        const angle = (i / (count - 1)) * Math.PI;
+        // Width is wider in the middle or offsetted
+        const width = 40 + Math.sin(angle) * 70;
+        bar.style.width = `${width}px`;
+        
+        // Translate horizontally to create curved shape
+        const offset = Math.cos(angle * 1.5) * 15;
+        bar.style.transform = `translateX(${offset}px)`;
+        
+        bar.style.color = getSegmentColor(i, count);
+        p3Meter.appendChild(bar);
+      }
+    }
+
+    // ----------------------------------------------------
+    // Update Display States
+    // ----------------------------------------------------
+    function updateMeterBars(meterElement, level) {
+      const bars = meterElement.querySelectorAll('.tapered-bar');
+      const activeCount = Math.round(level * bars.length);
+      
+      bars.forEach((bar, i) => {
         if (i < activeCount) {
-          seg.classList.add('active');
+          bar.classList.add('active');
+          bar.style.boxShadow = `0 0 6px ${bar.style.color}`;
         } else {
-          seg.classList.remove('active');
+          bar.classList.remove('active');
+          bar.style.boxShadow = 'none';
         }
       });
     }
 
-    // ----------------------------------------------------
-    // PROPOSAL 3: Gradient Fluid Tube & Markers Generator
-    // ----------------------------------------------------
-    const p3Fluid = document.getElementById('p3-fluid');
-    const p3Markers = document.getElementById('p3-markers');
-
-    function generateP3Markers() {
-      const count = parseInt(p3Slider.value);
-      p3SliderVal.textContent = count;
-      p3Markers.innerHTML = '';
-
-      for (let i = 0; i < count; i++) {
-        const marker = document.createElement('div');
-        // Let every third tick mark be major with text label
-        const isMajor = (i % 3 === 0) || (i === count - 1);
-        marker.className = `tube-marker ${isMajor ? 'major' : ''}`;
-        
-        if (isMajor) {
-          // Map index to Decibel Scale labels (from 130 down to 30)
-          const dbLabel = Math.round(130 - (i / (count - 1)) * 100);
-          marker.setAttribute('data-val', dbLabel);
-        }
-        
-        p3Markers.appendChild(marker);
-      }
-    }
-
-    function updateP3Display(level) {
-      p3Fluid.style.height = `${level * 100}%`;
-    }
-
-    // ----------------------------------------------------
-    // Input Simulation Engine
-    // ----------------------------------------------------
-    let simAngle = 0;
-    function simulateAudioInput() {
-      if (mode !== 'simulate') return;
-
-      // Combine multiple sine waves and randomized high-frequency noise for realism
-      simAngle += 0.05;
-      const noise = (Math.random() - 0.5) * 0.08;
-      let sineLevel = 0.5 + 0.3 * Math.sin(simAngle) + 0.15 * Math.cos(simAngle * 2.3) + noise;
-      
-      // Keep it within range
-      sineLevel = Math.max(0.0, Math.min(1.0, sineLevel));
-      
-      updateDisplayValues(sineLevel);
-      requestAnimationFrame(simulateAudioInput);
-    }
-
-    // ----------------------------------------------------
-    // Real Microphone Input Engine (Web Audio API)
-    // ----------------------------------------------------
-    async function startRealMicrophone() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        micStream = stream;
-        
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 256;
-        analyser.smoothingTimeConstant = 0.5; // low latency tracking
-
-        const source = audioCtx.createMediaStreamSource(stream);
-        source.connect(analyser);
-
-        dataArray = new Uint8Array(analyser.frequencyBinCount);
-        
-        // Disable simulation looping
-        mode = 'mic';
-        trackRealAudio();
-      } catch (err) {
-        console.error('Microphone access denied or failed:', err);
-        alert('حدث خطأ في تشغيل المايك. يرجى إعطاء الصلاحية لمتصفح الويب للوصول للمايك.');
-        setMode('simulate');
-      }
-    }
-
-    function trackRealAudio() {
-      if (mode !== 'mic') return;
-      
-      analyser.getByteFrequencyData(dataArray);
-      
-      // Calculate RMS (Root Mean Square) volume level
-      let sum = 0;
-      for (let i = 0; i < dataArray.length; i++) {
-        sum += dataArray[i] * dataArray[i];
-      }
-      let rms = Math.sqrt(sum / dataArray.length);
-      
-      // Normalize raw volume (0 - 150) to (0.0 - 1.0)
-      let norm = (rms / 120.0).clamp(0.0, 1.0);
-      
-      // Apply standard exponential smoothing filter for clean physical reactions
-      normalizedLevel = normalizedLevel * 0.3 + norm * 0.7;
-
-      updateDisplayValues(normalizedLevel);
-      animationFrameId = requestAnimationFrame(trackRealAudio);
-    }
-
-    function stopRealMicrophone() {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-      if (micStream) {
-        micStream.getTracks().forEach(track => track.stop());
-        micStream = null;
-      }
-      if (audioCtx) {
-        audioCtx.close();
-        audioCtx = null;
-      }
-    }
-
-    // ----------------------------------------------------
-    // UI Helpers
-    // ----------------------------------------------------
-    Number.prototype.clamp = function(min, max) {
-      return Math.min(Math.max(this, min), max);
-    };
-
     function updateDisplayValues(level) {
-      // Map 0.0 - 1.0 to 30.0 - 130.0 Decibels (standard Sound Level Meter scale)
       currentDb = 30.0 + level * 100.0;
-      
-      // Update LED Readout with Arabic local decimal structure helper
       dbValueDisplay.textContent = currentDb.toFixed(1);
       
-      // Dynamic Glowing Color of LED Display depending on thresholds
       if (level < 0.50) {
         dbValueDisplay.style.color = 'var(--level-green)';
         dbValueDisplay.style.textShadow = '0 0 8px rgba(78, 186, 116, 0.5)';
@@ -867,10 +572,76 @@
         dbValueDisplay.style.textShadow = '0 0 8px rgba(232, 69, 69, 0.5)';
       }
 
-      // Update individual interactive proposals
-      updateP1Display(level);
-      updateP2Display(level);
-      updateP3Display(level);
+      updateMeterBars(p1Meter, level);
+      updateMeterBars(p2Meter, level);
+      updateMeterBars(p3Meter, level);
+    }
+
+    // ----------------------------------------------------
+    // Audio Input Loop & Simulations
+    // ----------------------------------------------------
+    let simAngle = 0;
+    function simulateAudioInput() {
+      if (mode !== 'simulate') return;
+
+      simAngle += 0.05;
+      const noise = (Math.random() - 0.5) * 0.08;
+      let sineLevel = 0.5 + 0.3 * Math.sin(simAngle) + 0.15 * Math.cos(simAngle * 2.3) + noise;
+      sineLevel = Math.max(0.0, Math.min(1.0, sineLevel));
+      
+      updateDisplayValues(sineLevel);
+      requestAnimationFrame(simulateAudioInput);
+    }
+
+    async function startRealMicrophone() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        micStream = stream;
+        
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        analyser.smoothingTimeConstant = 0.5;
+
+        const source = audioCtx.createMediaStreamSource(stream);
+        source.connect(analyser);
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+        
+        mode = 'mic';
+        trackRealAudio();
+      } catch (err) {
+        console.error(err);
+        alert('حدث خطأ في تشغيل المايك. يرجى إعطاء الصلاحية للمتصفح.');
+        setMode('simulate');
+      }
+    }
+
+    function trackRealAudio() {
+      if (mode !== 'mic') return;
+      
+      analyser.getByteFrequencyData(dataArray);
+      let sum = 0;
+      for (let i = 0; i < dataArray.length; i++) {
+        sum += dataArray[i] * dataArray[i];
+      }
+      let rms = Math.sqrt(sum / dataArray.length);
+      let norm = (rms / 120.0).clamp(0.0, 1.0);
+      normalizedLevel = normalizedLevel * 0.3 + norm * 0.7;
+
+      updateDisplayValues(normalizedLevel);
+      animationFrameId = requestAnimationFrame(trackRealAudio);
+    }
+
+    function stopRealMicrophone() {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      if (micStream) {
+        micStream.getTracks().forEach(track => track.stop());
+        micStream = null;
+      }
+      if (audioCtx) {
+        audioCtx.close();
+        audioCtx = null;
+      }
     }
 
     function setMode(newMode) {
@@ -889,22 +660,21 @@
       }
     }
 
-    // ----------------------------------------------------
-    // Event Listeners
-    // ----------------------------------------------------
+    Number.prototype.clamp = function(min, max) {
+      return Math.min(Math.max(this, min), max);
+    };
+
     btnSimulate.addEventListener('click', () => setMode('simulate'));
     btnMic.addEventListener('click', () => setMode('mic'));
 
-    p1Slider.addEventListener('input', generateP1Segments);
-    p2Slider.addEventListener('input', generateP2Segments);
-    p3Slider.addEventListener('input', generateP3Markers);
+    p1Slider.addEventListener('input', generateP1);
+    p2Slider.addEventListener('input', generateP2);
+    p3Slider.addEventListener('input', generateP3);
 
-    // Initial Generator Population
-    generateP1Segments();
-    generateP2Segments();
-    generateP3Markers();
-
-    // Start running simulation by default
+    // Initial load
+    generateP1();
+    generateP2();
+    generateP3();
     simulateAudioInput();
 
   </script>
