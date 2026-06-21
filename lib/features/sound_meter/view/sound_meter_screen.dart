@@ -165,41 +165,67 @@ class _SoundMeterViewState extends State<SoundMeterView> with WidgetsBindingObse
                           // ── Level bar visualizer ──────────────────────────
                           Expanded(
                             child: Center(
-                              child: SizedBox(
-                                width: 200.0,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.kSurfaceInset,
-                                    borderRadius: BorderRadius.circular(
-                                        AppDimensions.radiusPanel),
-                                    border: Border.all(
-                                      color: AppColors.kBorderHighlight,
-                                      width: 1.5,
+                              child: Container(
+                                width: 280.0,
+                                decoration: BoxDecoration(
+                                  color: AppColors.kSurfaceInset,
+                                  borderRadius: BorderRadius.circular(
+                                      AppDimensions.radiusPanel),
+                                  border: Border.all(
+                                    color: AppColors.kBorderHighlight,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppDimensions.paddingM,
+                                  vertical: AppDimensions.paddingM,
+                                ),
+                                child: Row(
+                                  children: [
+                                    // dB scale reference labels
+                                    const _DbScaleLabels(),
+                                    const SizedBox(width: AppDimensions.space12),
+                                    
+                                    // Level bar segments
+                                    Expanded(
+                                      child: _LevelBar(
+                                        normalizedValue: normalizedValue,
+                                        barCount: state.barCount,
+                                      ),
                                     ),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppDimensions.paddingM,
-                                    vertical: AppDimensions.paddingS,
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      // Level bar segments
-                                      Expanded(
-                                        child: _LevelBar(
-                                            normalizedValue: normalizedValue),
+                                    const SizedBox(width: AppDimensions.space12),
+                                    
+                                    // Side vertical slider for segment control
+                                    SizedBox(
+                                      height: double.infinity,
+                                      width: 32.0,
+                                      child: RotatedBox(
+                                        quarterTurns: 3,
+                                        child: SliderTheme(
+                                          data: SliderTheme.of(context).copyWith(
+                                            activeTrackColor: AppColors.kYellow,
+                                            inactiveTrackColor: AppColors.kSurfaceElevated,
+                                            thumbColor: AppColors.kYellow,
+                                            overlayColor: AppColors.kYellow.withAlpha(32),
+                                            trackHeight: 4.0,
+                                            tickMarkShape: SliderTickMarkShape.noTickMark,
+                                            thumbShape: const RoundSliderThumbShape(
+                                              enabledThumbRadius: 8.0,
+                                            ),
+                                          ),
+                                          child: Slider(
+                                            value: state.barCount.toDouble(),
+                                            min: 10.0,
+                                            max: 40.0,
+                                            divisions: 30,
+                                            onChanged: (val) {
+                                              cubit.updateBarCount(val.round());
+                                            },
+                                          ),
+                                        ),
                                       ),
-                                      const SizedBox(
-                                          width: AppDimensions.space12),
-                                      // dB scale reference labels
-                                      _DbScaleLabels(
-                                        locale:
-                                            Localizations.localeOf(context)
-                                                .toString(),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -265,14 +291,13 @@ class _SoundMeterViewState extends State<SoundMeterView> with WidgetsBindingObse
 
 // ─── Vertical segmented level bar ──────────────────────────────────────────
 class _LevelBar extends StatelessWidget {
-  const _LevelBar({required this.normalizedValue});
+  const _LevelBar({required this.normalizedValue, required this.barCount});
 
   final double normalizedValue;
+  final int barCount;
 
-  static const int _segments = 24;
-
-  Color _segmentColor(int index) {
-    final fraction = index / _segments;
+  Color _segmentColor(int index, int total) {
+    final fraction = index / total;
     if (fraction < 0.50) return AppColors.kLevelGreen;
     if (fraction < 0.72) return AppColors.kWarningYellow;
     if (fraction < 0.87) return AppColors.kOrange;
@@ -282,37 +307,47 @@ class _LevelBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final int activeCount =
-        (normalizedValue * _segments).round().clamp(0, _segments);
+        (normalizedValue * barCount).round().clamp(0, barCount);
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        const double gap = 3.0;
+        const double gap = 2.0;
         final double segH =
-            (constraints.maxHeight - gap * (_segments - 1)) / _segments;
+            (constraints.maxHeight - gap * (barCount - 1)) / barCount;
 
-        final List<Widget> bars = List.generate(_segments, (i) {
-          // index 0 = bottom segment (lowest dB), _segments-1 = top (highest)
+        const double minW = 15.0;
+        final double maxW = constraints.maxWidth > 120.0 ? 120.0 : constraints.maxWidth;
+
+        final List<Widget> bars = List.generate(barCount, (i) {
+          // index 0 = bottom segment (lowest dB), barCount-1 = top (highest)
           final isActive = i < activeCount;
-          final color = _segmentColor(i);
+          final color = _segmentColor(i, barCount);
+          final double barWidth = minW + (i / (barCount - 1)) * (maxW - minW);
+
           return AnimatedContainer(
             duration: AppAnimations.soundMeterSegment,
             height: segH,
+            width: barWidth,
             decoration: BoxDecoration(
               color: isActive ? color : color.withAlpha(28),
               borderRadius: BorderRadius.circular(AppDimensions.radiusXS),
+              boxShadow: isActive
+                  ? [
+                      BoxShadow(
+                        color: color.withAlpha(80),
+                        blurRadius: 4.0,
+                        spreadRadius: 0.5,
+                      )
+                    ]
+                  : null,
             ),
           );
         });
 
         return Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: bars.reversed
-              .expand((w) => [
-                    w,
-                    const SizedBox(height: gap),
-                  ])
-              .toList()
-            ..removeLast(), // remove trailing gap
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: bars.reversed.toList(),
         );
       },
     );
@@ -321,8 +356,7 @@ class _LevelBar extends StatelessWidget {
 
 // ─── dB scale labels ────────────────────────────────────────────────────────
 class _DbScaleLabels extends StatelessWidget {
-  const _DbScaleLabels({required this.locale});
-  final String locale;
+  const _DbScaleLabels();
 
   @override
   Widget build(BuildContext context) {
@@ -332,7 +366,7 @@ class _DbScaleLabels extends StatelessWidget {
     const labels = [130, 105, 80, 55, 30];
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: labels
           .map(
             (v) => Text(

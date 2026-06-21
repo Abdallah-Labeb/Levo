@@ -12,6 +12,7 @@ class SoundMeterState extends Equatable {
     this.errorMessage,
     this.permissionGranted = false,
     this.errorType = SensorErrorType.none,
+    this.barCount = 24,
   });
 
   final double currentDb;
@@ -22,6 +23,7 @@ class SoundMeterState extends Equatable {
   final String? errorMessage;
   final bool permissionGranted;
   final SensorErrorType errorType;
+  final int barCount;
 
   @override
   List<Object?> get props => [
@@ -33,6 +35,7 @@ class SoundMeterState extends Equatable {
     errorMessage,
     permissionGranted,
     errorType,
+    barCount,
   ];
 
   SoundMeterState copyWith({
@@ -44,6 +47,7 @@ class SoundMeterState extends Equatable {
     String? errorMessage,
     bool? permissionGranted,
     SensorErrorType? errorType,
+    int? barCount,
   }) {
     return SoundMeterState(
       currentDb: currentDb ?? this.currentDb,
@@ -54,6 +58,7 @@ class SoundMeterState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       permissionGranted: permissionGranted ?? this.permissionGranted,
       errorType: errorType ?? this.errorType,
+      barCount: barCount ?? this.barCount,
     );
   }
 }
