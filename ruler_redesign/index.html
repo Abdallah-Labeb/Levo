@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مقترحات إعادة تصميم المسطرة الرقمية - Levo</title>
+  <!-- Google Fonts for premium typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;800&family=Share+Tech+Mono&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Premium CSS Variables for Styling */
+    :root {
+      --bg-dark: #0F1115;
+      --panel-bg: #1A1D24;
+      --border-color: #2D333F;
+      --text-primary: #F3F4F6;
+      --text-secondary: #9CA3AF;
+      --accent-yellow: #F5C22B;
+      --accent-yellow-glow: rgba(245, 194, 43, 0.4);
+      --led-green: #4EBA74;
+      --led-green-glow: rgba(78, 186, 116, 0.4);
+      --font-arabic: 'Cairo', sans-serif;
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-english: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: var(--font-arabic);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header styling */
+    header {
+      padding: 24px 40px;
+      border-bottom: 1px solid var(--border-color);
+      background-color: rgba(26, 29, 36, 0.8);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FFF, var(--accent-yellow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* Main layout grid */
+    .main-container {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      flex: 1;
+      height: calc(100vh - 80px);
+    }
+
+    /* Left Sidebar: Controls & Concepts selection */
+    .sidebar {
+      background-color: #14171E;
+      border-left: 1px solid var(--border-color);
+      padding: 30px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .concept-card {
+      background-color: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .concept-card:hover {
+      border-color: var(--accent-yellow);
+      transform: translateY(-2px);
+    }
+
+    .concept-card.active {
+      border-color: var(--accent-yellow);
+      box-shadow: 0 0 15px var(--accent-yellow-glow);
+      background-color: rgba(245, 194, 43, 0.03);
+    }
+
+    .concept-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .concept-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .concept-features {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .feature-tag {
+      font-size: 11px;
+      background-color: #232936;
+      color: var(--accent-yellow);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* Right Preview: Mobile Emulator */
+    .preview-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      background: radial-gradient(circle at center, #1E2330 0%, #0F1115 100%);
+      position: relative;
+    }
+
+    /* Skeuomorphic Phone Emulator Wrapper */
+    .phone-container {
+      width: 380px;
+      height: 760px;
+      background: #232731;
+      border-radius: 48px;
+      padding: 16px;
+      box-shadow: 
+        0px 25px 50px -12px rgba(0, 0, 0, 0.8),
+        inset 0px 4px 8px rgba(255, 255, 255, 0.15),
+        inset 0px -4px 8px rgba(0, 0, 0, 0.4);
+      border: 6px solid #1E2129;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Screen Speaker & Camera */
+    .phone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 24px;
+      background-color: #1E2129;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      z-index: 10;
+    }
+
+    /* Simulator screen surface */
+    .phone-screen {
+      background-color: #0A0B0E;
+      border-radius: 36px;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border: 2px solid #050608;
+    }
+
+    /* Emulator Top bar */
+    .screen-header {
+      height: 54px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-family: var(--font-english);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      z-index: 5;
+      background-color: #0D0F13;
+    }
+
+    .time-display {
+      font-weight: 600;
+    }
+
+    .app-title-bar {
+      height: 50px;
+      padding: 0 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #11141A;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      z-index: 5;
+    }
+
+    .app-title-bar h2 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    /* Dropdown UI styling */
+    .mode-select-container {
+      position: relative;
+    }
+
+    .mode-dropdown {
+      background-color: #1C202B;
+      color: var(--accent-yellow);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 12px 6px 28px;
+      font-family: var(--font-arabic);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      transition: all 0.2s;
+    }
+
+    .mode-dropdown:focus {
+      border-color: var(--accent-yellow);
+      box-shadow: 0 0 8px var(--accent-yellow-glow);
+    }
+
+    .dropdown-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--accent-yellow);
+      font-size: 10px;
+    }
+
+    /* Screen Main body area where the ruler resides */
+    .screen-body {
+      flex: 1;
+      position: relative;
+      background: radial-gradient(circle at center, #11141A 0%, #08090C 100%);
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+    }
+
+    /* LED readout container slot */
+    .led-readout-slot {
+      background-color: #000;
+      border: 1.5px solid #1E2126;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.8);
+      margin-bottom: 16px;
+    }
+
+    .led-readout-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #777;
+      margin-bottom: 4px;
+    }
+
+    .led-readout-value {
+      font-family: var(--font-mono);
+      font-size: 36px;
+      color: var(--led-green);
+      text-shadow: 0 0 10px var(--led-green-glow);
+      line-height: 1;
+    }
+
+    /* RULER CONTAINER IN SIMULATOR */
+    .ruler-viewport {
+      flex: 1;
+      background-color: #12141A;
+      border: 1px solid #1C202B;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Dynamic Ruler styles based on Concept selection */
+    /* Concept 1: Classic Industrial */
+    .ruler-viewport.concept-industrial {
+      background: 
+        linear-gradient(90deg, #1C1E24 0%, #2A2E38 50%, #1C1E24 100%),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 4px);
+    }
+
+    /* Concept 2: Glassmorphism */
+    .ruler-viewport.concept-glass {
+      background: radial-gradient(circle at center, #0F121C 0%, #06070B 100%);
+      box-shadow: inset 0 0 20px rgba(0, 245, 255, 0.05);
+    }
+
+    /* Concept 3: Vernier Caliper */
+    .ruler-viewport.concept-vernier {
+      background: linear-gradient(180deg, #161920 0%, #1A1D26 100%);
+    }
+
+    /* Ruler Face Tick Marks container */
+    .ruler-face {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 70px;
+      border-left: 1.5px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px 0;
+    }
+
+    /* Render ticks using JS */
+    .tick {
+      height: 1px;
+      background-color: var(--text-secondary);
+      align-self: flex-end;
+      opacity: 0.5;
+      transition: all 0.3s;
+    }
+
+    .tick.major {
+      width: 32px;
+      background-color: var(--text-primary);
+      opacity: 0.8;
+      position: relative;
+    }
+
+    .tick.major::before {
+      content: attr(data-label);
+      position: absolute;
+      right: 40px;
+      top: -6px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+    }
+
+    .tick.medium {
+      width: 22px;
+      background-color: var(--text-secondary);
+    }
+
+    .tick.minor {
+      width: 14px;
+    }
+
+    /* Interactive Peg Drag Handles */
+    .peg-handle {
+      position: absolute;
+      right: 0;
+      left: 0;
+      height: 48px;
+      z-index: 10;
+      cursor: ns-resize;
+      display: flex;
+      align-items: center;
+      transform: translateY(-50%);
+    }
+
+    /* Concept 1 Handle: Heavy Brass peg */
+    .concept-industrial .peg-handle::after {
+      content: '';
+      position: absolute;
+      right: 2px;
+      width: 66px;
+      height: 8px;
+      background: linear-gradient(180deg, #FFE082 0%, #FFA000 100%);
+      border-radius: 4px;
+      box-shadow: 
+        0 4px 6px rgba(0,0,0,0.5),
+        0 0 10px var(--accent-yellow-glow);
+      border: 1px solid #FF8F00;
+    }
+    
+    .concept-industrial .peg-handle::before {
+      content: attr(data-letter);
+      position: absolute;
+      left: 12px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FFB300, #FF6F00);
+      color: #000;
+      font-weight: 800;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      border: 1px solid #FFE082;
+    }
+
+    /* Concept 2 Handle: Glowing cyan Glassmorphism */
+    .concept-glass .peg-handle::after {
+      content: '';
+      position: absolute;
+      right: 4px;
+      width: 62px;
+      height: 12px;
+      background: rgba(0, 245, 255, 0.15);
+      backdrop-filter: blur(4px);
+      border-radius: 6px;
+      box-shadow: 
+        0 0 15px rgba(0, 245, 255, 0.3),
+        inset 0 1px 2px rgba(255,255,255,0.4);
+      border: 1.5px solid #00F5FF;
+    }
+
+    .concept-glass .peg-handle::before {
+      content: attr(data-letter);
+      position: absolute;
+      left: 14px;
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      background: rgba(0, 245, 255, 0.25);
+      color: #00F5FF;
+      font-family: var(--font-english);
+      font-weight: 800;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #00F5FF;
+      box-shadow: 0 0 8px rgba(0,245,255,0.3);
+    }
+
+    /* Concept 3 Handle: Metallic Caliper Slide Jaws */
+    .concept-vernier .peg-handle::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      width: 80px;
+      height: 16px;
+      background: linear-gradient(180deg, #ECEFF1 0%, #90A4AE 100%);
+      border-radius: 2px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+      border: 1px solid #78909C;
+    }
+
+    .concept-vernier .peg-handle::before {
+      content: attr(data-letter);
+      position: absolute;
+      left: 12px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #78909C;
+      color: #FFF;
+      font-weight: 700;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #CFD8DC;
+    }
+
+    /* Drag line connect between A and B */
+    .measure-span-line {
+      position: absolute;
+      right: 32px;
+      width: 2px;
+      background-color: var(--accent-yellow);
+      opacity: 0.4;
+      z-index: 2;
+    }
+
+    .concept-glass .measure-span-line {
+      background-color: #00F5FF;
+      box-shadow: 0 0 8px #00F5FF;
+      opacity: 0.6;
+    }
+
+    .concept-vernier .measure-span-line {
+      background-color: #CFD8DC;
+      width: 1px;
+      opacity: 0.5;
+    }
+
+    /* Emulated bottom Banner ads */
+    .ad-banner-placeholder {
+      height: 50px;
+      background-color: #12141A;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+    }
+
+    /* Description panel */
+    .description-panel {
+      background-color: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .description-panel h4 {
+      font-size: 20px;
+      color: var(--accent-yellow);
+      border-bottom: 1.5px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+
+    .description-panel ul {
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .description-panel li {
+      font-size: 14px;
+      color: var(--text-secondary);
+      position: relative;
+      padding-right: 18px;
+    }
+
+    .description-panel li::before {
+      content: "•";
+      color: var(--accent-yellow);
+      font-size: 18px;
+      position: absolute;
+      right: 0;
+      top: -2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div>
+      <h1>Levo: إعادة هندسة المسطرة الرقمية</h1>
+      <p>نموذج تفاعلي لاستكشاف مقترحات التصميم المحسّنة واستغلال المساحة بذكاء</p>
+    </div>
+    <div style="font-family: var(--font-english); text-align: left;">
+      <strong>V1.1 (Redesign Preview)</strong>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    
+    <!-- Left Sidebar: Concept Selection -->
+    <div class="sidebar">
+      <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 10px; color: var(--accent-yellow);">اختر اتجاه التصميم:</h2>
+      
+      <!-- Card 1 -->
+      <div class="concept-card active" onclick="switchConcept('industrial', this)">
+        <h3>1. المعدن والذهب الصناعي</h3>
+        <p>مستوحى من ورش العمل الهندسية الثقيلة. تبرز فيه التروس النحاسية والخلفيات المعدنية المصقولة، ويوفر شعوراً فيزيائياً ملموساً للغاية.</p>
+        <div class="concept-features">
+          <span class="feature-tag">نحاس مصقول</span>
+          <span class="feature-tag">مؤشر ذهبي</span>
+          <span class="feature-tag">درجات حفر فولاذي</span>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="concept-card" onclick="switchConcept('glass', this)">
+        <h3>2. الزجاج الشفاف النيون</h3>
+        <p>تصميم حديث يعتمد على تأثير Glassmorphic الشفاف ومؤشرات مضيئة بلون النيون الأزرق (Cyan) مما يتيح رؤية واضحة جداً للدرجات والأرقام.</p>
+        <div class="concept-features">
+          <span class="feature-tag">شفافية Glassmorphism</span>
+          <span class="feature-tag">إضاءة نيون زرقاء</span>
+          <span class="feature-tag">مظهر عصري فاخر</span>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="concept-card" onclick="switchConcept('vernier', this)">
+        <h3>3. القدمة الورنية الميكانيكية</h3>
+        <p>يعيد محاكاة شكل أداة القياس الميكانيكية التقليدية (Vernier Caliper). تظهر التدرجات الإضافية المنزلقة لتبرز قياس الأجزاء بدقة فائقة.</p>
+        <div class="concept-features">
+          <span class="feature-tag">نمط الفرجار الكلاسيكي</span>
+          <span class="feature-tag">أزرار سحب معدنية</span>
+          <span class="feature-tag">حواف دقيقة</span>
+        </div>
+      </div>
+
+      <!-- General design notes -->
+      <div class="description-panel">
+        <h4>تعديلات استغلال المساحة:</h4>
+        <ul>
+          <li><strong>إلغاء المعايرة وإعادة الضبط:</strong> تمت إزالة الأزرار الجانبية والسفلية كلياً لتوفير أقصى مساحة طولية ممكنة للمسطرة على الشاشة.</li>
+          <li><strong>التبديل عبر Dropdown:</strong> تم استبدال أزرار تبديل الوحدات والأنماط المعقدة بقائمة منسدلة صغيرة ومصقولة داخل شريط العنوان العلوي.</li>
+          <li><strong>دقة متناهية:</strong> بفضل إخلاء المساحات، تم تحسين دمج المسطرة بملء الشاشة مع مؤشرات A و B التي تسير بسلاسة تامة.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right: Interactive phone emulator -->
+    <div class="preview-area">
+      <div class="phone-container">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          
+          <!-- Screen Header bar -->
+          <div class="screen-header">
+            <span class="time-display">09:41</span>
+            <div style="display: flex; gap: 6px;">
+              <span>LTE</span>
+              <span>100%</span>
+            </div>
+          </div>
+
+          <!-- App bar with Title & Unit Dropdown -->
+          <div class="app-title-bar">
+            <h2>Digital Ruler</h2>
+            <div class="mode-select-container">
+              <select id="unit-selector" class="mode-dropdown" onchange="updateUnits()">
+                <option value="mm">ميليمتر (mm)</option>
+                <option value="cm">سنتيمتر (cm)</option>
+                <option value="in">بوصة (in)</option>
+              </select>
+              <span class="dropdown-icon">▼</span>
+            </div>
+          </div>
+
+          <!-- Screen body containing Ruler simulator -->
+          <div class="screen-body">
+            
+            <!-- LED digital readout -->
+            <div class="led-readout-slot">
+              <div class="led-readout-label" id="readout-title">القياس الكلي</div>
+              <div class="led-readout-value" id="led-display-value">54.2 mm</div>
+            </div>
+
+            <!-- Virtual Ruler viewport -->
+            <div class="ruler-viewport concept-industrial" id="ruler-viewport">
+              
+              <!-- Draw tick marks and labels -->
+              <div class="ruler-face" id="ruler-ticks">
+                <!-- Ticks are generated dynamically via JS -->
+              </div>
+
+              <!-- Connecting Line between A and B -->
+              <div class="measure-span-line" id="measure-line"></div>
+
+              <!-- Peg A (Top handle) -->
+              <div class="peg-handle" id="peg-a" data-letter="A" style="top: 25%;"></div>
+
+              <!-- Peg B (Bottom handle) -->
+              <div class="peg-handle" id="peg-b" data-letter="B" style="top: 75%;"></div>
+
+            </div>
+
+          </div>
+
+          <!-- Ad banner placeholder -->
+          <div class="ad-banner-placeholder">
+            [ إعلان مساحة حرة - Levo Pro ]
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // State management
+    let activeConcept = 'industrial';
+    let currentUnit = 'mm';
+    let ppi = 96; // pixels per inch
+    let scale = 1.0; // scale factor
+    
+    // Peg locations in percentage (0 to 100) of ruler viewport height
+    let pegAPercent = 25.0;
+    let pegBPercent = 75.0;
+
+    const rulerViewport = document.getElementById('ruler-viewport');
+    const pegA = document.getElementById('peg-a');
+    const pegB = document.getElementById('peg-b');
+    const measureLine = document.getElementById('measure-line');
+    const ledValue = document.getElementById('led-display-value');
+    const unitSelector = document.getElementById('unit-selector');
+
+    // Build the tick marks on ruler face
+    function buildRulerTicks() {
+      const ticksContainer = document.getElementById('ruler-ticks');
+      ticksContainer.innerHTML = '';
+      
+      const totalTicks = 80;
+      for (let i = 0; i <= totalTicks; i++) {
+        const tick = document.createElement('div');
+        tick.className = 'tick';
+        
+        // Define major, medium, minor ticks
+        if (i % 10 === 0) {
+          tick.classList.add('major');
+          // Add metric labels
+          const value = i;
+          tick.setAttribute('data-label', value.toString());
+        } else if (i % 5 === 0) {
+          tick.classList.add('medium');
+        } else {
+          tick.classList.add('minor');
+        }
+        ticksContainer.appendChild(tick);
+      }
+    }
+
+    // Switch between the three interactive concepts
+    function switchConcept(concept, element) {
+      // Remove active classes
+      document.querySelectorAll('.concept-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      // Add active to selected
+      element.classList.add('active');
+
+      // Update styling class on phone emulator viewport
+      rulerViewport.className = 'ruler-viewport';
+      
+      if (concept === 'industrial') {
+        rulerViewport.classList.add('concept-industrial');
+        activeConcept = 'industrial';
+        document.documentElement.style.setProperty('--accent-yellow', '#F5C22B');
+        document.documentElement.style.setProperty('--led-green', '#4EBA74');
+      } else if (concept === 'glass') {
+        rulerViewport.classList.add('concept-glass');
+        activeConcept = 'glass';
+        document.documentElement.style.setProperty('--accent-yellow', '#00F5FF');
+        document.documentElement.style.setProperty('--led-green', '#00F5FF');
+      } else if (concept === 'vernier') {
+        rulerViewport.classList.add('concept-vernier');
+        activeConcept = 'vernier';
+        document.documentElement.style.setProperty('--accent-yellow', '#CFD8DC');
+        document.documentElement.style.setProperty('--led-green', '#ECEFF1');
+      }
+      
+      updateMeasurement();
+    }
+
+    // Update value output on LCD based on distance A-B
+    function updateMeasurement() {
+      const viewportHeight = rulerViewport.clientHeight;
+      const distancePixels = Math.abs(pegAPercent - pegBPercent) * (viewportHeight / 100);
+      
+      // Calculate real measurements based on scale
+      // Map pixels to millimeters/inches
+      const mmPerPixel = 0.264583; // Standard approximation
+      let value = 0.0;
+      
+      if (currentUnit === 'mm') {
+        value = distancePixels * mmPerPixel;
+        ledValue.textContent = value.toFixed(1) + " mm";
+      } else if (currentUnit === 'cm') {
+        value = (distancePixels * mmPerPixel) / 10.0;
+        ledValue.textContent = value.toFixed(2) + " cm";
+      } else if (currentUnit === 'in') {
+        value = (distancePixels * mmPerPixel) / 25.4;
+        ledValue.textContent = value.toFixed(2) + " in";
+      }
+
+      // Position the connectors and limits
+      const topPos = Math.min(pegAPercent, pegBPercent);
+      const bottomPos = Math.max(pegAPercent, pegBPercent);
+      measureLine.style.top = topPos + "%";
+      measureLine.style.height = (bottomPos - topPos) + "%";
+    }
+
+    // Drag peg handlers
+    function setupDrag(pegElement, isPegA) {
+      let isDragging = false;
+
+      pegElement.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        e.preventDefault();
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        const rect = rulerViewport.getBoundingClientRect();
+        let yPixels = e.clientY - rect.top;
+        let percent = (yPixels / rect.height) * 100;
+        
+        // Clamp bounds between 0% and 100%
+        percent = Math.max(0, Math.min(100, percent));
+        
+        if (isPegA) {
+          pegAPercent = percent;
+          pegElement.style.top = percent + "%";
+        } else {
+          pegBPercent = percent;
+          pegElement.style.top = percent + "%";
+        }
+        
+        updateMeasurement();
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      // Touch events support for mobile testing
+      pegElement.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        e.preventDefault();
+      });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        
+        const rect = rulerViewport.getBoundingClientRect();
+        const touch = e.touches[0];
+        let yPixels = touch.clientY - rect.top;
+        let percent = (yPixels / rect.height) * 100;
+        
+        percent = Math.max(0, Math.min(100, percent));
+        
+        if (isPegA) {
+          pegAPercent = percent;
+          pegElement.style.top = percent + "%";
+        } else {
+          pegBPercent = percent;
+          pegElement.style.top = percent + "%";
+        }
+        
+        updateMeasurement();
+      });
+
+      window.addEventListener('touchend', () => {
+        isDragging = false;
+      });
+    }
+
+    // Triggered when dropdown changes units
+    function updateUnits() {
+      currentUnit = unitSelector.value;
+      updateMeasurement();
+    }
+
+    // Initialization
+    buildRulerTicks();
+    setupDrag(pegA, true);
+    setupDrag(pegB, false);
+    
+    // Delayed initial measurement to allow layout rendering
+    setTimeout(updateMeasurement, 100);
+
+    // Update measurement when window resizes to keep scaling correct
+    window.addEventListener('resize', updateMeasurement);
+  </script>
+</body>
+</html>
