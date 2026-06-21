@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Levo Sound Meter - Dynamic VU Meter Designs</title>
+  <title>Levo Sound Meter - Half-Triangle VU Meter Designs</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -236,67 +236,99 @@
       border-radius: 12px;
       border: 1.5px solid #282828;
       box-shadow: inset 0 3px 8px rgba(0,0,0,0.9);
-      padding: 1.5rem;
+      padding: 1.5rem 1.2rem;
       flex-grow: 1;
       min-height: 350px;
+    }
+
+    /* Vertical Scale Numbers column */
+    .scale-column {
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      height: 216px; /* Match inner height of bars container exactly */
+      width: 25px;
+      margin: 12px 0; /* Match padding of vu-meter-container */
+    }
+
+    .scale-number {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--chrome-light);
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
+      font-weight: bold;
+      line-height: 1;
+      text-align: right;
+    }
+
+    /* Vertical Slider Container (Clean, rotated horizontally) */
+    .vertical-slider-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 240px;
+      position: relative;
+    }
+
+    /* Custom Styled Range Input (Rotated 270 degrees to be vertical) */
+    .slider-vertical {
+      -webkit-appearance: none;
+      width: 200px;
+      height: 6px;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 3px;
+      outline: none;
+      transform: rotate(270deg);
+      cursor: pointer;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+    }
+
+    .slider-vertical::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--warning-yellow); /* Yellow Knob */
+      border: 2px solid #1c1c1c;
+      box-shadow: 
+        0 2px 5px rgba(0,0,0,0.8),
+        0 0 8px rgba(255, 204, 0, 0.6);
+      transition: background 0.1s ease;
+    }
+
+    .slider-vertical::-webkit-slider-thumb:hover {
+      background: #ffe600;
     }
 
     /* --- VU METERS CONTAINER --- */
     .vu-meter-container {
       display: flex;
       flex-direction: column-reverse;
-      height: 250px;
-      flex-grow: 1;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 12px 16px;
+      height: 240px;
+      width: 160px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 12px;
       border-radius: 8px;
       border: 1px solid #1c1c1c;
       box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
       justify-content: space-between;
     }
 
-    /* Grid Row containing Bar + Label precisely */
-    .vu-row {
-      display: flex;
-      align-items: center;
-      width: 100%;
+    /* Left-Aligned Half-Triangle (Right angle is on the left) */
+    .vu-left-align {
+      align-items: flex-start;
     }
 
-    /* Label text */
-    .vu-label {
-      width: 32px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 10px;
-      color: var(--chrome-mid);
-      font-weight: bold;
-    }
-
-    .label-left {
-      text-align: right;
-      margin-right: 12px;
-    }
-
-    .label-right {
-      text-align: left;
-      margin-left: 12px;
-    }
-
-    /* Wrapper for bars to align them properly */
-    .vu-bar-wrapper {
-      flex-grow: 1;
-      display: flex;
-    }
-
-    .align-left {
-      justify-content: flex-start;
-    }
-
-    .align-right {
-      justify-content: flex-end;
+    /* Right-Aligned Half-Triangle (Right angle is on the right) */
+    .vu-right-align {
+      align-items: flex-end;
     }
 
     /* Bar styling */
     .vu-bar {
+      height: 5px;
       border-radius: 1px;
       background: currentColor;
       opacity: 0.08;
@@ -305,62 +337,6 @@
 
     .vu-bar.active {
       opacity: 1;
-    }
-
-    /* Minimalist Yellow Range Slider styling */
-    .slider-vertical {
-      -webkit-appearance: none;
-      writing-mode: bt-lr;
-      width: 20px;
-      height: 230px;
-      background: transparent;
-      outline: none;
-      cursor: pointer;
-    }
-
-    /* Webkit custom track and thumb */
-    .slider-vertical::-webkit-slider-runnable-track {
-      background: #0a0a0a;
-      border: 1.5px solid #222;
-      border-radius: 6px;
-      width: 8px;
-    }
-
-    .slider-vertical::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--warning-yellow);
-      border: 2px solid #111;
-      box-shadow: 
-        0 2px 6px rgba(0,0,0,0.6),
-        0 0 10px rgba(255, 204, 0, 0.8),
-        inset 0 1px 0 rgba(255,255,255,0.4);
-      transition: background 0.1s ease;
-    }
-
-    .slider-vertical::-webkit-slider-thumb:hover {
-      background: #ffe066;
-      box-shadow: 0 0 15px rgba(255, 204, 0, 1);
-    }
-
-    /* Firefox custom track and thumb */
-    .slider-vertical::-moz-range-track {
-      background: #0a0a0a;
-      border: 1.5px solid #222;
-      border-radius: 6px;
-      width: 8px;
-    }
-
-    .slider-vertical::-moz-range-thumb {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--warning-yellow);
-      border: 2px solid #111;
-      box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
     }
 
     /* Description Arabic Box */
@@ -379,8 +355,8 @@
 
   <div class="dashboard">
     <header>
-      <h1>مقياس شدة الصوت — نصف مثلث وتوزيع الأرقام الدقيق</h1>
-      <p class="subtitle">Sound Meter - Right-Angled VU Meters with Exact Scale Ticks</p>
+      <h1>مقياس شدة الصوت — نصف مثلث طولي (VU Meter)</h1>
+      <p class="subtitle">Sound Meter - Right-Angled Tapered Bars & Custom Yellow Side Sliders</p>
     </header>
 
     <!-- Source Selection & Master Readout -->
@@ -401,72 +377,81 @@
     <!-- Grid of Proposals -->
     <div class="proposals-grid">
 
-      <!-- PROPOSAL A: Left-Aligned Half Triangle (Straight Left, Diagonal Right) -->
+      <!-- PROPOSAL A: Left-Aligned Half Triangle -->
       <div class="proposal-card">
         <div class="proposal-header">
           <span class="proposal-badge">مقترح أ</span>
-          <h2 class="proposal-title">نصف مثلث وتدي (محاذى لليسار)</h2>
-          <div class="proposal-desc">العمود المستقيم جهة اليسار وبه الأرقام، وتتمدد الأشرطة لليمين بازدياد الصوت (من الصغير بالأسفل للكبير بالأعلى).</div>
+          <h2 class="proposal-title">نصف مثلث محاذى لليسار</h2>
+          <div class="proposal-desc">تتدرج الأشرطة من الأصغر بالأسفل للأكبر بالأعلى. الأرقام دقيقة وتتغير ديناميكياً لتطابق الـ scale تماماً مع المقبض الأصفر الجانبي الصامت.</div>
         </div>
 
         <div class="layout-row">
-          <!-- VU Meter containing dynamically generated rows (label + bar) -->
-          <div id="p1-meter" class="vu-meter-container"></div>
+          <!-- Decibel scale labels -->
+          <div id="p1-scale" class="scale-column"></div>
 
-          <!-- Vertical Yellow Slider (No labels, no words) -->
+          <!-- VU Meter -->
+          <div id="p1-meter" class="vu-meter-container vu-left-align"></div>
+
+          <!-- Vertical Slider next to it (Yellow, clean) -->
           <div class="vertical-slider-container">
-            <input type="range" id="p1-slider" class="slider-vertical" min="10" max="36" value="20" orient="vertical">
+            <input type="range" id="p1-slider" class="slider-vertical" min="10" max="40" value="24">
           </div>
         </div>
 
         <div class="slider-description-rtl">
-          تتطابق علامات وأرقام الـ dB رأسياً بشكل مثالي مع الـ scale الخاص بالـ bars. عند تغيير عدد الأشرطة بالمنزلق الأصفر، يعاد توزيع الأرقام تلقائياً لتظل دقيقة.
+          يبدأ التدرج من أصغر شريط بالأسفل (الـ dB المنخفض) ويتسع تدريجياً لليمين ليصل لأعرض شريط بالأعلى. المنزلق الجانبي أصفر بدون أي كتابة أو أرقام لتسهيل الضبط البصري.
         </div>
       </div>
 
-      <!-- PROPOSAL B: Right-Aligned Half Triangle (Straight Right, Diagonal Left) -->
+      <!-- PROPOSAL B: Right-Aligned Half Triangle -->
       <div class="proposal-card">
         <div class="proposal-header">
           <span class="proposal-badge">مقترح ب</span>
-          <h2 class="proposal-title">نصف مثلث وتدي (محاذى لليمين)</h2>
-          <div class="proposal-desc">العمود المستقيم في الجهة اليمنى وبه الأرقام، وتتمدد الأشرطة نحو اليسار تدريجياً (من الأصغر بالأسفل للأعرض بالأعلى).</div>
+          <h2 class="proposal-title">نصف مثلث محاذى لليمين</h2>
+          <div class="proposal-desc">أشرطة VU متدرجة من الصغير للكبير ومحاذية لليمين بالكامل. أرقام الـ dB تتوزع تلقائياً، والمنزلق أصفر صامت في اليسار.</div>
         </div>
 
         <div class="layout-row">
-          <!-- Vertical Yellow Slider on the left -->
+          <!-- Vertical Slider next to it (Left side) -->
           <div class="vertical-slider-container">
-            <input type="range" id="p2-slider" class="slider-vertical" min="10" max="36" value="20" orient="vertical">
+            <input type="range" id="p2-slider" class="slider-vertical" min="10" max="40" value="24">
           </div>
 
           <!-- VU Meter -->
-          <div id="p2-meter" class="vu-meter-container"></div>
+          <div id="p2-meter" class="vu-meter-container vu-right-align"></div>
+
+          <!-- Decibel scale labels -->
+          <div id="p2-scale" class="scale-column"></div>
         </div>
 
         <div class="slider-description-rtl">
-          تصميم ممتد لليسار بمحاذاة خط عمودي أيمن تظهر عليه أرقام القياس. منزلق أصفر نيون بسيط ومميز دون أي نصوص مشتتة.
+          تخطيط بديل يحاذي المثلث جهة اليمين لتتوزع قيم الديسيبل والأشرطة بدقة متناهية، مع شريط التمرير الأصفر التناظري.
         </div>
       </div>
 
-      <!-- PROPOSAL C: Heavy Block StudioVU (Straight Left, Dynamic Outline) -->
+      <!-- PROPOSAL C: Segmented Block Half-Triangle -->
       <div class="proposal-card">
         <div class="proposal-header">
           <span class="proposal-badge">مقترح ج</span>
-          <h2 class="proposal-title">الوتد الفسفوري السميك (Studio VU)</h2>
-          <div class="proposal-desc">نصف مثلث وتدي بأشرطة عريضة ومتباعدة للوضوح العالي، وخلفية LED داكنة بالكامل تبرز توهج الألوان والأرقام.</div>
+          <h2 class="proposal-title">الوتد المنفصل السميك (Studio VU)</h2>
+          <div class="proposal-desc">تدرج رأسي محاذى لليسار بأشرطة سميكة للستوديوهات الاحترافية. الترقيم يتغير ديناميكياً مع تعديل المنزلق الأصفر المنفصل.</div>
         </div>
 
         <div class="layout-row">
-          <!-- VU Meter -->
-          <div id="p3-meter" class="vu-meter-container" style="background: #000; padding: 12px 10px;"></div>
+          <!-- Decibel scale labels -->
+          <div id="p3-scale" class="scale-column"></div>
 
-          <!-- Vertical Yellow Slider -->
+          <!-- VU Meter -->
+          <div id="p3-meter" class="vu-meter-container vu-left-align" style="background: #000; padding: 16px 8px;"></div>
+
+          <!-- Vertical Slider next to it -->
           <div class="vertical-slider-container">
-            <input type="range" id="p3-slider" class="slider-vertical" min="10" max="25" value="15" orient="vertical">
+            <input type="range" id="p3-slider" class="slider-vertical" min="10" max="30" value="18">
           </div>
         </div>
 
         <div class="slider-description-rtl">
-          مناسب للرؤية السريعة والتركيز على تدريج الأرقام الدقيقة. تم الاستغناء عن النصوص الجانبية للمنزلق ليصبح بلون أصفر خالص متوهج.
+          يعتمد على أشرطة أكثر سمكاً وأقل عدداً لتسهيل الرؤية السريعة مع بقاء الترقيم متناسباً ومنسقاً بدقة تامة.
         </div>
       </div>
 
@@ -490,12 +475,15 @@
 
     const p1Slider = document.getElementById('p1-slider');
     const p1Meter = document.getElementById('p1-meter');
+    const p1Scale = document.getElementById('p1-scale');
 
     const p2Slider = document.getElementById('p2-slider');
     const p2Meter = document.getElementById('p2-meter');
+    const p2Scale = document.getElementById('p2-scale');
 
     const p3Slider = document.getElementById('p3-slider');
     const p3Meter = document.getElementById('p3-meter');
+    const p3Scale = document.getElementById('p3-scale');
 
     function getSegmentColor(index, total) {
       const fraction = index / total;
@@ -506,84 +494,112 @@
     }
 
     // ----------------------------------------------------
-    // DYNAMIC VU ROW GENERATOR WITH PRECISION LABELS
+    // Dynamic Scale Generator (Aligns exactly with the bars)
     // ----------------------------------------------------
-    function populateVuMeter(meterElement, count, alignment) {
-      meterElement.innerHTML = '';
+    function generateScale(scaleElement, count) {
+      scaleElement.innerHTML = '';
       
-      const maxW = 90; // Maximum bar width
-      const minW = 10; // Minimum bar width
+      // We will place 5 labels spaced vertically to align perfectly with the bars.
+      // E.g., at 0%, 25%, 50%, 75%, and 100% of the bar count.
+      const labelValues = [30, 55, 80, 105, 130];
       
-      // Calculate individual bar height based on total container constraints (250px)
-      const height = Math.floor(226 / count) - 2;
-
-      // Identify key indices where decibel labels will be shown (5 labels distributed)
-      const labelIndices = [];
-      const steps = 5;
-      for (let k = 0; k < steps; k++) {
-        labelIndices.push(Math.round((k / (steps - 1)) * (count - 1)));
-      }
-
-      for (let i = 0; i < count; i++) {
-        const row = document.createElement('div');
-        row.className = 'vu-row';
-        row.style.height = `${height}px`;
-
-        // Calculate precise dB value for this specific bar index
-        const barDb = Math.round(30 + (i / (count - 1)) * 100);
-        
-        // Label Element
-        const label = document.createElement('div');
-        label.className = `vu-label ${alignment === 'left' ? 'label-left' : 'label-right'}`;
-        if (labelIndices.includes(i)) {
-          label.textContent = barDb;
-        } else {
-          // Subtle dot tick for empty scale indicators
-          label.textContent = '·';
-          label.style.opacity = '0.3';
-        }
-
-        // Bar Wrapper & Bar
-        const barWrapper = document.createElement('div');
-        barWrapper.className = `vu-bar-wrapper ${alignment === 'left' ? 'align-left' : 'align-right'}`;
-        
-        const bar = document.createElement('div');
-        bar.className = 'vu-bar';
-        bar.style.height = `${Math.max(3, height - 1)}px`;
-        
-        // Tapered from small (i=0) at bottom to big (i=count-1) at top
-        const width = minW + (i / (count - 1)) * (maxW - minW);
-        bar.style.width = `${width}px`;
-        bar.style.color = getSegmentColor(i, count);
-        
-        barWrapper.appendChild(bar);
-
-        // Append layout elements in correct order depending on left/right alignment
-        if (alignment === 'left') {
-          // [Label] [Bar (aligned left)]
-          row.appendChild(label);
-          row.appendChild(barWrapper);
-        } else {
-          // [Bar (aligned right)] [Label]
-          row.appendChild(barWrapper);
-          row.appendChild(label);
-        }
-
-        meterElement.appendChild(row);
+      // Calculate flexbox spaces to distribute them exactly matching the container
+      for (let i = 0; i < labelValues.length; i++) {
+        const item = document.createElement('div');
+        item.className = 'scale-number';
+        item.textContent = labelValues[i];
+        scaleElement.appendChild(item);
       }
     }
 
     // ----------------------------------------------------
-    // Update active bar highlights
+    // PROPOSAL A: Left Aligned Half-Triangle
     // ----------------------------------------------------
-    function updateMeterLevel(meterElement, level) {
+    function generateP1() {
+      const count = parseInt(p1Slider.value);
+      p1Meter.innerHTML = '';
+      
+      const maxW = 120; // widest at top
+      const minW = 15;  // narrowest at bottom
+      const height = Math.floor(210 / count) - 2;
+
+      for (let i = 0; i < count; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'vu-bar';
+        bar.style.height = `${height}px`;
+        
+        // Small (bottom, i=0) to big (top, i=count-1)
+        const width = minW + (i / (count - 1)) * (maxW - minW);
+        bar.style.width = `${width}px`;
+        
+        bar.style.color = getSegmentColor(i, count);
+        p1Meter.appendChild(bar);
+      }
+      generateScale(p1Scale, count);
+    }
+
+    // ----------------------------------------------------
+    // PROPOSAL B: Right Aligned Half-Triangle
+    // ----------------------------------------------------
+    function generateP2() {
+      const count = parseInt(p2Slider.value);
+      p2Meter.innerHTML = '';
+      
+      const maxW = 120; // widest at top
+      const minW = 15;  // narrowest at bottom
+      const height = Math.floor(210 / count) - 2;
+
+      for (let i = 0; i < count; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'vu-bar';
+        bar.style.height = `${height}px`;
+        
+        const width = minW + (i / (count - 1)) * (maxW - minW);
+        bar.style.width = `${width}px`;
+        
+        bar.style.color = getSegmentColor(i, count);
+        p2Meter.appendChild(bar);
+      }
+      generateScale(p2Scale, count);
+    }
+
+    // ----------------------------------------------------
+    // PROPOSAL C: Studio VU Block Taper
+    // ----------------------------------------------------
+    function generateP3() {
+      const count = parseInt(p3Slider.value);
+      p3Meter.innerHTML = '';
+      
+      const maxW = 120;
+      const minW = 18;
+      const height = Math.floor(200 / count) - 3;
+
+      for (let i = 0; i < count; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'vu-bar';
+        bar.style.height = `${height}px`;
+        bar.style.borderRadius = '2.5px';
+        
+        const width = minW + (i / (count - 1)) * (maxW - minW);
+        bar.style.width = `${width}px`;
+        
+        bar.style.color = getSegmentColor(i, count);
+        p3Meter.appendChild(bar);
+      }
+      generateScale(p3Scale, count);
+    }
+
+    // ----------------------------------------------------
+    // Update active levels
+    // ----------------------------------------------------
+    function updateMeterBars(meterElement, level) {
       const bars = meterElement.querySelectorAll('.vu-bar');
       const activeCount = Math.round(level * bars.length);
       
       bars.forEach((bar, i) => {
         if (i < activeCount) {
           bar.classList.add('active');
-          bar.style.boxShadow = `0 0 6px ${bar.style.color}`;
+          bar.style.boxShadow = `0 0 8px ${bar.style.color}`;
         } else {
           bar.classList.remove('active');
           bar.style.boxShadow = 'none';
@@ -591,25 +607,7 @@
       });
     }
 
-    // ----------------------------------------------------
-    // Event Initializations
-    // ----------------------------------------------------
-    function setupMeter1() {
-      const count = parseInt(p1Slider.value);
-      populateVuMeter(p1Meter, count, 'left');
-    }
-
-    function setupMeter2() {
-      const count = parseInt(p2Slider.value);
-      populateVuMeter(p2Meter, count, 'right');
-    }
-
-    function setupMeter3() {
-      const count = parseInt(p3Slider.value);
-      populateVuMeter(p3Meter, count, 'left');
-    }
-
-    function updateAllDisplays(level) {
+    function updateDisplayValues(level) {
       currentDb = 30.0 + level * 100.0;
       dbValueDisplay.textContent = currentDb.toFixed(1);
       
@@ -627,9 +625,9 @@
         dbValueDisplay.style.textShadow = '0 0 8px rgba(232, 69, 69, 0.5)';
       }
 
-      updateMeterLevel(p1Meter, level);
-      updateMeterLevel(p2Meter, level);
-      updateMeterLevel(p3Meter, level);
+      updateMeterBars(p1Meter, level);
+      updateMeterBars(p2Meter, level);
+      updateMeterBars(p3Meter, level);
     }
 
     // ----------------------------------------------------
@@ -644,7 +642,7 @@
       let sineLevel = 0.5 + 0.3 * Math.sin(simAngle) + 0.15 * Math.cos(simAngle * 2.3) + noise;
       sineLevel = Math.max(0.0, Math.min(1.0, sineLevel));
       
-      updateAllDisplays(sineLevel);
+      updateDisplayValues(sineLevel);
       requestAnimationFrame(simulateAudioInput);
     }
 
@@ -683,7 +681,7 @@
       let norm = (rms / 120.0).clamp(0.0, 1.0);
       normalizedLevel = normalizedLevel * 0.3 + norm * 0.7;
 
-      updateAllDisplays(normalizedLevel);
+      updateDisplayValues(normalizedLevel);
       animationFrameId = requestAnimationFrame(trackRealAudio);
     }
 
@@ -722,14 +720,14 @@
     btnSimulate.addEventListener('click', () => setMode('simulate'));
     btnMic.addEventListener('click', () => setMode('mic'));
 
-    p1Slider.addEventListener('input', setupMeter1);
-    p2Slider.addEventListener('input', setupMeter2);
-    p3Slider.addEventListener('input', setupMeter3);
+    p1Slider.addEventListener('input', generateP1);
+    p2Slider.addEventListener('input', generateP2);
+    p3Slider.addEventListener('input', generateP3);
 
     // Initial load
-    setupMeter1();
-    setupMeter2();
-    setupMeter3();
+    generateP1();
+    generateP2();
+    generateP3();
     simulateAudioInput();
 
   </script>
