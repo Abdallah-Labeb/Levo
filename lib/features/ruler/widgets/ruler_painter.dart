@@ -1,12 +1,11 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:levo/app/theme/app_colors.dart';
-import 'package:levo/app/theme/app_dimensions.dart';
 import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/features/ruler/bloc/ruler_state.dart';
 
 /// Renders the static physical ruler markings (metric/imperial) along the left edge.
-/// Only repaints when the active measurement unit or scale factor changes.
+/// Now features a premium skeuomorphic brushed steel metallic body.
 class StaticRulerPainter extends CustomPainter {
   StaticRulerPainter({
     required this.unit,
@@ -27,15 +26,60 @@ class StaticRulerPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    tickPaint
-      ..color = AppColors.kChromeMid.withAlpha(180)
-      ..style = PaintingStyle.stroke
+    // 1. Draw Brushed Steel Ruler Body (width = 85.0)
+    final Rect rulerRect = Rect.fromLTRB(0.0, 0.0, 85.0, size.height);
+    final Paint metalPaint = Paint()
+      ..shader = const LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: [
+          Color(0xFFB5B5B5),
+          Color(0xFFEBEBEB),
+          Color(0xFFFAFAFA),
+          Color(0xFFD6D6D6),
+          Color(0xFF9E9E9E),
+        ],
+        stops: [0.0, 0.25, 0.5, 0.75, 1.0],
+      ).createShader(rulerRect);
+    canvas.drawRect(rulerRect, metalPaint);
+
+    // 2. Draw Bevel Borders & Right Edge Shadow
+    final Paint linePaint = Paint()..style = PaintingStyle.stroke;
+    
+    // White highlights
+    linePaint
+      ..color = Colors.white.withValues(alpha: 0.6)
       ..strokeWidth = 1.0;
+    canvas.drawLine(const Offset(84.0, 0.0), Offset(84.0, size.height), linePaint);
+
+    // Dark edge line
+    linePaint
+      ..color = const Color(0xFF666666)
+      ..strokeWidth = 1.0;
+    canvas.drawLine(const Offset(85.0, 0.0), Offset(85.0, size.height), linePaint);
+
+    // Left edge shadow line (simulates ruler depth)
+    linePaint
+      ..color = const Color(0xFF999999)
+      ..strokeWidth = 1.0;
+    canvas.drawLine(const Offset(0.0, 0.0), Offset(0.0, size.height), linePaint);
+
+    // Outer drop shadow on the right side of the metal strip
+    final Paint shadowPaint = Paint()
+      ..color = Colors.black.withValues(alpha: 0.25)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
+    canvas.drawRect(Rect.fromLTRB(85.0, 0.0, 88.0, size.height), shadowPaint);
+
+    // 3. Setup Tick Paint styles (high-contrast dark charcoal/black)
+    tickPaint
+      ..color = const Color(0xFF333333)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
 
     majorTickPaint
-      ..color = AppColors.kTextPrimary
+      ..color = const Color(0xFF111111)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+      ..strokeWidth = 2.0;
 
     if (unit == RulerUnit.mm || unit == RulerUnit.cm) {
       final double mmPerPixel = (kMmPerInch / kBaseDpi) * scaleFactor;
@@ -51,7 +95,7 @@ class StaticRulerPainter extends CustomPainter {
         final isCm = mmIndex % 10 == 0;
         final isHalfCm = mmIndex % 5 == 0;
 
-        final double tickLength = isCm ? 24.0 : (isHalfCm ? 15.0 : 8.0);
+        final double tickLength = isCm ? 32.0 : (isHalfCm ? 20.0 : 12.0);
         final currentPaint = isCm ? majorTickPaint : tickPaint;
 
         canvas.drawLine(Offset(0.0, y), Offset(tickLength, y), currentPaint);
@@ -63,8 +107,8 @@ class StaticRulerPainter extends CustomPainter {
               text: TextSpan(
                 text: '$cmValue',
                 style: AppTypography.kCaption.copyWith(
-                  color: AppColors.kTextSecondary,
-                  fontSize: AppDimensions.fontSizeDialLabel,
+                  color: const Color(0xFF111111),
+                  fontSize: 13.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -73,7 +117,7 @@ class StaticRulerPainter extends CustomPainter {
             tp.layout();
             return tp;
           });
-          painter.paint(canvas, Offset(28.0, y - painter.height / 2));
+          painter.paint(canvas, Offset(44.0, y - painter.height / 2));
         }
 
         mmIndex++;
@@ -96,8 +140,8 @@ class StaticRulerPainter extends CustomPainter {
         final isEighth = rem == 2 || rem == 6 || rem == 10 || rem == 14;
 
         final double tickLength = isInch
-            ? 24.0
-            : (isHalf ? 18.0 : (isQuarter ? 14.0 : (isEighth ? 9.0 : 5.0)));
+            ? 32.0
+            : (isHalf ? 22.0 : (isQuarter ? 16.0 : (isEighth ? 12.0 : 7.0)));
         final currentPaint = isInch ? majorTickPaint : tickPaint;
 
         canvas.drawLine(Offset(0.0, y), Offset(tickLength, y), currentPaint);
@@ -109,8 +153,8 @@ class StaticRulerPainter extends CustomPainter {
               text: TextSpan(
                 text: '$inchValue',
                 style: AppTypography.kCaption.copyWith(
-                  color: AppColors.kTextSecondary,
-                  fontSize: AppDimensions.fontSizeDialLabel,
+                  color: const Color(0xFF111111),
+                  fontSize: 13.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -119,7 +163,7 @@ class StaticRulerPainter extends CustomPainter {
             tp.layout();
             return tp;
           });
-          painter.paint(canvas, Offset(28.0, y - painter.height / 2));
+          painter.paint(canvas, Offset(44.0, y - painter.height / 2));
         }
 
         sixteenthIndex++;
@@ -134,7 +178,6 @@ class StaticRulerPainter extends CustomPainter {
 }
 
 /// Renders the active measurement selection overlay and horizontal guidelines.
-/// Repaints on marker dragging.
 class RulerSelectionPainter extends CustomPainter {
   RulerSelectionPainter({
     required this.markerA,
@@ -145,7 +188,7 @@ class RulerSelectionPainter extends CustomPainter {
   final double markerB;
 
   static final Paint selectionPaint = Paint();
-  static final Paint dashPaint = Paint();
+  static final Paint dimensionLinePaint = Paint();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -156,35 +199,43 @@ class RulerSelectionPainter extends CustomPainter {
       ..color = AppColors.kYellow.withAlpha(20)
       ..style = PaintingStyle.fill;
 
-    // Fill selection band
+    // Fill selection band across workspace
     canvas.drawRect(
-      Rect.fromLTRB(0.0, top, size.width, bottom),
+      Rect.fromLTRB(85.0, top, size.width, bottom),
       selectionPaint,
     );
 
-    // Draw dashed guideline border inside the selection band
-    dashPaint
-      ..color = AppColors.kYellow.withAlpha(60)
+    // Draw drafting dimension line at X = 105.0
+    dimensionLinePaint
+      ..color = AppColors.kYellow.withValues(alpha: 0.8)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
+      ..strokeWidth = 1.5;
 
-    const double dashWidth = 5.0;
-    const double dashSpace = 4.0;
+    canvas.drawLine(
+      Offset(105.0, top),
+      Offset(105.0, bottom),
+      dimensionLinePaint,
+    );
 
-    double currentX = 0.0;
-    while (currentX < size.width) {
-      canvas.drawLine(
-        Offset(currentX, top),
-        Offset(currentX + dashWidth, top),
-        dashPaint,
-      );
-      canvas.drawLine(
-        Offset(currentX, bottom),
-        Offset(currentX + dashWidth, bottom),
-        dashPaint,
-      );
-      currentX += dashWidth + dashSpace;
-    }
+    // Draw dimension arrowheads
+    final Path arrowPath = Path();
+    
+    // Top arrowhead pointing up
+    arrowPath.moveTo(101.0, top + 7.0);
+    arrowPath.lineTo(105.0, top);
+    arrowPath.lineTo(109.0, top + 7.0);
+
+    // Bottom arrowhead pointing down
+    arrowPath.moveTo(101.0, bottom - 7.0);
+    arrowPath.lineTo(105.0, bottom);
+    arrowPath.lineTo(109.0, bottom - 7.0);
+
+    final Paint arrowPaint = Paint()
+      ..color = AppColors.kYellow.withValues(alpha: 0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    canvas.drawPath(arrowPath, arrowPaint);
   }
 
   @override

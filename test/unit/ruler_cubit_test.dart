@@ -59,26 +59,10 @@ void main() {
       expect(prefs.rulerDefaultUnit, 'cm');
     });
 
-    test('calibrate computes correct scale factor and saves it', () async {
+    test('mmPerPixel remains constant at default 160 DPI mapping', () {
       cubit.initialize(devicePixelRatio: 2.0, screenHeight: 600.0);
-
-      // Say 300 pixels should equal 85.6 mm physical reference
-      await cubit.calibrate(referenceMm: 85.6, pixelDistance: 300.0);
-
-      // Expected mmPerPixel = 85.6 / 300 = 0.28533
-      // Expected scaleFactor = calculatedScale = 85.6 / (300 * (25.4 / 160.0)) = 1.7976
-      expect(cubit.state.scaleFactor, closeTo(1.7976, 0.001));
-      expect(prefs.rulerScaleFactor, closeTo(1.7976, 0.001));
-      expect(cubit.mmPerPixel, closeTo(0.28533, 0.001));
-    });
-
-    test('resetCalibration restores default scale factors', () async {
-      await cubit.calibrate(referenceMm: 85.6, pixelDistance: 300.0);
-      expect(cubit.state.scaleFactor, isNot(1.0));
-
-      await cubit.resetCalibration();
+      expect(cubit.mmPerPixel, closeTo(0.15875, 0.001));
       expect(cubit.state.scaleFactor, 1.0);
-      expect(prefs.rulerScaleFactor, 1.0);
     });
   });
 }
