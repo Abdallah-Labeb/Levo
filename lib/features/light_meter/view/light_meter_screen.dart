@@ -332,6 +332,7 @@ class _LightMeterViewState extends State<LightMeterView> with WidgetsBindingObse
                             ),
                           ),
                         ),
+                        const SizedBox(height: AppDimensions.space16),
 
                         // 3. EV (Exposure Value) LCD Readout and Camera fallback status
                         Padding(

@@ -28,7 +28,7 @@ class IconToggleButton extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Icon(
           isActive ? iconOn : iconOff,
-          color: isActive ? AppColors.kDisplayGreen : AppColors.kChromeMid,
+          color: isActive ? AppColors.kDisplayGreen : AppColors.kBlack,
           size: iconSize,
         ),
       ),

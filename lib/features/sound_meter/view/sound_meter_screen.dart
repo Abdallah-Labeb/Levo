@@ -162,63 +162,60 @@ class _SoundMeterViewState extends State<SoundMeterView> with WidgetsBindingObse
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // ── Level bar + readout ──────────────────────────
+                          // ── Level bar visualizer ──────────────────────────
                           Expanded(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                // Vertical level bar + dB scale
-                                Expanded(
-                                  flex: 3,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: AppColors.kSurfaceInset,
-                                      borderRadius: BorderRadius.circular(
-                                          AppDimensions.radiusPanel),
-                                      border: Border.all(
-                                        color: AppColors.kBorderHighlight,
-                                        width: 1.5,
+                            child: Center(
+                              child: SizedBox(
+                                width: 200.0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.kSurfaceInset,
+                                    borderRadius: BorderRadius.circular(
+                                        AppDimensions.radiusPanel),
+                                    border: Border.all(
+                                      color: AppColors.kBorderHighlight,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppDimensions.paddingM,
+                                    vertical: AppDimensions.paddingS,
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      // Level bar segments
+                                      Expanded(
+                                        child: _LevelBar(
+                                            normalizedValue: normalizedValue),
                                       ),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: AppDimensions.paddingM,
-                                      vertical: AppDimensions.paddingS,
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        // Level bar segments
-                                        Expanded(
-                                          child: _LevelBar(
-                                              normalizedValue: normalizedValue),
-                                        ),
-                                        const SizedBox(
-                                            width: AppDimensions.space12),
-                                        // dB scale reference labels
-                                        _DbScaleLabels(
-                                          locale:
-                                              Localizations.localeOf(context)
-                                                  .toString(),
-                                        ),
-                                      ],
-                                    ),
+                                      const SizedBox(
+                                          width: AppDimensions.space12),
+                                      // dB scale reference labels
+                                      _DbScaleLabels(
+                                        locale:
+                                            Localizations.localeOf(context)
+                                                .toString(),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(width: AppDimensions.space16),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: AppDimensions.space16),
 
-                                // Right-side info column
-                                Expanded(
-                                  flex: 2,
-                                  child: Center(
-                                    child: LedDisplay(
-                                      value: _formatDb(context, state.currentDb),
-                                      unit: l10n.commonUnitDecibel,
-                                      label: l10n.soundMeterTitle,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                          // ── dB Readout (organized like Light Meter exposure value) ──────────────────────────
+                          Center(
+                            child: SizedBox(
+                              width: 180.0,
+                              height: 70.0,
+                              child: LedDisplay(
+                                value: _formatDb(context, state.currentDb),
+                                unit: l10n.commonUnitDecibel,
+                                label: l10n.soundMeterTitle,
+                              ),
                             ),
                           ),
                           const SizedBox(height: AppDimensions.space16),

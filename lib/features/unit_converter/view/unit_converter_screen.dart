@@ -193,7 +193,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                     Text(
                       l10n.unitConverterFromUnit,
                       style: AppTypography.kSectionHeader.copyWith(
-                        color: AppColors.kTextSecondary,
+                        color: AppColors.kBlack,
                       ),
                     ),
                     const SizedBox(height: AppDimensions.space4),
@@ -287,7 +287,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                         onTap: () => cubit.swapUnits(),
                         child: const Icon(
                           Icons.swap_vert_rounded,
-                          color: AppColors.kChromeLight,
+                          color: AppColors.kBlack,
                           size: 32.0,
                         ),
                       ),
@@ -298,7 +298,7 @@ class _UnitConverterViewState extends State<UnitConverterView> {
                     Text(
                       l10n.unitConverterToUnit,
                       style: AppTypography.kSectionHeader.copyWith(
-                        color: AppColors.kTextSecondary,
+                        color: AppColors.kBlack,
                       ),
                     ),
                     const SizedBox(height: AppDimensions.space4),
