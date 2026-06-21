@@ -61,22 +61,11 @@ class ClinometerCubit extends Cubit<ClinometerState> {
   void _onAccelerometerEvent(AccelerometerEvent event) {
     if (state.isHeld) return;
 
-    final double gX = event.x;
     final double gY = event.y;
     final double gZ = event.z;
 
-    double rawPitch = 0.0;
-    double rawRoll = math.atan2(gY, gZ.abs()) * (180.0 / math.pi);
-
-    // Detect if device is upright (held on side/bottom edge) or flat on its back
-    if (gZ.abs() < 6.5) {
-      // Upright mode: measure tilt in screen plane.
-      final double refY = gY != 0 ? -gY : 1e-9;
-      rawPitch = math.atan2(-gX, refY) * (180.0 / math.pi);
-    } else {
-      // Flat mode: measure inclination of Y-axis relative to gravity (horizontal plane)
-      rawPitch = math.atan2(gY, gZ.abs()) * (180.0 / math.pi);
-    }
+    final double rawPitch = math.atan2(gY, gZ.abs()) * (180.0 / math.pi);
+    final double rawRoll = math.atan2(gY, gZ.abs()) * (180.0 / math.pi);
 
     // Apply low pass filter
     final double smoothedPitch = _pitchFilter.filter(rawPitch);
