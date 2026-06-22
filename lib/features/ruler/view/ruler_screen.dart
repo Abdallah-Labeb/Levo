@@ -38,32 +38,29 @@ class _RulerViewState extends State<RulerView> {
   bool _initialized = false;
   double _dragOffsetY = 0.0;
 
-  String _formatDistance(
+  String _formatDistanceValue(
     BuildContext context,
     double distanceMm,
     RulerUnit unit,
   ) {
     double value = distanceMm;
-    String unitStr = '';
     int decimals = 1;
 
     if (unit == RulerUnit.mm) {
       value = distanceMm;
-      unitStr = context.l10n.commonUnitMm;
       decimals = 1;
     } else if (unit == RulerUnit.cm) {
       value = distanceMm / 10.0;
-      unitStr = context.l10n.commonUnitCm;
       decimals = 2;
     } else if (unit == RulerUnit.inch) {
       value = distanceMm / 25.4;
-      unitStr = context.l10n.commonUnitInch;
       decimals = 3;
     }
 
     final pattern = "0.${'0' * decimals}";
-    final formatter = NumberFormat(pattern, 'en');
-    return "${formatter.format(value)} $unitStr";
+    final locale = Localizations.localeOf(context).toString();
+    final formatter = NumberFormat(pattern, locale);
+    return formatter.format(value);
   }
 
   @override
@@ -114,8 +111,8 @@ class _RulerViewState extends State<RulerView> {
                   final double rawB = state.markerB!;
 
                   // Clamp markers to screen bounds to maximize vertical workspace
-                  final double a = rawA.clamp(10.0, rawB - 40.0 > 10.0 ? rawB - 40.0 : 10.0);
-                  final double b = rawB.clamp(a + 40.0, constraints.maxHeight - 85.0 > a + 40.0 ? constraints.maxHeight - 85.0 : a + 40.0);
+                  final double a = rawA.clamp(0.0, rawB - 20.0 > 0.0 ? rawB - 20.0 : 0.0);
+                  final double b = rawB.clamp(a + 20.0, constraints.maxHeight > a + 20.0 ? constraints.maxHeight : a + 20.0);
 
                   final double distancePixels = (b - a).abs();
                   final double distanceMm = distancePixels * cubit.mmPerPixel;
@@ -160,8 +157,8 @@ class _RulerViewState extends State<RulerView> {
                             if (renderBox != null) {
                               final double localY = renderBox.globalToLocal(details.globalPosition).dy;
                               final double targetA = localY - _dragOffsetY;
-                              const double minA = 10.0;
-                              final double maxA = b - 40.0;
+                              const double minA = 0.0;
+                              final double maxA = b - 20.0;
                               final double newA = targetA.clamp(
                                 minA,
                                 maxA > minA ? maxA : minA,
@@ -191,8 +188,8 @@ class _RulerViewState extends State<RulerView> {
                             if (renderBox != null) {
                               final double localY = renderBox.globalToLocal(details.globalPosition).dy;
                               final double targetB = localY - _dragOffsetY;
-                              final double minB = a + 40.0;
-                              final double maxB = constraints.maxHeight - 85.0;
+                              final double minB = a + 20.0;
+                              final double maxB = constraints.maxHeight;
                               final double newB = targetB.clamp(
                                 minB > maxB ? maxB : minB,
                                 maxB,
@@ -204,99 +201,107 @@ class _RulerViewState extends State<RulerView> {
                         ),
                       ),
 
-                      // 4. Floating Dimension Readout Badge
+                      // 4. Floating Dimension Readout Badge with Integrated Dropdown
                       Positioned(
-                        top: ((a + b) / 2) - 18.0,
-                        left: 125.0,
-                        child: IgnorePointer(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppDimensions.paddingM,
-                              vertical: AppDimensions.paddingXS,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.8),
-                              borderRadius: BorderRadius.circular(20.0),
-                              border: Border.all(
-                                color: AppColors.kYellow.withValues(alpha: 0.6),
-                                width: 1.0,
-                              ),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black54,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Text(
-                              _formatDistance(context, distanceMm, state.unit),
-                              style: AppTypography.kDisplayS.copyWith(
-                                color: AppColors.kDisplayGreen,
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // 5. Compact Unit Selector Dropdown
-                      Positioned(
-                        bottom: 16.0,
-                        right: 16.0,
+                        top: ((a + b) / 2) - 20.0,
+                        left: 105.0,
                         child: Container(
-                          width: 80.0,
-                          height: 38.0,
+                          height: 40.0,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: AppDimensions.paddingS,
+                            horizontal: AppDimensions.paddingM,
                           ),
                           decoration: BoxDecoration(
-                            gradient: AppColors.kGradientButtonNormal,
-                            border: Border.all(color: AppColors.kBorderHighlight),
-                            borderRadius: BorderRadius.circular(AppDimensions.radiusButton),
+                            color: AppColors.kDisplayBg,
+                            borderRadius: BorderRadius.circular(20.0),
+                            border: Border.all(
+                              color: AppColors.kDisplayGreenBorder,
+                              width: 1.5,
+                            ),
                             boxShadow: const [
                               BoxShadow(
-                                color: AppColors.kShadowDark,
-                                blurRadius: 3,
-                                offset: Offset(0, 1.5),
+                                color: Colors.black54,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
                               ),
                             ],
                           ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<RulerUnit>(
-                              value: state.unit,
-                              dropdownColor: AppColors.kSurface,
-                              icon: const Icon(
-                                Icons.arrow_drop_down_rounded,
-                                color: AppColors.kChromeLight,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IgnorePointer(
+                                child: Text(
+                                  _formatDistanceValue(context, distanceMm, state.unit),
+                                  style: AppTypography.kDisplayS.copyWith(
+                                    color: AppColors.kDisplayGreen,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                              isExpanded: true,
-                              style: AppTypography.kButton.copyWith(
-                                color: AppColors.kTextPrimary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12.0,
+                              const SizedBox(width: 8.0),
+                              Container(
+                                width: 1.5,
+                                height: 20.0,
+                                color: AppColors.kDisplayGreenBorder,
                               ),
-                              onChanged: (RulerUnit? newUnit) {
-                                if (newUnit != null) {
-                                  cubit.setUnit(newUnit);
-                                }
-                              },
-                              items: [
-                                DropdownMenuItem(
-                                  value: RulerUnit.mm,
-                                  child: Text(l10n.commonUnitMm),
+                              const SizedBox(width: 8.0),
+                              DropdownButtonHideUnderline(
+                                child: DropdownButton<RulerUnit>(
+                                  value: state.unit,
+                                  dropdownColor: AppColors.kSurface,
+                                  icon: const Icon(
+                                    Icons.arrow_drop_down_rounded,
+                                    color: AppColors.kDisplayGreen,
+                                    size: 20.0,
+                                  ),
+                                  style: AppTypography.kButton.copyWith(
+                                    color: AppColors.kDisplayGreen,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
+                                  onChanged: (RulerUnit? newUnit) {
+                                    if (newUnit != null) {
+                                      cubit.setUnit(newUnit);
+                                    }
+                                  },
+                                  items: [
+                                    DropdownMenuItem(
+                                      value: RulerUnit.mm,
+                                      child: Text(
+                                        l10n.commonUnitMm,
+                                        style: AppTypography.kButton.copyWith(
+                                          color: AppColors.kDisplayGreen,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14.0,
+                                        ),
+                                      ),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: RulerUnit.cm,
+                                      child: Text(
+                                        l10n.commonUnitCm,
+                                        style: AppTypography.kButton.copyWith(
+                                          color: AppColors.kDisplayGreen,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14.0,
+                                        ),
+                                      ),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: RulerUnit.inch,
+                                      child: Text(
+                                        l10n.commonUnitInch,
+                                        style: AppTypography.kButton.copyWith(
+                                          color: AppColors.kDisplayGreen,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                DropdownMenuItem(
-                                  value: RulerUnit.cm,
-                                  child: Text(l10n.commonUnitCm),
-                                ),
-                                DropdownMenuItem(
-                                  value: RulerUnit.inch,
-                                  child: Text(l10n.commonUnitInch),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
