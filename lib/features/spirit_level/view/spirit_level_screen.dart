@@ -257,31 +257,29 @@ class _SpiritLevelViewState extends State<SpiritLevelView> with WidgetsBindingOb
 
                   // 4. Physical Bubble Tube Visualizer Component
                   Expanded(
-                    child: Stack(
-                      children: [
-                        visualizer,
-                        Positioned(
-                          top: 0,
-                          left: AppDimensions.paddingL,
-                          child: IconToggleButton(
-                            isActive: state.soundOn,
-                            onTap: () => cubit.toggleSound(!state.soundOn),
-                            iconOn: Icons.volume_up_rounded,
-                            iconOff: Icons.volume_off_rounded,
-                          ),
-                        ),
-                        Positioned(
-                          top: 0,
-                          right: AppDimensions.paddingL,
-                          child: IconToggleButton(
-                            isActive: state.hapticOn,
-                            onTap: () => cubit.toggleHaptic(!state.hapticOn),
-                            iconOn: Icons.vibration_rounded,
-                            iconOff: Icons.phone_android_outlined,
-                          ),
-                        ),
-                      ],
-                    ),
+                    child: visualizer,
+                  ),
+
+                  const SizedBox(height: AppDimensions.space12),
+
+                  // Toggles (Sound & Haptic) placed under visualizer
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconToggleButton(
+                        isActive: state.soundOn,
+                        onTap: () => cubit.toggleSound(!state.soundOn),
+                        iconOn: Icons.volume_up_rounded,
+                        iconOff: Icons.volume_off_rounded,
+                      ),
+                      const SizedBox(width: AppDimensions.space24),
+                      IconToggleButton(
+                        isActive: state.hapticOn,
+                        onTap: () => cubit.toggleHaptic(!state.hapticOn),
+                        iconOn: Icons.vibration_rounded,
+                        iconOff: Icons.phone_android_outlined,
+                      ),
+                    ],
                   ),
 
                   const SizedBox(height: AppDimensions.space12),

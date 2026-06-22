@@ -122,16 +122,7 @@ class _ClinometerViewState extends State<ClinometerView> with WidgetsBindingObse
                     ),
                     const SizedBox(height: AppDimensions.space8),
 
-                    // Helper instruction text
-                    Center(
-                      child: Text(
-                        l10n.clinometerHelpInstructions,
-                        style: AppTypography.kCaption.copyWith(
-                          color: AppColors.kTextSecondary.withAlpha(180),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: AppDimensions.space8),
+
 
                     // 4. LED displays for Angle (Degrees) and Grade (Percent)
                     SizedBox(

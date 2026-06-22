@@ -8,7 +8,9 @@ import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/l10n/l10n_extension.dart';
-import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
+import 'package:levo/core/widgets/skyscraper_ad_widget.dart';
+import 'package:levo/core/storage/preferences_service.dart';
+
 import 'package:levo/features/ruler/bloc/ruler_cubit.dart';
 import 'package:levo/features/ruler/bloc/ruler_state.dart';
 import 'package:levo/features/ruler/widgets/ruler_painter.dart';
@@ -67,26 +69,30 @@ class _RulerViewState extends State<RulerView> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final cubit = context.read<RulerCubit>();
+    final showAd = !getIt<PreferencesService>().isPro;
 
     return Scaffold(
       appBar: LevoAppBar(title: l10n.rulerTitle),
       body: NoiseBackground(
         child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              // Initialize markers with screen height dimensions once constraints are loaded
-              if (!_initialized) {
-                _initialized = true;
-                WidgetsBinding.instance.addPostFrameCallback((_) async {
-                  await cubit.initialize(
-                    devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
-                    screenHeight: constraints.maxHeight,
-                  );
-                });
-              }
+          child: Row(
+            children: [
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    // Initialize markers with screen height dimensions once constraints are loaded
+                    if (!_initialized) {
+                      _initialized = true;
+                      WidgetsBinding.instance.addPostFrameCallback((_) async {
+                        await cubit.initialize(
+                          devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
+                          screenHeight: constraints.maxHeight,
+                        );
+                      });
+                    }
 
-              return BlocBuilder<RulerCubit, RulerState>(
-                builder: (context, state) {
+                    return BlocBuilder<RulerCubit, RulerState>(
+                      builder: (context, state) {
                   if (state.markerA == null || state.markerB == null) {
                     return Center(
                       child: Container(
@@ -312,29 +318,55 @@ class _RulerViewState extends State<RulerView> {
             },
           ),
         ),
-      ),
-      bottomNavigationBar: const AdaptiveBannerAdWidget(),
-    );
+        if (showAd)
+          const SkyscraperAdWidget(),
+      ],
+    ),
+  ),
+),
+bottomNavigationBar: null,
+);
+
   }
 
   Widget _buildDraggableHandle(String label) {
+    final bool isA = label == "A";
+    
+    // Choose custom marker colors (A is red, B is blue)
+    final Color lineColor = isA ? AppColors.kDangerRed : AppColors.kCompassBlue;
+    final Color lineGlowColor = lineColor.withValues(alpha: 0.3);
+    
+    final Gradient handleGradient = isA
+        ? const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFFE84545), Color(0xFF9E2A2A)],
+          )
+        : const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF3B9EEB), Color(0xFF1E5E9E)],
+          );
+
+    final Color handleBorder = isA ? const Color(0xFF9E2A2A) : const Color(0xFF1E5E9E);
+
     return Container(
       color: Colors.transparent, // Expand vertical touch target
       height: 52.0,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Thin yellow horizontal pointer line across the workspace
+          // Thin colored horizontal pointer line across the workspace
           Positioned(
             left: 0.0,
             right: 60.0, // Stop before the slider block on the right
             child: Container(
               height: 1.5,
               decoration: BoxDecoration(
-                color: AppColors.kYellow,
+                color: lineColor,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.kYellow.withValues(alpha: 0.3),
+                    color: lineGlowColor,
                     blurRadius: 1.5,
                     spreadRadius: 0.5,
                   ),
@@ -342,15 +374,15 @@ class _RulerViewState extends State<RulerView> {
               ),
             ),
           ),
-          // Brass slider handle on the right edge
+          // Colored slider handle on the right edge
           Positioned(
             right: 10.0,
             child: Container(
               width: 44.0,
               height: 32.0,
               decoration: BoxDecoration(
-                gradient: AppColors.kGradientYellowCasing,
-                border: Border.all(color: AppColors.kYellowDark, width: 1.5),
+                gradient: handleGradient,
+                border: Border.all(color: handleBorder, width: 1.5),
                 borderRadius: BorderRadius.circular(4.0),
                 boxShadow: const [
                   BoxShadow(
@@ -364,7 +396,7 @@ class _RulerViewState extends State<RulerView> {
               child: Text(
                 label,
                 style: AppTypography.kButton.copyWith(
-                  color: AppColors.kTextOnYellow,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 13.0,
                 ),

@@ -64,7 +64,7 @@
   "commonUnitFootCandle": "شمعة قدم",
   "commonUnitDecibel": "ديسيبل",
   "commonUnitMicrotesla": "ميكرو تسلا",
-  "commonUnitMetersPerSecSq": "م/ث²",
+  "commonUnitMetersPerSecSq": "م/ث\u200F²",
   "commonButtonReset": "إعادة ضبط",
   "commonButtonCopy": "نسخ",
   "commonButtonClose": "إغلاق",
@@ -254,5 +254,12 @@
   "protractorArmA": "المؤشر أ",
   "protractorArmB": "المؤشر ب",
   "protractorPreciseAdjustment": "الضبط الدقيق",
-  "clinometerHelpInstructions": "ضع حافة الهاتف الجانبية على المنحدر، أو ظهر الهاتف مسطحاً"
+  "clinometerHelpInstructions": "ضع حافة الهاتف الجانبية على المنحدر، أو ظهر الهاتف مسطحاً",
+  "protractorPhotoSaved": "تم حفظ الصورة بنجاح!",
+  "protractorPhotoSaveFailed": "فشل حفظ الصورة: {error}",
+  "@protractorPhotoSaveFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  }
 }

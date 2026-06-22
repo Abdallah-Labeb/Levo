@@ -1567,6 +1567,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Place device side edge or back flat on the slope'**
   String get clinometerHelpInstructions;
+
+  /// No description provided for @protractorPhotoSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo saved successfully!'**
+  String get protractorPhotoSaved;
+
+  /// No description provided for @protractorPhotoSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save photo: {error}'**
+  String protractorPhotoSaveFailed(String error);
 }
 
 class _AppLocalizationsDelegate

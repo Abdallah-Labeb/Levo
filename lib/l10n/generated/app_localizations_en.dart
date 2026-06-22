@@ -778,4 +778,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get clinometerHelpInstructions =>
       'Place device side edge or back flat on the slope';
+
+  @override
+  String get protractorPhotoSaved => 'Photo saved successfully!';
+
+  @override
+  String protractorPhotoSaveFailed(String error) {
+    return 'Failed to save photo: $error';
+  }
 }

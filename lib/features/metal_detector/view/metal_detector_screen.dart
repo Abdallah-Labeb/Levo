@@ -214,43 +214,28 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
 
                     // Warning popup is handled as a dialog on first launch
 
-                    // 2. Small Toggles & Alert Status Text Badge Row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconToggleButton(
-                          isActive: state.soundOn,
-                          onTap: () => cubit.toggleSound(!state.soundOn),
-                          iconOn: Icons.volume_up_rounded,
-                          iconOff: Icons.volume_off_rounded,
+                    // 2. Alert Status Text Badge Row
+                    Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDimensions.paddingM,
+                          vertical: AppDimensions.paddingXS,
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppDimensions.paddingM,
-                            vertical: AppDimensions.paddingXS,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.kSurfaceInset,
-                            border: Border.all(color: AppColors.kDivider),
-                            borderRadius: BorderRadius.circular(
-                              AppDimensions.radiusChip,
-                            ),
-                          ),
-                          child: Text(
-                            _getAlertText(context, state.alertLevel),
-                            style: AppTypography.kCaption.copyWith(
-                              color: _getAlertTextColor(state.alertLevel),
-                              fontWeight: FontWeight.bold,
-                            ),
+                        decoration: BoxDecoration(
+                          color: AppColors.kSurfaceInset,
+                          border: Border.all(color: AppColors.kDivider),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusChip,
                           ),
                         ),
-                        IconToggleButton(
-                          isActive: state.hapticOn,
-                          onTap: () => cubit.toggleHaptic(!state.hapticOn),
-                          iconOn: Icons.vibration_rounded,
-                          iconOff: Icons.phone_android_outlined,
+                        child: Text(
+                          _getAlertText(context, state.alertLevel),
+                          style: AppTypography.kCaption.copyWith(
+                            color: _getAlertTextColor(state.alertLevel),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ],
+                      ),
                     ),
                     const SizedBox(height: AppDimensions.space8),
 
@@ -273,6 +258,27 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                           ),
                         ),
                       ),
+                    ),
+                    const SizedBox(height: AppDimensions.space12),
+
+                    // Toggles (Sound & Haptic) placed under the radar circle
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconToggleButton(
+                          isActive: state.soundOn,
+                          onTap: () => cubit.toggleSound(!state.soundOn),
+                          iconOn: Icons.volume_up_rounded,
+                          iconOff: Icons.volume_off_rounded,
+                        ),
+                        const SizedBox(width: AppDimensions.space24),
+                        IconToggleButton(
+                          isActive: state.hapticOn,
+                          onTap: () => cubit.toggleHaptic(!state.hapticOn),
+                          iconOn: Icons.vibration_rounded,
+                          iconOff: Icons.phone_android_outlined,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: AppDimensions.space12),
 
