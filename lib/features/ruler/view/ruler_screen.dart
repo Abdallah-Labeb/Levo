@@ -76,6 +76,7 @@ class _RulerViewState extends State<RulerView> {
       body: NoiseBackground(
         child: SafeArea(
           child: Row(
+            textDirection: TextDirection.ltr,
             children: [
               Expanded(
                 child: LayoutBuilder(

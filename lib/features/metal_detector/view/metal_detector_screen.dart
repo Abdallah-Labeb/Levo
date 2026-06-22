@@ -271,7 +271,7 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                           iconOn: Icons.volume_up_rounded,
                           iconOff: Icons.volume_off_rounded,
                         ),
-                        const SizedBox(width: AppDimensions.space24),
+                        const SizedBox(width: 80.0),
                         IconToggleButton(
                           isActive: state.hapticOn,
                           onTap: () => cubit.toggleHaptic(!state.hapticOn),

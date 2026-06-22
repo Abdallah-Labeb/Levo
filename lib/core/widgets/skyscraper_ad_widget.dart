@@ -19,6 +19,7 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
   late final PreferencesService _prefs = getIt<PreferencesService>();
   BannerAd? _bannerAd;
   bool _isAdLoaded = false;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -37,13 +38,14 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
     if (!_prefs.isPro) {
       _bannerAd = BannerAd(
         adUnitId: 'ca-app-pub-3940256099942544/6300978111',
-        size: const AdSize(width: 120, height: 600),
+        size: const AdSize(width: 120, height: 400),
         request: const AdRequest(),
         listener: BannerAdListener(
           onAdLoaded: (ad) {
             if (mounted) {
               setState(() {
                 _isAdLoaded = true;
+                _isLoading = false;
               });
             }
           },
@@ -53,51 +55,56 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
               setState(() {
                 _bannerAd = null;
                 _isAdLoaded = false;
+                _isLoading = false;
               });
             }
           },
         ),
       )..load();
+    } else {
+      _isLoading = false;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_prefs.isPro) {
+    if (_prefs.isPro || (!_isLoading && _bannerAd == null)) {
       return const SizedBox.shrink();
     }
 
     return Container(
       width: 120.0,
       height: double.infinity,
-      color: AppColors.kBackground,
+      color: Colors.transparent, // transparent grey background
       child: NoiseBackground(
         child: Container(
           decoration: const BoxDecoration(
             border: Border(
               left: BorderSide(color: AppColors.kBorderShadow, width: 1.5),
             ),
-            color: AppColors.kSurfaceInset,
+            color: Colors.transparent, // transparent grey background
           ),
           alignment: Alignment.center,
           child: _isAdLoaded && _bannerAd != null
               ? SizedBox(
                   width: 120.0,
-                  height: 600.0,
+                  height: 400.0,
                   child: AdWidget(ad: _bannerAd!),
                 )
-              : const Center(
-                  child: SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.kChromeMid,
+              : _isLoading
+                  ? const Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.kChromeMid,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
+                    )
+                  : const SizedBox.shrink(),
         ),
       ),
     );

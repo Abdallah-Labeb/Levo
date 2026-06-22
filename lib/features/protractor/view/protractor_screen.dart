@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:levo/app/di/injection.dart';
@@ -83,13 +84,15 @@ class _ProtractorViewState extends State<ProtractorView> {
       String path;
 
       if (Platform.isAndroid) {
-        final picturesDir = Directory('/storage/emulated/0/Pictures');
-        if (!picturesDir.existsSync()) {
-          picturesDir.createSync(recursive: true);
+        final extDir = await getExternalStorageDirectory();
+        if (extDir != null) {
+          path = '${extDir.path}/$fileName';
+        } else {
+          path = '/storage/emulated/0/Android/data/com.levo.app/files/$fileName';
         }
-        path = '${picturesDir.path}/$fileName';
       } else {
-        path = '${Directory.systemTemp.path}/$fileName';
+        final docDir = await getApplicationDocumentsDirectory();
+        path = '${docDir.path}/$fileName';
       }
 
       final file = File(path);
@@ -350,18 +353,38 @@ class _ProtractorViewState extends State<ProtractorView> {
                                 ),
                               ),
 
-                              // Take Photo button (Visible only in camera mode, excluded from snapshot)
+                              // Take Photo shutter button (Visible only in camera mode, excluded from snapshot)
                               if (state.isCameraActive && state.isCameraInitialized)
                                 Positioned(
-                                  right: AppDimensions.paddingM,
-                                  bottom: AppDimensions.paddingM + 36.0,
-                                  child: TactileButton(
-                                    padding: const EdgeInsets.all(12.0),
-                                    onPressed: () => _captureAndSave(context),
-                                    icon: const Icon(
-                                      Icons.camera_alt_outlined,
-                                      color: AppColors.kYellow,
-                                      size: 20.0,
+                                  bottom: 24.0,
+                                  left: 0.0,
+                                  right: 0.0,
+                                  child: Center(
+                                    child: GestureDetector(
+                                      onTap: () => _captureAndSave(context),
+                                      child: Container(
+                                        width: 72.0,
+                                        height: 72.0,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(color: Colors.white, width: 4.0),
+                                          color: Colors.transparent,
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.black38,
+                                              blurRadius: 4.0,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -401,7 +424,7 @@ class _ProtractorViewState extends State<ProtractorView> {
                               Positioned(
                                 left: 0.0,
                                 right: 0.0,
-                                bottom: AppDimensions.paddingM,
+                                top: 16.0,
                                 child: Center(
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
