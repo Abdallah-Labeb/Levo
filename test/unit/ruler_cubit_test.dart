@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:levo/core/storage/preferences_service.dart';
@@ -27,20 +28,22 @@ void main() {
   group('RulerCubit Unit Tests', () {
     test('Initial state reflects preferences', () {
       expect(cubit.state.unit, RulerUnit.mm);
-      expect(cubit.state.scaleFactor, 1.0);
       expect(cubit.state.markerA, isNull);
       expect(cubit.state.markerB, isNull);
     });
 
-    test('initialize sets default markers and loads DPI configs', () {
-      cubit.initialize(devicePixelRatio: 2.0, screenHeight: 600.0);
+    test('initialize sets default markers (channel fallback in tests)', () async {
+      // ponytail: channel call will throw in tests → fallback to 160*dpr=320 DPI
+      await cubit.initialize(devicePixelRatio: 2.0, screenHeight: 600.0);
       expect(cubit.state.markerA, 150.0); // 25% of 600
       expect(cubit.state.markerB, 390.0); // 65% of 600
+      // fallback: physicalDpi = 160 * 2.0 = 320
+      // mmPerPixel = (25.4 / 320) * 2.0 = 0.15875
       expect(cubit.mmPerPixel, closeTo(0.15875, 0.001));
     });
 
-    test('updateMarkerA and updateMarkerB update state positions', () {
-      cubit.initialize(devicePixelRatio: 2.0, screenHeight: 600.0);
+    test('updateMarkerA and updateMarkerB update state positions', () async {
+      await cubit.initialize(devicePixelRatio: 2.0, screenHeight: 600.0);
 
       cubit.updateMarkerA(100.0);
       expect(cubit.state.markerA, 100.0);
@@ -59,10 +62,27 @@ void main() {
       expect(prefs.rulerDefaultUnit, 'cm');
     });
 
-    test('mmPerPixel remains constant at default 160 DPI mapping', () {
-      cubit.initialize(devicePixelRatio: 2.0, screenHeight: 600.0);
+    test('mmPerPixel uses real DPI when channel responds', () async {
+      // Simulate the native channel returning 400.0 ydpi
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+        const MethodChannel('com.levo.app/display'),
+        (MethodCall call) async {
+          if (call.method == 'getPhysicalDpi') return 400.0;
+          return null;
+        },
+      );
+
+      await cubit.initialize(devicePixelRatio: 2.5, screenHeight: 800.0);
+      // mmPerPixel = (25.4 / 400) * 2.5 = 0.15875
       expect(cubit.mmPerPixel, closeTo(0.15875, 0.001));
-      expect(cubit.state.scaleFactor, 1.0);
+
+      // Clean up
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+        const MethodChannel('com.levo.app/display'),
+        null,
+      );
     });
   });
 }

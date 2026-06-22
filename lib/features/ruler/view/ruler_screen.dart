@@ -80,8 +80,8 @@ class _RulerViewState extends State<RulerView> {
               // Initialize markers with screen height dimensions once constraints are loaded
               if (!_initialized) {
                 _initialized = true;
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  cubit.initialize(
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  await cubit.initialize(
                     devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
                     screenHeight: constraints.maxHeight,
                   );
@@ -128,7 +128,7 @@ class _RulerViewState extends State<RulerView> {
                         child: CustomPaint(
                           painter: StaticRulerPainter(
                             unit: state.unit,
-                            scaleFactor: state.scaleFactor,
+                            pixelsPerMm: state.scaleFactor,
                           ),
                         ),
                       ),

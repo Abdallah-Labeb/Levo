@@ -5,17 +5,18 @@ import 'package:levo/app/theme/app_typography.dart';
 import 'package:levo/features/ruler/bloc/ruler_state.dart';
 
 /// Renders the static physical ruler markings (metric/imperial) along the left edge.
-/// Now features a premium skeuomorphic brushed steel metallic body.
+/// Features a premium skeuomorphic brushed steel metallic body.
+/// [pixelsPerMm] is computed from the device's real physical DPI.
 class StaticRulerPainter extends CustomPainter {
   StaticRulerPainter({
     required this.unit,
-    required this.scaleFactor,
+    required this.pixelsPerMm,
   });
 
   final RulerUnit unit;
-  final double scaleFactor;
+  /// ponytail: directly the physical pixels-per-mm for this screen, no intermediate math
+  final double pixelsPerMm;
 
-  static const double kBaseDpi = 160.0;
   static const double kMmPerInch = 25.4;
 
   static final Paint tickPaint = Paint();
@@ -46,31 +47,27 @@ class StaticRulerPainter extends CustomPainter {
     // 2. Draw Bevel Borders & Right Edge Shadow
     final Paint linePaint = Paint()..style = PaintingStyle.stroke;
     
-    // White highlights
     linePaint
       ..color = Colors.white.withValues(alpha: 0.6)
       ..strokeWidth = 1.0;
     canvas.drawLine(const Offset(84.0, 0.0), Offset(84.0, size.height), linePaint);
 
-    // Dark edge line
     linePaint
       ..color = const Color(0xFF666666)
       ..strokeWidth = 1.0;
     canvas.drawLine(const Offset(85.0, 0.0), Offset(85.0, size.height), linePaint);
 
-    // Left edge shadow line (simulates ruler depth)
     linePaint
       ..color = const Color(0xFF999999)
       ..strokeWidth = 1.0;
     canvas.drawLine(const Offset(0.0, 0.0), Offset(0.0, size.height), linePaint);
 
-    // Outer drop shadow on the right side of the metal strip
     final Paint shadowPaint = Paint()
       ..color = Colors.black.withValues(alpha: 0.25)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
     canvas.drawRect(Rect.fromLTRB(85.0, 0.0, 88.0, size.height), shadowPaint);
 
-    // 3. Setup Tick Paint styles (high-contrast dark charcoal/black)
+    // 3. Setup Tick Paint styles
     tickPaint
       ..color = const Color(0xFF333333)
       ..style = PaintingStyle.stroke
@@ -82,9 +79,7 @@ class StaticRulerPainter extends CustomPainter {
       ..strokeWidth = 2.0;
 
     if (unit == RulerUnit.mm || unit == RulerUnit.cm) {
-      final double mmPerPixel = (kMmPerInch / kBaseDpi) * scaleFactor;
-      final double pixelsPerMm = 1.0 / mmPerPixel;
-
+      // ponytail: pixelsPerMm is the real physical spacing, no 160-DPI assumption
       int mmIndex = 0;
       double y = 0.0;
 
@@ -123,7 +118,8 @@ class StaticRulerPainter extends CustomPainter {
         mmIndex++;
       }
     } else {
-      final double pixelsPerInch = kBaseDpi * scaleFactor;
+      // ponytail: derive pixelsPerInch from pixelsPerMm
+      final double pixelsPerInch = pixelsPerMm * kMmPerInch;
       final double pixelsPerSixteenth = pixelsPerInch / 16.0;
 
       int sixteenthIndex = 0;
@@ -173,7 +169,7 @@ class StaticRulerPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant StaticRulerPainter oldDelegate) {
-    return oldDelegate.unit != unit || oldDelegate.scaleFactor != scaleFactor;
+    return oldDelegate.unit != unit || oldDelegate.pixelsPerMm != pixelsPerMm;
   }
 }
 
@@ -199,13 +195,11 @@ class RulerSelectionPainter extends CustomPainter {
       ..color = AppColors.kYellow.withAlpha(20)
       ..style = PaintingStyle.fill;
 
-    // Fill selection band across workspace
     canvas.drawRect(
       Rect.fromLTRB(85.0, top, size.width, bottom),
       selectionPaint,
     );
 
-    // Draw drafting dimension line at X = 105.0
     dimensionLinePaint
       ..color = AppColors.kYellow.withValues(alpha: 0.8)
       ..style = PaintingStyle.stroke
@@ -217,15 +211,12 @@ class RulerSelectionPainter extends CustomPainter {
       dimensionLinePaint,
     );
 
-    // Draw dimension arrowheads
     final Path arrowPath = Path();
     
-    // Top arrowhead pointing up
     arrowPath.moveTo(101.0, top + 7.0);
     arrowPath.lineTo(105.0, top);
     arrowPath.lineTo(109.0, top + 7.0);
 
-    // Bottom arrowhead pointing down
     arrowPath.moveTo(101.0, bottom - 7.0);
     arrowPath.lineTo(105.0, bottom);
     arrowPath.lineTo(109.0, bottom - 7.0);
