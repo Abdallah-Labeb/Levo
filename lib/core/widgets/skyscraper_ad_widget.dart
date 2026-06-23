@@ -38,7 +38,7 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
     if (!_prefs.isPro) {
       _bannerAd = BannerAd(
         adUnitId: 'ca-app-pub-3940256099942544/6300978111',
-        size: AdSize.banner,
+        size: AdSize.largeBanner,
         request: const AdRequest(),
         listener: BannerAdListener(
           onAdLoaded: (ad) {
@@ -69,7 +69,7 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_prefs.isPro) {
+    if (_prefs.isPro || (!_isLoading && _bannerAd == null)) {
       return const SizedBox.shrink();
     }
 
@@ -80,7 +80,7 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
         }
 
         return Container(
-          width: 50.0,
+          width: 100.0,
           height: double.infinity,
           color: Colors.transparent, // transparent background to let NoiseBackground show
           child: NoiseBackground(
@@ -97,24 +97,22 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
                       quarterTurns: 1, // Rotate 90 degrees clockwise to render vertically
                       child: SizedBox(
                         width: 320.0,
-                        height: 50.0,
+                        height: 100.0,
                         child: AdWidget(ad: _bannerAd!),
                       ),
                     )
-                  : _isLoading
-                      ? const Center(
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.kChromeMid,
-                              ),
-                            ),
+                  : const Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.kChromeMid,
                           ),
-                        )
-                      : const SizedBox.shrink(),
+                        ),
+                      ),
+                    ),
             ),
           ),
         );

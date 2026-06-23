@@ -11,13 +11,11 @@ class StaticRulerPainter extends CustomPainter {
   StaticRulerPainter({
     required this.unit,
     required this.pixelsPerMm,
-    this.isRightAligned = false,
   });
 
   final RulerUnit unit;
   /// ponytail: directly the physical pixels-per-mm for this screen, no intermediate math
   final double pixelsPerMm;
-  final bool isRightAligned;
 
   static const double kMmPerInch = 25.4;
 
@@ -29,11 +27,8 @@ class StaticRulerPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final double left = isRightAligned ? size.width - 85.0 : 0.0;
-    final double right = isRightAligned ? size.width : 85.0;
-
     // 1. Draw Brushed Steel Ruler Body (width = 85.0)
-    final Rect rulerRect = Rect.fromLTRB(left, 0.0, right, size.height);
+    final Rect rulerRect = Rect.fromLTRB(0.0, 0.0, 85.0, size.height);
     final Paint metalPaint = Paint()
       ..shader = const LinearGradient(
         begin: Alignment.centerLeft,
@@ -49,54 +44,28 @@ class StaticRulerPainter extends CustomPainter {
       ).createShader(rulerRect);
     canvas.drawRect(rulerRect, metalPaint);
 
-    // 2. Draw Bevel Borders & Edge Shadow
+    // 2. Draw Bevel Borders & Right Edge Shadow
     final Paint linePaint = Paint()..style = PaintingStyle.stroke;
     
-    if (isRightAligned) {
-      // Left edge shadow & line (outer edge)
-      linePaint
-        ..color = const Color(0xFF666666)
-        ..strokeWidth = 1.0;
-      canvas.drawLine(Offset(left, 0.0), Offset(left, size.height), linePaint);
+    linePaint
+      ..color = Colors.white.withValues(alpha: 0.6)
+      ..strokeWidth = 1.0;
+    canvas.drawLine(const Offset(84.0, 0.0), Offset(84.0, size.height), linePaint);
 
-      linePaint
-        ..color = Colors.white.withValues(alpha: 0.6)
-        ..strokeWidth = 1.0;
-      canvas.drawLine(Offset(left + 1.0, 0.0), Offset(left + 1.0, size.height), linePaint);
+    linePaint
+      ..color = const Color(0xFF666666)
+      ..strokeWidth = 1.0;
+    canvas.drawLine(const Offset(85.0, 0.0), Offset(85.0, size.height), linePaint);
 
-      // Right edge border (inner edge)
-      linePaint
-        ..color = const Color(0xFF999999)
-        ..strokeWidth = 1.0;
-      canvas.drawLine(Offset(size.width, 0.0), Offset(size.width, size.height), linePaint);
+    linePaint
+      ..color = const Color(0xFF999999)
+      ..strokeWidth = 1.0;
+    canvas.drawLine(const Offset(0.0, 0.0), Offset(0.0, size.height), linePaint);
 
-      final Paint shadowPaint = Paint()
-        ..color = Colors.black.withValues(alpha: 0.25)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
-      canvas.drawRect(Rect.fromLTRB(left - 3.0, 0.0, left, size.height), shadowPaint);
-    } else {
-      // Right edge highlight & shadow (outer edge)
-      linePaint
-        ..color = Colors.white.withValues(alpha: 0.6)
-        ..strokeWidth = 1.0;
-      canvas.drawLine(const Offset(84.0, 0.0), Offset(84.0, size.height), linePaint);
-
-      linePaint
-        ..color = const Color(0xFF666666)
-        ..strokeWidth = 1.0;
-      canvas.drawLine(const Offset(85.0, 0.0), Offset(85.0, size.height), linePaint);
-
-      // Left edge border (inner edge)
-      linePaint
-        ..color = const Color(0xFF999999)
-        ..strokeWidth = 1.0;
-      canvas.drawLine(const Offset(0.0, 0.0), Offset(0.0, size.height), linePaint);
-
-      final Paint shadowPaint = Paint()
-        ..color = Colors.black.withValues(alpha: 0.25)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
-      canvas.drawRect(Rect.fromLTRB(85.0, 0.0, 88.0, size.height), shadowPaint);
-    }
+    final Paint shadowPaint = Paint()
+      ..color = Colors.black.withValues(alpha: 0.25)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.0);
+    canvas.drawRect(Rect.fromLTRB(85.0, 0.0, 88.0, size.height), shadowPaint);
 
     // 3. Setup Tick Paint styles
     tickPaint
@@ -124,11 +93,7 @@ class StaticRulerPainter extends CustomPainter {
         final double tickLength = isCm ? 32.0 : (isHalfCm ? 20.0 : 12.0);
         final currentPaint = isCm ? majorTickPaint : tickPaint;
 
-        if (isRightAligned) {
-          canvas.drawLine(Offset(size.width, y), Offset(size.width - tickLength, y), currentPaint);
-        } else {
-          canvas.drawLine(Offset(0.0, y), Offset(tickLength, y), currentPaint);
-        }
+        canvas.drawLine(Offset(0.0, y), Offset(tickLength, y), currentPaint);
 
         if (isCm && mmIndex > 0) {
           final int cmValue = mmIndex ~/ 10;
@@ -147,9 +112,7 @@ class StaticRulerPainter extends CustomPainter {
             tp.layout();
             return tp;
           });
-          
-          final double labelX = isRightAligned ? size.width - 44.0 - painter.width : 44.0;
-          painter.paint(canvas, Offset(labelX, y - painter.height / 2));
+          painter.paint(canvas, Offset(44.0, y - painter.height / 2));
         }
 
         mmIndex++;
@@ -177,11 +140,7 @@ class StaticRulerPainter extends CustomPainter {
             : (isHalf ? 22.0 : (isQuarter ? 16.0 : (isEighth ? 12.0 : 7.0)));
         final currentPaint = isInch ? majorTickPaint : tickPaint;
 
-        if (isRightAligned) {
-          canvas.drawLine(Offset(size.width, y), Offset(size.width - tickLength, y), currentPaint);
-        } else {
-          canvas.drawLine(Offset(0.0, y), Offset(tickLength, y), currentPaint);
-        }
+        canvas.drawLine(Offset(0.0, y), Offset(tickLength, y), currentPaint);
 
         if (isInch && sixteenthIndex > 0) {
           final int inchValue = sixteenthIndex ~/ 16;
@@ -200,9 +159,7 @@ class StaticRulerPainter extends CustomPainter {
             tp.layout();
             return tp;
           });
-          
-          final double labelX = isRightAligned ? size.width - 44.0 - painter.width : 44.0;
-          painter.paint(canvas, Offset(labelX, y - painter.height / 2));
+          painter.paint(canvas, Offset(44.0, y - painter.height / 2));
         }
 
         sixteenthIndex++;
@@ -212,9 +169,7 @@ class StaticRulerPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant StaticRulerPainter oldDelegate) {
-    return oldDelegate.unit != unit || 
-           oldDelegate.pixelsPerMm != pixelsPerMm ||
-           oldDelegate.isRightAligned != isRightAligned;
+    return oldDelegate.unit != unit || oldDelegate.pixelsPerMm != pixelsPerMm;
   }
 }
 
@@ -223,12 +178,10 @@ class RulerSelectionPainter extends CustomPainter {
   RulerSelectionPainter({
     required this.markerA,
     required this.markerB,
-    this.isRightAligned = false,
   });
 
   final double markerA;
   final double markerB;
-  final bool isRightAligned;
 
   static final Paint selectionPaint = Paint();
   static final Paint dimensionLinePaint = Paint();
@@ -242,40 +195,31 @@ class RulerSelectionPainter extends CustomPainter {
       ..color = AppColors.kYellow.withAlpha(20)
       ..style = PaintingStyle.fill;
 
-    if (isRightAligned) {
-      canvas.drawRect(
-        Rect.fromLTRB(0.0, top, size.width - 85.0, bottom),
-        selectionPaint,
-      );
-    } else {
-      canvas.drawRect(
-        Rect.fromLTRB(85.0, top, size.width, bottom),
-        selectionPaint,
-      );
-    }
+    canvas.drawRect(
+      Rect.fromLTRB(85.0, top, size.width, bottom),
+      selectionPaint,
+    );
 
     dimensionLinePaint
       ..color = AppColors.kYellow.withValues(alpha: 0.8)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
 
-    final double dimX = isRightAligned ? size.width - 105.0 : 105.0;
-
     canvas.drawLine(
-      Offset(dimX, top),
-      Offset(dimX, bottom),
+      Offset(105.0, top),
+      Offset(105.0, bottom),
       dimensionLinePaint,
     );
 
     final Path arrowPath = Path();
     
-    arrowPath.moveTo(dimX - 4.0, top + 7.0);
-    arrowPath.lineTo(dimX, top);
-    arrowPath.lineTo(dimX + 4.0, top + 7.0);
+    arrowPath.moveTo(101.0, top + 7.0);
+    arrowPath.lineTo(105.0, top);
+    arrowPath.lineTo(109.0, top + 7.0);
 
-    arrowPath.moveTo(dimX - 4.0, bottom - 7.0);
-    arrowPath.lineTo(dimX, bottom);
-    arrowPath.lineTo(dimX + 4.0, bottom - 7.0);
+    arrowPath.moveTo(101.0, bottom - 7.0);
+    arrowPath.lineTo(105.0, bottom);
+    arrowPath.lineTo(109.0, bottom - 7.0);
 
     final Paint arrowPaint = Paint()
       ..color = AppColors.kYellow.withValues(alpha: 0.8)
@@ -287,8 +231,6 @@ class RulerSelectionPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant RulerSelectionPainter oldDelegate) {
-    return oldDelegate.markerA != markerA || 
-           oldDelegate.markerB != markerB ||
-           oldDelegate.isRightAligned != isRightAligned;
+    return oldDelegate.markerA != markerA || oldDelegate.markerB != markerB;
   }
 }

@@ -11,6 +11,7 @@ class RulerState extends Equatable {
     this.scaleFactor = 1.0,
     this.unit = RulerUnit.mm,
     this.isCalibrated = true,
+    this.rotationAngle = 0.0,
   });
 
   final double? markerA;
@@ -18,6 +19,7 @@ class RulerState extends Equatable {
   final double scaleFactor;
   final RulerUnit unit;
   final bool isCalibrated;
+  final double rotationAngle;
 
   @override
   List<Object?> get props => [
@@ -26,6 +28,7 @@ class RulerState extends Equatable {
     scaleFactor,
     unit,
     isCalibrated,
+    rotationAngle,
   ];
 
   RulerState copyWith({
@@ -34,6 +37,7 @@ class RulerState extends Equatable {
     double? scaleFactor,
     RulerUnit? unit,
     bool? isCalibrated,
+    double? rotationAngle,
   }) {
     return RulerState(
       markerA: markerA ?? this.markerA,
@@ -41,6 +45,7 @@ class RulerState extends Equatable {
       scaleFactor: scaleFactor ?? this.scaleFactor,
       unit: unit ?? this.unit,
       isCalibrated: isCalibrated ?? this.isCalibrated,
+      rotationAngle: rotationAngle ?? this.rotationAngle,
     );
   }
 }

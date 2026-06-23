@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:levo/core/storage/preferences_service.dart';
 import 'package:levo/features/ruler/bloc/ruler_state.dart';
 
@@ -20,6 +22,7 @@ class RulerCubit extends Cubit<RulerState> {
   }
 
   final PreferencesService _prefs;
+  StreamSubscription<AccelerometerEvent>? _accelerometerSub;
 
   static const double kMmPerInch = 25.4;
 
@@ -83,5 +86,49 @@ class RulerCubit extends Cubit<RulerState> {
 
   void updateMarkerB(double positionY) {
     emit(state.copyWith(markerB: positionY));
+  }
+
+  void startListening() {
+    _accelerometerSub?.cancel();
+    try {
+      _accelerometerSub = accelerometerEventStream(
+        samplingPeriod: SensorInterval.uiInterval,
+      ).listen((event) {
+        final double x = event.x;
+        final double y = event.y;
+
+        double targetAngle = 0.0;
+        if (y.abs() >= x.abs()) {
+          if (y >= 0) {
+            targetAngle = 0.0;
+          } else {
+            targetAngle = 180.0;
+          }
+        } else {
+          if (x >= 0) {
+            targetAngle = 90.0; // Landscape left
+          } else {
+            targetAngle = 270.0; // Landscape right
+          }
+        }
+
+        if (targetAngle != state.rotationAngle) {
+          emit(state.copyWith(rotationAngle: targetAngle));
+        }
+      });
+    } catch (_) {
+      // Accelerometer not available
+    }
+  }
+
+  void stopListening() {
+    _accelerometerSub?.cancel();
+    _accelerometerSub = null;
+  }
+
+  @override
+  Future<void> close() {
+    stopListening();
+    return super.close();
   }
 }
