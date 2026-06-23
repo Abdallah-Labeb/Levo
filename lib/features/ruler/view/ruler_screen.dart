@@ -243,7 +243,7 @@ class _RulerViewState extends State<RulerView> with WidgetsBindingObserver {
                         top: ((a + b) / 2) - 20.0,
                         left: 105.0,
                         child: AnimatedRotation(
-                          turns: -state.rotationAngle / 360.0,
+                          turns: state.rotationAngle / 360.0,
                           duration: AppAnimations.dialNeedle,
                           curve: Curves.easeOutCubic,
                           child: Container(
@@ -430,7 +430,7 @@ bottomNavigationBar: null,
               ),
               alignment: Alignment.center,
               child: AnimatedRotation(
-                turns: -rotationAngle / 360.0,
+                turns: rotationAngle / 360.0,
                 duration: AppAnimations.dialNeedle,
                 curve: Curves.easeOutCubic,
                 child: Text(
