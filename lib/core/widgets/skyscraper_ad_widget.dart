@@ -18,6 +18,7 @@ class SkyscraperAdWidget extends StatefulWidget {
 class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
   late final PreferencesService _prefs = getIt<PreferencesService>();
   BannerAd? _bannerAd;
+  AdSize? _loadedAdSize;
   bool _isAdLoaded = false;
   bool _isLoading = true;
 
@@ -38,12 +39,15 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
     if (!_prefs.isPro) {
       _bannerAd = BannerAd(
         adUnitId: 'ca-app-pub-3940256099942544/6300978111',
-        size: AdSize.banner,
+        size: AdSize.largeBanner,
         request: const AdRequest(),
         listener: BannerAdListener(
-          onAdLoaded: (ad) {
+          onAdLoaded: (ad) async {
+            final bannerAd = ad as BannerAd;
+            final platformSize = await bannerAd.getPlatformAdSize();
             if (mounted) {
               setState(() {
+                _loadedAdSize = platformSize;
                 _isAdLoaded = true;
                 _isLoading = false;
               });
@@ -80,7 +84,7 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
         }
 
         return Container(
-          width: 50.0,
+          width: 100.0,
           height: double.infinity,
           color: Colors.transparent, // transparent background to let NoiseBackground show
           child: NoiseBackground(
@@ -96,8 +100,8 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
                   ? RotatedBox(
                       quarterTurns: 1, // Rotate 90 degrees clockwise to render vertically
                       child: SizedBox(
-                        width: 320.0,
-                        height: 50.0,
+                        width: _loadedAdSize?.width.toDouble() ?? 320.0,
+                        height: _loadedAdSize?.height.toDouble() ?? 100.0,
                         child: AdWidget(ad: _bannerAd!),
                       ),
                     )
