@@ -38,7 +38,7 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
     if (!_prefs.isPro) {
       _bannerAd = BannerAd(
         adUnitId: 'ca-app-pub-3940256099942544/6300978111',
-        size: const AdSize(width: 120, height: 400),
+        size: const AdSize(width: 120, height: 600),
         request: const AdRequest(),
         listener: BannerAdListener(
           onAdLoaded: (ad) {
@@ -50,6 +50,7 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
             }
           },
           onAdFailedToLoad: (ad, error) {
+            debugPrint('Skyscraper ad failed to load: $error');
             ad.dispose();
             if (mounted) {
               setState(() {
@@ -68,45 +69,53 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_prefs.isPro || (!_isLoading && _bannerAd == null)) {
+    if (_prefs.isPro) {
       return const SizedBox.shrink();
     }
 
-    return Container(
-      width: 120.0,
-      height: double.infinity,
-      color: Colors.transparent, // transparent grey background
-      child: NoiseBackground(
-        child: Container(
-          decoration: const BoxDecoration(
-            border: Border(
-              left: BorderSide(color: AppColors.kBorderShadow, width: 1.5),
-            ),
-            color: Colors.transparent, // transparent grey background
-          ),
-          alignment: Alignment.center,
-          child: _isAdLoaded && _bannerAd != null
-              ? SizedBox(
-                  width: 120.0,
-                  height: 400.0,
-                  child: AdWidget(ad: _bannerAd!),
-                )
-              : _isLoading
-                  ? const Center(
-                      child: SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            AppColors.kChromeMid,
-                          ),
-                        ),
-                      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxHeight < 600.0) {
+          return const SizedBox.shrink();
+        }
+
+        return Container(
+          width: 120.0,
+          height: double.infinity,
+          color: Colors.transparent, // transparent background to let NoiseBackground show
+          child: NoiseBackground(
+            child: Container(
+              decoration: const BoxDecoration(
+                border: Border(
+                  left: BorderSide(color: AppColors.kBorderShadow, width: 1.5),
+                ),
+                color: Colors.transparent, // transparent background to let NoiseBackground show
+              ),
+              alignment: Alignment.center,
+              child: _isAdLoaded && _bannerAd != null
+                  ? SizedBox(
+                      width: 120.0,
+                      height: 600.0,
+                      child: AdWidget(ad: _bannerAd!),
                     )
-                  : const SizedBox.shrink(),
-        ),
-      ),
+                  : _isLoading
+                      ? const Center(
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.kChromeMid,
+                              ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+            ),
+          ),
+        );
+      },
     );
   }
 }
