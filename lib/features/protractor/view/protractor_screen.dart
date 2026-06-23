@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:levo/app/di/injection.dart';
@@ -14,6 +17,7 @@ import 'package:levo/core/widgets/led_display.dart';
 import 'package:levo/core/widgets/levo_app_bar.dart';
 import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
+import 'package:levo/core/widgets/levo_popup.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
 import 'package:levo/features/protractor/bloc/protractor_cubit.dart';
@@ -45,6 +49,7 @@ class ProtractorView extends StatefulWidget {
 class _ProtractorViewState extends State<ProtractorView> {
   _DragTarget _activeTarget = _DragTarget.none;
   late final ProtractorCubit _cubit;
+  final GlobalKey _repaintKey = GlobalKey();
 
   @override
   void initState() {
@@ -62,6 +67,53 @@ class _ProtractorViewState extends State<ProtractorView> {
   void dispose() {
     _cubit.stopCamera();
     super.dispose();
+  }
+
+  Future<void> _captureAndSave(BuildContext context) async {
+    try {
+      final boundary = _repaintKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) return;
+
+      final image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) return;
+      final bytes = byteData.buffer.asUint8List();
+
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final fileName = 'Levo_Protractor_$timestamp.png';
+      String path;
+
+      if (Platform.isAndroid) {
+        final extDir = await getExternalStorageDirectory();
+        if (extDir != null) {
+          path = '${extDir.path}/$fileName';
+        } else {
+          path = '/storage/emulated/0/Android/data/com.levo.app/files/$fileName';
+        }
+      } else {
+        final docDir = await getApplicationDocumentsDirectory();
+        path = '${docDir.path}/$fileName';
+      }
+
+      final file = File(path);
+      await file.writeAsBytes(bytes);
+
+      if (context.mounted) {
+        LevoPopup.showNotification(
+          context,
+          message: context.l10n.protractorPhotoSaved,
+          type: LevoPopupType.success,
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        LevoPopup.showNotification(
+          context,
+          message: context.l10n.protractorPhotoSaveFailed(e.toString()),
+          type: LevoPopupType.error,
+        );
+      }
+    }
   }
 
   void _onModeSelected(int index, ProtractorCubit cubit) async {
@@ -252,46 +304,90 @@ class _ProtractorViewState extends State<ProtractorView> {
                           child: Stack(
                             clipBehavior: Clip.hardEdge,
                             children: [
-                              // Background Camera Preview
-                              if (state.isCameraActive &&
-                                  state.isCameraInitialized &&
-                                  cubit.cameraController != null)
-                                Positioned.fill(
-                                  child: ClipRect(
-                                    child: FittedBox(
-                                      fit: BoxFit.cover,
-                                      child: SizedBox(
-                                        width: cubit.cameraController!.value.previewSize!.height,
-                                        height: cubit.cameraController!.value.previewSize!.width,
-                                        child: CameraPreview(cubit.cameraController!),
+                              // Capture area (RepaintBoundary)
+                              RepaintBoundary(
+                                key: _repaintKey,
+                                child: Stack(
+                                  children: [
+                                    // Background Camera Preview
+                                    if (state.isCameraActive &&
+                                        state.isCameraInitialized &&
+                                        cubit.cameraController != null)
+                                      Positioned.fill(
+                                        child: ClipRect(
+                                          child: FittedBox(
+                                            fit: BoxFit.cover,
+                                            child: SizedBox(
+                                              width: cubit.cameraController!.value.previewSize!.height,
+                                              height: cubit.cameraController!.value.previewSize!.width,
+                                              child: CameraPreview(cubit.cameraController!),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                    // Background Selected Image
+                                    if (state.imagePath != null)
+                                      Positioned.fill(
+                                        child: Image.file(
+                                          File(state.imagePath!),
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+
+                                    // Protractor Painter (Renders Dial Scale, sector, and arm lines)
+                                    Positioned.fill(
+                                      child: ClipRect(
+                                        child: CustomPaint(
+                                          painter: ProtractorPainter(
+                                            angleA: state.angleA,
+                                            angleB: state.angleB,
+                                            centerPercentX: state.centerPercentX,
+                                            centerPercentY: state.centerPercentY,
+                                            isCameraOrImageActive: isBgActive,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              // Take Photo shutter button (Visible only in camera mode, excluded from snapshot)
+                              if (state.isCameraActive && state.isCameraInitialized)
+                                Positioned(
+                                  bottom: 24.0,
+                                  left: 0.0,
+                                  right: 0.0,
+                                  child: Center(
+                                    child: GestureDetector(
+                                      onTap: () => _captureAndSave(context),
+                                      child: Container(
+                                        width: 72.0,
+                                        height: 72.0,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(color: Colors.white, width: 4.0),
+                                          color: Colors.transparent,
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.black38,
+                                              blurRadius: 4.0,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.white,
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-
-                              // Background Selected Image
-                              if (state.imagePath != null)
-                                Positioned.fill(
-                                  child: Image.file(
-                                    File(state.imagePath!),
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-
-                              // Protractor Painter (Renders Dial Scale, sector, and arm lines)
-                              Positioned.fill(
-                                child: ClipRect(
-                                  child: CustomPaint(
-                                    painter: ProtractorPainter(
-                                      angleA: state.angleA,
-                                      angleB: state.angleB,
-                                      centerPercentX: state.centerPercentX,
-                                      centerPercentY: state.centerPercentY,
-                                      isCameraOrImageActive: isBgActive,
-                                    ),
-                                  ),
-                                ),
-                              ),
 
                               // Floating image source selector controls (visible only in Image background mode)
                               if (state.imagePath != null)
@@ -328,7 +424,7 @@ class _ProtractorViewState extends State<ProtractorView> {
                               Positioned(
                                 left: 0.0,
                                 right: 0.0,
-                                bottom: AppDimensions.paddingM,
+                                top: 16.0,
                                 child: Center(
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
@@ -336,14 +432,14 @@ class _ProtractorViewState extends State<ProtractorView> {
                                       vertical: AppDimensions.paddingXS,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.black54,
+                                      color: AppColors.kShadowDark,
                                       borderRadius: BorderRadius.circular(AppDimensions.radiusXS),
                                     ),
                                     child: Text(
                                       l10n.protractorVertexHint,
                                       style: AppTypography.kCaption.copyWith(
-                                        color: Colors.white,
-                                        fontSize: 10.0,
+                                        color: AppColors.kTextSecondary,
+                                        fontSize: AppDimensions.fontSizeDialLabel,
                                       ),
                                     ),
                                   ),
@@ -467,7 +563,7 @@ class _DropdownMenuModeSwitcher extends StatelessWidget {
             border: Border.all(color: AppColors.kBorderHighlight, width: 1.0),
             boxShadow: const [
               BoxShadow(
-                color: Colors.black38,
+                color: AppColors.kShadowMedium,
                 offset: Offset(0, 1),
                 blurRadius: 2.0,
               ),

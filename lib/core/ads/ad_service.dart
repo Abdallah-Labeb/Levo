@@ -17,10 +17,19 @@ class AdService {
   static const String _kTestInterstitialAdUnitId =
       'ca-app-pub-3940256099942544/1033173712';
 
-  /// Initializes the Mobile Ads SDK.
   Future<void> initialize() async {
     if (_prefs.isPro) return;
     await MobileAds.instance.initialize();
+
+    // Configure RequestConfiguration with the user's physical device ID to get test ads
+    await MobileAds.instance.updateRequestConfiguration(
+      RequestConfiguration(
+        testDeviceIds: [
+          '9B80F5FF9A6B715F9F383A6F846CD602', // User's RMX2020 device
+        ],
+      ),
+    );
+
     _loadBannerAd();
     _loadInterstitialAd();
   }

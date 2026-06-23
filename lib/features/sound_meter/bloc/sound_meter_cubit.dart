@@ -138,6 +138,11 @@ class SoundMeterCubit extends Cubit<SoundMeterState> {
     }
   }
 
+  /// Updates the VU meter bar count preference.
+  void updateBarCount(int count) {
+    emit(state.copyWith(barCount: count));
+  }
+
   @override
   Future<void> close() async {
     await _noiseSub?.cancel();

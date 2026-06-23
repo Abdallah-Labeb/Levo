@@ -38,6 +38,14 @@ class AppAnimations {
   // Drum picker scroll snap
   static const Duration drumPickerSnap = Duration(milliseconds: 200);
 
+  // Sound meter segment animation
+  static const Duration soundMeterSegment = Duration(milliseconds: 60);
+
+  // Popup modal durations
+  static const Duration popupDismiss = Duration(seconds: 2);
+  static const Duration popupSlide = Duration(milliseconds: 250);
+  static const Duration popupTransition = Duration(milliseconds: 220);
+
   // Spring Physics for Spirit Level Bubble
   static const double bubbleStiffness = 120.0;
   static const double bubbleDamping = 18.0;

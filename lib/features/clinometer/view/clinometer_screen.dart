@@ -122,19 +122,7 @@ class _ClinometerViewState extends State<ClinometerView> with WidgetsBindingObse
                     ),
                     const SizedBox(height: AppDimensions.space8),
 
-                    // Helper instruction text
-                    Center(
-                      child: Text(
-                        Localizations.localeOf(context).languageCode == 'ar'
-                            ? "ضع حافة الهاتف الجانبية على المنحدر، أو ظهر الهاتف مسطحاً"
-                            : "Place device side edge or back flat on the slope",
-                        style: AppTypography.kCaption.copyWith(
-                          color: AppColors.kTextSecondary.withAlpha(180),
-                          fontSize: 11.0,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: AppDimensions.space8),
+
 
                     // 4. LED displays for Angle (Degrees) and Grade (Percent)
                     SizedBox(

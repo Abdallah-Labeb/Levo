@@ -13,6 +13,7 @@ import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
 import 'package:levo/core/widgets/skeuomorphic_slider.dart';
+import 'package:levo/core/widgets/icon_toggle_button.dart';
 import 'package:levo/core/widgets/levo_popup.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/core/widgets/adaptive_banner_ad_widget.dart';
@@ -213,43 +214,28 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
 
                     // Warning popup is handled as a dialog on first launch
 
-                    // 2. Small Toggles & Alert Status Text Badge Row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _IconToggleSmall(
-                          isActive: state.soundOn,
-                          onTap: () => cubit.toggleSound(!state.soundOn),
-                          iconOn: Icons.volume_up_rounded,
-                          iconOff: Icons.volume_off_rounded,
+                    // 2. Alert Status Text Badge Row
+                    Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDimensions.paddingM,
+                          vertical: AppDimensions.paddingXS,
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppDimensions.paddingM,
-                            vertical: AppDimensions.paddingXS,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.kSurfaceInset,
-                            border: Border.all(color: AppColors.kDivider),
-                            borderRadius: BorderRadius.circular(
-                              AppDimensions.radiusChip,
-                            ),
-                          ),
-                          child: Text(
-                            _getAlertText(context, state.alertLevel),
-                            style: AppTypography.kCaption.copyWith(
-                              color: _getAlertTextColor(state.alertLevel),
-                              fontWeight: FontWeight.bold,
-                            ),
+                        decoration: BoxDecoration(
+                          color: AppColors.kSurfaceInset,
+                          border: Border.all(color: AppColors.kDivider),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusChip,
                           ),
                         ),
-                        _IconToggleSmall(
-                          isActive: state.hapticOn,
-                          onTap: () => cubit.toggleHaptic(!state.hapticOn),
-                          iconOn: Icons.vibration_rounded,
-                          iconOff: Icons.phone_android_outlined,
+                        child: Text(
+                          _getAlertText(context, state.alertLevel),
+                          style: AppTypography.kCaption.copyWith(
+                            color: _getAlertTextColor(state.alertLevel),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ],
+                      ),
                     ),
                     const SizedBox(height: AppDimensions.space8),
 
@@ -272,6 +258,27 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
                           ),
                         ),
                       ),
+                    ),
+                    const SizedBox(height: AppDimensions.space12),
+
+                    // Toggles (Sound & Haptic) placed under the radar circle
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconToggleButton(
+                          isActive: state.soundOn,
+                          onTap: () => cubit.toggleSound(!state.soundOn),
+                          iconOn: Icons.volume_up_rounded,
+                          iconOff: Icons.volume_off_rounded,
+                        ),
+                        const SizedBox(width: 80.0),
+                        IconToggleButton(
+                          isActive: state.hapticOn,
+                          onTap: () => cubit.toggleHaptic(!state.hapticOn),
+                          iconOn: Icons.vibration_rounded,
+                          iconOff: Icons.phone_android_outlined,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: AppDimensions.space12),
 
@@ -313,37 +320,6 @@ class _MetalDetectorViewState extends State<MetalDetectorView>
           bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
-    );
-  }
-}
-
-// ─── Small borderless toggle button ──────────────────────────────────────────
-class _IconToggleSmall extends StatelessWidget {
-  const _IconToggleSmall({
-    required this.isActive,
-    required this.onTap,
-    required this.iconOn,
-    required this.iconOff,
-  });
-
-  final bool isActive;
-  final VoidCallback onTap;
-  final IconData iconOn;
-  final IconData iconOff;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Icon(
-          isActive ? iconOn : iconOff,
-          color: isActive ? AppColors.kDisplayGreen : Colors.black,
-          size: 24.0,
-        ),
-      ),
     );
   }
 }

@@ -49,26 +49,23 @@ class LedDisplay extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         );
 
-        Widget valueWidget = Directionality(
-          textDirection: TextDirection.ltr,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(value, style: textStyle.copyWith(color: displayColor)),
-              if (unit != null) ...[
-                const SizedBox(width: AppDimensions.space4),
-                Text(
-                  unit!,
-                  style: AppTypography.kUnitLabel.copyWith(
-                    fontSize: AppDimensions.ledUnitFontSize - 2, // slightly smaller unit inside
-                    color: displayColor,
-                  ),
+        Widget valueWidget = Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(value, style: textStyle.copyWith(color: displayColor)),
+            if (unit != null) ...[
+              const SizedBox(width: AppDimensions.space4),
+              Text(
+                unit!,
+                style: AppTypography.kUnitLabel.copyWith(
+                  fontSize: AppDimensions.ledUnitFontSize - 2, // slightly smaller unit inside
+                  color: displayColor,
                 ),
-              ],
+              ),
             ],
-          ),
+          ],
         );
 
         Widget labelFitted = FittedBox(

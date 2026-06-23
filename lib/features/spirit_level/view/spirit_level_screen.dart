@@ -13,6 +13,7 @@ import 'package:levo/core/widgets/noise_background.dart';
 import 'package:levo/core/widgets/sensor_error_view.dart';
 import 'package:levo/core/sensors/sensor_error_type.dart';
 import 'package:levo/core/widgets/tactile_button.dart';
+import 'package:levo/core/widgets/icon_toggle_button.dart';
 import 'package:levo/l10n/l10n_extension.dart';
 import 'package:levo/features/spirit_level/bloc/spirit_level_cubit.dart';
 import 'package:levo/features/spirit_level/bloc/spirit_level_state.dart';
@@ -256,31 +257,29 @@ class _SpiritLevelViewState extends State<SpiritLevelView> with WidgetsBindingOb
 
                   // 4. Physical Bubble Tube Visualizer Component
                   Expanded(
-                    child: Stack(
-                      children: [
-                        visualizer,
-                        Positioned(
-                          top: 0,
-                          left: AppDimensions.paddingL,
-                          child: _IconToggleSmall(
-                            isActive: state.soundOn,
-                            onTap: () => cubit.toggleSound(!state.soundOn),
-                            iconOn: Icons.volume_up_rounded,
-                            iconOff: Icons.volume_off_rounded,
-                          ),
-                        ),
-                        Positioned(
-                          top: 0,
-                          right: AppDimensions.paddingL,
-                          child: _IconToggleSmall(
-                            isActive: state.hapticOn,
-                            onTap: () => cubit.toggleHaptic(!state.hapticOn),
-                            iconOn: Icons.vibration_rounded,
-                            iconOff: Icons.phone_android_outlined,
-                          ),
-                        ),
-                      ],
-                    ),
+                    child: visualizer,
+                  ),
+
+                  const SizedBox(height: AppDimensions.space12),
+
+                  // Toggles (Sound & Haptic) placed under visualizer
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconToggleButton(
+                        isActive: state.soundOn,
+                        onTap: () => cubit.toggleSound(!state.soundOn),
+                        iconOn: Icons.volume_up_rounded,
+                        iconOff: Icons.volume_off_rounded,
+                      ),
+                      const SizedBox(width: 80.0),
+                      IconToggleButton(
+                        isActive: state.hapticOn,
+                        onTap: () => cubit.toggleHaptic(!state.hapticOn),
+                        iconOn: Icons.vibration_rounded,
+                        iconOff: Icons.phone_android_outlined,
+                      ),
+                    ],
                   ),
 
                   const SizedBox(height: AppDimensions.space12),
@@ -354,36 +353,6 @@ class _SpiritLevelViewState extends State<SpiritLevelView> with WidgetsBindingOb
           bottomNavigationBar: const AdaptiveBannerAdWidget(),
         );
       },
-    );
-  }
-}
-
-class _IconToggleSmall extends StatelessWidget {
-  const _IconToggleSmall({
-    required this.isActive,
-    required this.onTap,
-    required this.iconOn,
-    required this.iconOff,
-  });
-
-  final bool isActive;
-  final VoidCallback onTap;
-  final IconData iconOn;
-  final IconData iconOff;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Icon(
-          isActive ? iconOn : iconOff,
-          color: isActive ? AppColors.kDisplayGreen : Colors.black,
-          size: 24.0,
-        ),
-      ),
     );
   }
 }

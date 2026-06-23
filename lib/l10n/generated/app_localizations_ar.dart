@@ -206,7 +206,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commonUnitMicrotesla => 'ميكرو تسلا';
 
   @override
-  String get commonUnitMetersPerSecSq => 'م/ث²';
+  String get commonUnitMetersPerSecSq => 'م/ث‏²';
 
   @override
   String get commonButtonReset => 'إعادة ضبط';
@@ -778,4 +778,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get protractorPreciseAdjustment => 'الضبط الدقيق';
+
+  @override
+  String get clinometerHelpInstructions =>
+      'ضع حافة الهاتف الجانبية على المنحدر، أو ظهر الهاتف مسطحاً';
+
+  @override
+  String get protractorPhotoSaved => 'تم حفظ الصورة بنجاح!';
+
+  @override
+  String protractorPhotoSaveFailed(String error) {
+    return 'فشل حفظ الصورة: $error';
+  }
 }

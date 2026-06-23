@@ -14,7 +14,7 @@ class LevoAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isRtl = Localizations.localeOf(context).languageCode == 'ar';
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return SafeArea(
       bottom: false,

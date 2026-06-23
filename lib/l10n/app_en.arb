@@ -253,5 +253,13 @@
   "protractorVertexHint": "Drag Center Peg to adjust vertex position",
   "protractorArmA": "Arm A",
   "protractorArmB": "Arm B",
-  "protractorPreciseAdjustment": "Fine Tuning"
+  "protractorPreciseAdjustment": "Fine Tuning",
+  "clinometerHelpInstructions": "Place device side edge or back flat on the slope",
+  "protractorPhotoSaved": "Photo saved successfully!",
+  "protractorPhotoSaveFailed": "Failed to save photo: {error}",
+  "@protractorPhotoSaveFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  }
 }
