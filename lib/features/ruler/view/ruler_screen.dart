@@ -70,6 +70,7 @@ class _RulerViewState extends State<RulerView> {
     final l10n = context.l10n;
     final cubit = context.read<RulerCubit>();
     final showAd = !getIt<PreferencesService>().isPro;
+    final bool isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Scaffold(
       appBar: LevoAppBar(title: l10n.rulerTitle),
@@ -133,6 +134,7 @@ class _RulerViewState extends State<RulerView> {
                           painter: StaticRulerPainter(
                             unit: state.unit,
                             pixelsPerMm: state.scaleFactor,
+                            isRightAligned: isLandscape,
                           ),
                         ),
                       ),
@@ -142,6 +144,7 @@ class _RulerViewState extends State<RulerView> {
                           painter: RulerSelectionPainter(
                             markerA: a,
                             markerB: b,
+                            isRightAligned: isLandscape,
                           ),
                         ),
                       ),
@@ -173,7 +176,7 @@ class _RulerViewState extends State<RulerView> {
                               cubit.updateMarkerA(newA);
                             }
                           },
-                          child: _buildDraggableHandle("A"),
+                          child: _buildDraggableHandle("A", isLandscape),
                         ),
                       ),
 
@@ -204,14 +207,15 @@ class _RulerViewState extends State<RulerView> {
                               cubit.updateMarkerB(newB);
                             }
                           },
-                          child: _buildDraggableHandle("B"),
+                          child: _buildDraggableHandle("B", isLandscape),
                         ),
                       ),
 
                       // 4. Floating Dimension Readout Badge with Integrated Dropdown
                       Positioned(
                         top: ((a + b) / 2) - 20.0,
-                        left: 105.0,
+                        left: isLandscape ? null : 105.0,
+                        right: isLandscape ? 105.0 : null,
                         child: Container(
                           height: 40.0,
                           padding: const EdgeInsets.symmetric(
@@ -330,7 +334,7 @@ bottomNavigationBar: null,
 
   }
 
-  Widget _buildDraggableHandle(String label) {
+  Widget _buildDraggableHandle(String label, bool isLandscape) {
     final bool isA = label == "A";
     
     // Choose custom marker colors (A is red, B is blue)
@@ -359,8 +363,8 @@ bottomNavigationBar: null,
         children: [
           // Thin colored horizontal pointer line across the workspace
           Positioned(
-            left: 0.0,
-            right: 60.0, // Stop before the slider block on the right
+            left: isLandscape ? 60.0 : 0.0,
+            right: isLandscape ? 0.0 : 60.0, // Stop before the slider block
             child: Container(
               height: 1.5,
               decoration: BoxDecoration(
@@ -375,9 +379,10 @@ bottomNavigationBar: null,
               ),
             ),
           ),
-          // Colored slider handle on the right edge
+          // Colored slider handle on the left or right edge
           Positioned(
-            right: 10.0,
+            left: isLandscape ? 10.0 : null,
+            right: isLandscape ? null : 10.0,
             child: Container(
               width: 44.0,
               height: 32.0,
