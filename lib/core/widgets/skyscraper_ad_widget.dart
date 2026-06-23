@@ -38,7 +38,7 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
     if (!_prefs.isPro) {
       _bannerAd = BannerAd(
         adUnitId: 'ca-app-pub-3940256099942544/6300978111',
-        size: const AdSize(width: 120, height: 600),
+        size: AdSize.largeBanner,
         request: const AdRequest(),
         listener: BannerAdListener(
           onAdLoaded: (ad) {
@@ -75,7 +75,7 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxHeight < 600.0) {
+        if (constraints.maxHeight < 320.0) {
           return const SizedBox.shrink();
         }
 
@@ -93,10 +93,13 @@ class _SkyscraperAdWidgetState extends State<SkyscraperAdWidget> {
               ),
               alignment: Alignment.center,
               child: _isAdLoaded && _bannerAd != null
-                  ? SizedBox(
-                      width: 120.0,
-                      height: 600.0,
-                      child: AdWidget(ad: _bannerAd!),
+                  ? RotatedBox(
+                      quarterTurns: 1, // Rotate 90 degrees clockwise to render vertically
+                      child: SizedBox(
+                        width: 320.0,
+                        height: 100.0,
+                        child: AdWidget(ad: _bannerAd!),
+                      ),
                     )
                   : _isLoading
                       ? const Center(
